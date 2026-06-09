@@ -1,72 +1,113 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Pendataan Barang di Gudang</title>
-    <style>
-        body{
-            font-family: Arial, sans-serif;
-            margin:0;
-            background:#f4f4f4;
-        }
-        header{
-            background:#007bff;
-            color:white;
-            padding:15px;
-            text-align:center;
-        }
-        nav{
-            background:#333;
-            padding:10px;
-        }
-        nav a{
-            color:white;
-            text-decoration:none;
-            margin:15px;
-        }
-        .container{
-            padding:20px;
-        }
-        .card{
-            background:white;
-            padding:15px;
-            margin-bottom:20px;
-            border-radius:8px;
-            box-shadow:0 0 5px rgba(0,0,0,0.2);
-        }
-        table{
-            width:100%;
-            border-collapse:collapse;
-        }
-        table, th, td{
-            border:1px solid #ccc;
-        }
-        th, td{
-            padding:10px;
-            text-align:center;
-        }
-        th{
-            background:#007bff;
-            color:white;
-        }
-        input{
-            padding:8px;
-            margin:5px;
-        }
-        button{
-            padding:8px 15px;
-            background:#007bff;
-            color:white;
-            border:none;
-            cursor:pointer;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistem Pendataan Barang Gudang</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Segoe UI,sans-serif;
+}
+
+body{
+    background:#f5f7fa;
+}
+
+header{
+    background:#1e3a8a;
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+nav{
+    background:#2563eb;
+    padding:12px;
+    text-align:center;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin:0 15px;
+    font-weight:bold;
+}
+
+.container{
+    width:95%;
+    margin:auto;
+    padding:20px;
+}
+
+.dashboard{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:15px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    text-align:center;
+}
+
+.card h2{
+    color:#2563eb;
+}
+
+.card p{
+    font-size:25px;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+.section{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    margin-bottom:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:10px;
+}
+
+table th{
+    background:#2563eb;
+    color:white;
+}
+
+table th, table td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:center;
+}
+
+footer{
+    background:#1e3a8a;
+    color:white;
+    text-align:center;
+    padding:15px;
+    margin-top:20px;
+}
+</style>
+
 </head>
 <body>
 
 <header>
-    <h1>Sistem Pendataan Barang di Gudang</h1>
+    <h1>SISTEM PENDATAAN BARANG DI GUDANG</h1>
+    <p>PT. MAJU JAYA SEJAHTERA</p>
 </header>
 
 <nav>
@@ -79,52 +120,138 @@
 
 <div class="container">
 
-    <div class="card">
-        <h2>Input Data Barang</h2>
+    <div class="dashboard">
 
-        <input type="text" id="kode" placeholder="Kode Barang">
-        <input type="text" id="nama" placeholder="Nama Barang">
-        <input type="number" id="stok" placeholder="Stok">
-        <button onclick="tambahData()">Tambah</button>
+        <div class="card">
+            <h2>Total Barang</h2>
+            <p>150</p>
+        </div>
+
+        <div class="card">
+            <h2>Barang Masuk</h2>
+            <p>85</p>
+        </div>
+
+        <div class="card">
+            <h2>Barang Keluar</h2>
+            <p>45</p>
+        </div>
+
+        <div class="card">
+            <h2>Sisa Stok</h2>
+            <p>105</p>
+        </div>
+
     </div>
 
-    <div class="card">
-        <h2>Daftar Barang</h2>
+    <div class="section">
+        <h2>Data Barang Gudang</h2>
 
-        <table id="tabelBarang">
+        <table>
             <tr>
+                <th>Kode</th>
+                <th>Nama Barang</th>
+                <th>Kategori</th>
+                <th>Stok</th>
+            </tr>
+
+            <tr>
+                <td>BRG001</td>
+                <td>Laptop Asus</td>
+                <td>Elektronik</td>
+                <td>20</td>
+            </tr>
+
+            <tr>
+                <td>BRG002</td>
+                <td>Printer Epson</td>
+                <td>Elektronik</td>
+                <td>15</td>
+            </tr>
+
+            <tr>
+                <td>BRG003</td>
+                <td>Kertas A4</td>
+                <td>ATK</td>
+                <td>50</td>
+            </tr>
+
+            <tr>
+                <td>BRG004</td>
+                <td>Pulpen</td>
+                <td>ATK</td>
+                <td>40</td>
+            </tr>
+
+            <tr>
+                <td>BRG005</td>
+                <td>Mouse Logitech</td>
+                <td>Aksesoris</td>
+                <td>25</td>
+            </tr>
+
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Riwayat Barang Masuk</h2>
+
+        <table>
+            <tr>
+                <th>Tanggal</th>
                 <th>Kode Barang</th>
                 <th>Nama Barang</th>
-                <th>Stok</th>
+                <th>Jumlah</th>
+            </tr>
+
+            <tr>
+                <td>01-06-2026</td>
+                <td>BRG001</td>
+                <td>Laptop Asus</td>
+                <td>10</td>
+            </tr>
+
+            <tr>
+                <td>03-06-2026</td>
+                <td>BRG003</td>
+                <td>Kertas A4</td>
+                <td>30</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Riwayat Barang Keluar</h2>
+
+        <table>
+            <tr>
+                <th>Tanggal</th>
+                <th>Kode Barang</th>
+                <th>Nama Barang</th>
+                <th>Jumlah</th>
+            </tr>
+
+            <tr>
+                <td>05-06-2026</td>
+                <td>BRG002</td>
+                <td>Printer Epson</td>
+                <td>5</td>
+            </tr>
+
+            <tr>
+                <td>07-06-2026</td>
+                <td>BRG005</td>
+                <td>Mouse Logitech</td>
+                <td>8</td>
             </tr>
         </table>
     </div>
 
 </div>
 
-<script>
-function tambahData(){
-    let kode = document.getElementById("kode").value;
-    let nama = document.getElementById("nama").value;
-    let stok = document.getElementById("stok").value;
-
-    if(kode=="" || nama=="" || stok==""){
-        alert("Lengkapi data terlebih dahulu!");
-        return;
-    }
-
-    let tabel = document.getElementById("tabelBarang");
-    let row = tabel.insertRow();
-
-    row.insertCell(0).innerHTML = kode;
-    row.insertCell(1).innerHTML = nama;
-    row.insertCell(2).innerHTML = stok;
-
-    document.getElementById("kode").value = "";
-    document.getElementById("nama").value = "";
-    document.getElementById("stok").value = "";
-}
-</script>
+<footer>
+    © 2026 Sistem Informasi Pendataan Barang di Gudang
+</footer>
 
 </body>
 </html>
