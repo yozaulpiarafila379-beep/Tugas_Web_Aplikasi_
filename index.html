@@ -1,1 +1,131 @@
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pendataan Barang di Gudang</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            margin:0;
+            background:#f4f4f4;
+        }
+        header{
+            background:#007bff;
+            color:white;
+            padding:15px;
+            text-align:center;
+        }
+        nav{
+            background:#333;
+            padding:10px;
+        }
+        nav a{
+            color:white;
+            text-decoration:none;
+            margin:15px;
+        }
+        .container{
+            padding:20px;
+        }
+        .card{
+            background:white;
+            padding:15px;
+            margin-bottom:20px;
+            border-radius:8px;
+            box-shadow:0 0 5px rgba(0,0,0,0.2);
+        }
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+        table, th, td{
+            border:1px solid #ccc;
+        }
+        th, td{
+            padding:10px;
+            text-align:center;
+        }
+        th{
+            background:#007bff;
+            color:white;
+        }
+        input{
+            padding:8px;
+            margin:5px;
+        }
+        button{
+            padding:8px 15px;
+            background:#007bff;
+            color:white;
+            border:none;
+            cursor:pointer;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Sistem Pendataan Barang di Gudang</h1>
+</header>
+
+<nav>
+    <a href="#">Dashboard</a>
+    <a href="#">Data Barang</a>
+    <a href="#">Barang Masuk</a>
+    <a href="#">Barang Keluar</a>
+    <a href="#">Laporan</a>
+</nav>
+
+<div class="container">
+
+    <div class="card">
+        <h2>Input Data Barang</h2>
+
+        <input type="text" id="kode" placeholder="Kode Barang">
+        <input type="text" id="nama" placeholder="Nama Barang">
+        <input type="number" id="stok" placeholder="Stok">
+        <button onclick="tambahData()">Tambah</button>
+    </div>
+
+    <div class="card">
+        <h2>Daftar Barang</h2>
+
+        <table id="tabelBarang">
+            <tr>
+                <th>Kode Barang</th>
+                <th>Nama Barang</th>
+                <th>Stok</th>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<script>
+function tambahData(){
+    let kode = document.getElementById("kode").value;
+    let nama = document.getElementById("nama").value;
+    let stok = document.getElementById("stok").value;
+
+    if(kode=="" || nama=="" || stok==""){
+        alert("Lengkapi data terlebih dahulu!");
+        return;
+    }
+
+    let tabel = document.getElementById("tabelBarang");
+    let row = tabel.insertRow();
+
+    row.insertCell(0).innerHTML = kode;
+    row.insertCell(1).innerHTML = nama;
+    row.insertCell(2).innerHTML = stok;
+
+    document.getElementById("kode").value = "";
+    document.getElementById("nama").value = "";
+    document.getElementById("stok").value = "";
+}
+</script>
+
+</body>
+</html>
