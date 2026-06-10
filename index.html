@@ -55,6 +55,18 @@ box-shadow:0 2px 8px rgba(0,0,0,.1);
 margin:0;
 color:#2563eb;
 }
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:10px;
+}
+
+table th, table td{
+border:1px solid #ddd;
+padding:8px;
+text-align:left;
+}
 </style>
 
 </head>
@@ -99,6 +111,42 @@ color:#2563eb;
 <h2 id="dbKeluar">0</h2>
 </div>
 
+<!-- PREVIEW BARANG -->
+<div class="card">
+<h3>📦 Barang Terbaru</h3>
+<table>
+<tr>
+<th>Nama</th>
+<th>Stok</th>
+</tr>
+<tbody id="previewBarang"></tbody>
+</table>
+</div>
+
+<!-- PREVIEW MASUK -->
+<div class="card">
+<h3>📥 Barang Masuk Terbaru</h3>
+<table>
+<tr>
+<th>Barang</th>
+<th>Jumlah</th>
+</tr>
+<tbody id="previewMasuk"></tbody>
+</table>
+</div>
+
+<!-- PREVIEW KELUAR -->
+<div class="card">
+<h3>📤 Barang Keluar Terbaru</h3>
+<table>
+<tr>
+<th>Barang</th>
+<th>Jumlah</th>
+</tr>
+<tbody id="previewKeluar"></tbody>
+</table>
+</div>
+
 </div>
 
 </div>
@@ -136,6 +184,24 @@ document.getElementById("dbBarang").innerText = barang.length;
 document.getElementById("dbSupplier").innerText = supplier.length;
 document.getElementById("dbMasuk").innerText = masuk.length;
 document.getElementById("dbKeluar").innerText = keluar.length;
+
+/* PREVIEW BARANG */
+document.getElementById("previewBarang").innerHTML =
+barang.slice(-5).map(b =>
+`<tr><td>${b.nama || "-"}</td><td>${b.stok || 0}</td></tr>`
+).join("");
+
+/* PREVIEW MASUK */
+document.getElementById("previewMasuk").innerHTML =
+masuk.slice(-5).map(m =>
+`<tr><td>${m.barang}</td><td>${m.jumlah}</td></tr>`
+).join("");
+
+/* PREVIEW KELUAR */
+document.getElementById("previewKeluar").innerHTML =
+keluar.slice(-5).map(k =>
+`<tr><td>${k.barang}</td><td>${k.jumlah}</td></tr>`
+).join("");
 
 }
 
