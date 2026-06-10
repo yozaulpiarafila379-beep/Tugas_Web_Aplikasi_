@@ -3,255 +3,168 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistem Pendataan Barang Gudang</title>
+<title>Sistem Informasi Gudang</title>
 
 <style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Segoe UI,sans-serif;
-}
-
 body{
-    background:#f5f7fa;
+margin:0;
+font-family:Segoe UI;
+background:#f1f5f9;
 }
 
-header{
-    background:#1e3a8a;
-    color:white;
-    padding:20px;
-    text-align:center;
+/* LOGIN */
+#login{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#2563eb,#60a5fa);
 }
 
-nav{
-    background:#2563eb;
-    padding:12px;
-    text-align:center;
+.login-box{
+width:350px;
+background:white;
+padding:30px;
+border-radius:10px;
 }
 
-nav a{
-    color:white;
-    text-decoration:none;
-    margin:0 15px;
-    font-weight:bold;
+.login-box input{
+width:100%;
+padding:10px;
+margin:8px 0;
 }
 
-.container{
-    width:95%;
-    margin:auto;
-    padding:20px;
+button{
+width:100%;
+padding:10px;
+background:#2563eb;
+color:white;
+border:none;
+cursor:pointer;
 }
 
-.dashboard{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-    gap:15px;
-    margin-bottom:20px;
+/* DASHBOARD */
+#dashboard{
+display:none;
+padding:20px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:15px;
 }
 
 .card{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    text-align:center;
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+text-align:center;
 }
 
-.card h2{
-    color:#2563eb;
-}
-
-.card p{
-    font-size:25px;
-    font-weight:bold;
-    margin-top:10px;
+.card h1{
+color:#2563eb;
 }
 
 .section{
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.1);
-    margin-bottom:20px;
-}
-
-table{
-    width:100%;
-    border-collapse:collapse;
-    margin-top:10px;
-}
-
-table th{
-    background:#2563eb;
-    color:white;
-}
-
-table th, table td{
-    border:1px solid #ddd;
-    padding:10px;
-    text-align:center;
-}
-
-footer{
-    background:#1e3a8a;
-    color:white;
-    text-align:center;
-    padding:15px;
-    margin-top:20px;
+margin-top:20px;
+background:white;
+padding:15px;
+border-radius:10px;
 }
 </style>
-
 </head>
+
 <body>
 
-<header>
-    <h1>SISTEM PENDATAAN BARANG DI GUDANG</h1>
-    <p>PT. MAJU JAYA SEJAHTERA</p>
-</header>
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-box">
+    <h2>Login Gudang</h2>
 
-<nav>
-    <a href="#">Dashboard</a>
-    <a href="#">Data Barang</a>
-    <a href="#">Barang Masuk</a>
-    <a href="#">Barang Keluar</a>
-    <a href="#">Laporan</a>
-</nav>
+    <input type="text" id="user" placeholder="Username">
+    <input type="password" id="pass" placeholder="Password">
 
-<div class="container">
+    <button onclick="login()">Login</button>
+  </div>
+</div>
 
-    <div class="dashboard">
+<!-- DASHBOARD -->
+<div id="dashboard">
 
-        <div class="card">
-            <h2>Total Barang</h2>
-            <p>150</p>
-        </div>
+<h2>📊 Dashboard Gudang</h2>
 
-        <div class="card">
-            <h2>Barang Masuk</h2>
-            <p>85</p>
-        </div>
+<div class="cards">
 
-        <div class="card">
-            <h2>Barang Keluar</h2>
-            <p>45</p>
-        </div>
+  <div class="card">
+    <h4>Total Barang</h4>
+    <h1 id="dashBarang">0</h1>
+  </div>
 
-        <div class="card">
-            <h2>Sisa Stok</h2>
-            <p>105</p>
-        </div>
+  <div class="card">
+    <h4>Supplier</h4>
+    <h1 id="dashSupplier">0</h1>
+  </div>
 
-    </div>
+  <div class="card">
+    <h4>Barang Masuk</h4>
+    <h1 id="dashMasuk">0</h1>
+  </div>
 
-    <div class="section">
-        <h2>Data Barang Gudang</h2>
-
-        <table>
-            <tr>
-                <th>Kode</th>
-                <th>Nama Barang</th>
-                <th>Kategori</th>
-                <th>Stok</th>
-            </tr>
-
-            <tr>
-                <td>BRG001</td>
-                <td>Laptop Asus</td>
-                <td>Elektronik</td>
-                <td>20</td>
-            </tr>
-
-            <tr>
-                <td>BRG002</td>
-                <td>Printer Epson</td>
-                <td>Elektronik</td>
-                <td>15</td>
-            </tr>
-
-            <tr>
-                <td>BRG003</td>
-                <td>Kertas A4</td>
-                <td>ATK</td>
-                <td>50</td>
-            </tr>
-
-            <tr>
-                <td>BRG004</td>
-                <td>Pulpen</td>
-                <td>ATK</td>
-                <td>40</td>
-            </tr>
-
-            <tr>
-                <td>BRG005</td>
-                <td>Mouse Logitech</td>
-                <td>Aksesoris</td>
-                <td>25</td>
-            </tr>
-
-        </table>
-    </div>
-
-    <div class="section">
-        <h2>Riwayat Barang Masuk</h2>
-
-        <table>
-            <tr>
-                <th>Tanggal</th>
-                <th>Kode Barang</th>
-                <th>Nama Barang</th>
-                <th>Jumlah</th>
-            </tr>
-
-            <tr>
-                <td>01-06-2026</td>
-                <td>BRG001</td>
-                <td>Laptop Asus</td>
-                <td>10</td>
-            </tr>
-
-            <tr>
-                <td>03-06-2026</td>
-                <td>BRG003</td>
-                <td>Kertas A4</td>
-                <td>30</td>
-            </tr>
-        </table>
-    </div>
-
-    <div class="section">
-        <h2>Riwayat Barang Keluar</h2>
-
-        <table>
-            <tr>
-                <th>Tanggal</th>
-                <th>Kode Barang</th>
-                <th>Nama Barang</th>
-                <th>Jumlah</th>
-            </tr>
-
-            <tr>
-                <td>05-06-2026</td>
-                <td>BRG002</td>
-                <td>Printer Epson</td>
-                <td>5</td>
-            </tr>
-
-            <tr>
-                <td>07-06-2026</td>
-                <td>BRG005</td>
-                <td>Mouse Logitech</td>
-                <td>8</td>
-            </tr>
-        </table>
-    </div>
+  <div class="card">
+    <h4>Barang Keluar</h4>
+    <h1 id="dashKeluar">0</h1>
+  </div>
 
 </div>
 
-<footer>
-    © 2026 Sistem Informasi Pendataan Barang di Gudang
-</footer>
+<div class="section">
+  <h3>📋 Ringkasan Data</h3>
+
+  <p>Total Barang: <span id="tBarang">0</span></p>
+  <p>Total Supplier: <span id="tSupplier">0</span></p>
+  <p>Total Masuk: <span id="tMasuk">0</span></p>
+  <p>Total Keluar: <span id="tKeluar">0</span></p>
+</div>
+
+</div>
+
+<script>
+// LOGIN
+function login(){
+let u = document.getElementById("user").value;
+let p = document.getElementById("pass").value;
+
+if(u==="admin" && p==="admin123"){
+document.getElementById("login").style.display="none";
+document.getElementById("dashboard").style.display="block";
+updateDashboard();
+}else{
+alert("Login gagal");
+}
+}
+
+/* DATA SIMULASI */
+let barang = ["Laptop","Printer","Mouse","Keyboard"];
+let supplier = ["A","B"];
+let barangMasuk = ["1","2"];
+let barangKeluar = ["1","2"];
+
+/* UPDATE DASHBOARD */
+function updateDashboard(){
+
+document.getElementById("dashBarang").innerText = barang.length;
+document.getElementById("dashSupplier").innerText = supplier.length;
+document.getElementById("dashMasuk").innerText = barangMasuk.length;
+document.getElementById("dashKeluar").innerText = barangKeluar.length;
+
+document.getElementById("tBarang").innerText = barang.length;
+document.getElementById("tSupplier").innerText = supplier.length;
+document.getElementById("tMasuk").innerText = barangMasuk.length;
+document.getElementById("tKeluar").innerText = barangKeluar.length;
+}
+</script>
 
 </body>
 </html>
