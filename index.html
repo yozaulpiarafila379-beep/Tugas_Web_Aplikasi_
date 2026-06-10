@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistem Gudang Lengkap</title>
+<title>Sistem Gudang</title>
 
 <style>
 body{
@@ -21,32 +21,16 @@ align-items:center;
 background:linear-gradient(135deg,#2563eb,#60a5fa);
 }
 
-.box{
+.login-box{
 background:white;
 padding:25px;
 border-radius:10px;
 width:300px;
 }
 
-/* APP */
-#app{
+/* SISTEM */
+#sistem{
 display:none;
-}
-
-nav{
-background:#1e3a8a;
-color:white;
-padding:10px;
-display:flex;
-gap:10px;
-flex-wrap:wrap;
-}
-
-nav button{
-padding:10px;
-border:none;
-cursor:pointer;
-border-radius:5px;
 }
 
 .page{
@@ -58,98 +42,63 @@ padding:20px;
 display:block;
 }
 
+/* DASHBOARD CARD */
 .card{
 background:white;
 padding:15px;
-border-radius:10px;
 margin:10px 0;
+border-radius:10px;
 box-shadow:0 2px 8px rgba(0,0,0,.1);
 }
 
-input,select{
-padding:8px;
-margin:5px;
-width:200px;
+.card h2{
+margin:0;
+color:#2563eb;
 }
 </style>
+
 </head>
 
 <body>
 
 <!-- LOGIN -->
 <div id="login">
-<div class="box">
-<h3>Login Gudang</h3>
-<input id="user" placeholder="username"><br>
-<input id="pass" type="password" placeholder="password"><br>
+<div class="login-box">
+<h3>Login</h3>
+<input id="user" placeholder="Username"><br><br>
+<input id="pass" type="password" placeholder="Password"><br><br>
 <button onclick="login()">Login</button>
 </div>
 </div>
 
-<!-- APP -->
-<div id="app">
-
-<nav>
-<button onclick="show('dashboard')">Dashboard</button>
-<button onclick="show('barang')">Barang</button>
-<button onclick="show('supplier')">Supplier</button>
-<button onclick="show('masuk')">Masuk</button>
-<button onclick="show('keluar')">Keluar</button>
-<button onclick="logout()">Logout</button>
-</nav>
+<!-- SISTEM -->
+<div id="sistem">
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="page active">
-<h2>Dashboard</h2>
 
-<div class="card">Total Barang: <span id="dbBarang">0</span></div>
-<div class="card">Supplier: <span id="dbSupplier">0</span></div>
-<div class="card">Barang Masuk: <span id="dbMasuk">0</span></div>
-<div class="card">Barang Keluar: <span id="dbKeluar">0</span></div>
+<h2>📊 Dashboard Gudang</h2>
+
+<div class="card">
+<h4>Total Barang</h4>
+<h2 id="dbBarang">0</h2>
 </div>
 
-<!-- BARANG -->
-<div id="barang" class="page">
-<h2>Data Barang</h2>
-
-<input id="bKode" placeholder="Kode">
-<input id="bNama" placeholder="Nama">
-<input id="bStok" type="number" placeholder="Stok">
-<button onclick="addBarang()">Tambah</button>
-
-<div id="listBarang"></div>
+<div class="card">
+<h4>Supplier</h4>
+<h2 id="dbSupplier">0</h2>
 </div>
 
-<!-- SUPPLIER -->
-<div id="supplier" class="page">
-<h2>Supplier</h2>
-
-<input id="sNama" placeholder="Nama Supplier">
-<button onclick="addSupplier()">Tambah</button>
-
-<div id="listSupplier"></div>
+<div class="card">
+<h4>Barang Masuk</h4>
+<h2 id="dbMasuk">0</h2>
 </div>
 
-<!-- MASUK -->
-<div id="masuk" class="page">
-<h2>Barang Masuk</h2>
-
-<input id="mBarang" placeholder="Nama Barang">
-<input id="mJumlah" type="number" placeholder="Jumlah">
-<button onclick="addMasuk()">Tambah</button>
-
-<div id="listMasuk"></div>
+<div class="card">
+<h4>Barang Keluar</h4>
+<h2 id="dbKeluar">0</h2>
 </div>
 
-<!-- KELUAR -->
-<div id="keluar" class="page">
-<h2>Barang Keluar</h2>
-
-<input id="kBarang" placeholder="Nama Barang">
-<input id="kJumlah" type="number" placeholder="Jumlah">
-<button onclick="addKeluar()">Tambah</button>
-
-<div id="listKeluar"></div>
 </div>
 
 </div>
@@ -158,137 +107,36 @@ width:200px;
 
 /* LOGIN */
 function login(){
-let u=document.getElementById("user").value;
-let p=document.getElementById("pass").value;
 
-if(u==="admin" && p==="admin"){
+let user=document.getElementById("user").value;
+let pass=document.getElementById("pass").value;
+
+if(user=="admin" && pass=="admin123"){
+
 document.getElementById("login").style.display="none";
-document.getElementById("app").style.display="block";
-renderAll();
+document.getElementById("sistem").style.display="block";
+
+updateDashboard();
+
 }else{
 alert("Login salah");
 }
+
 }
 
-/* NAV */
-function show(id){
-document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-document.getElementById(id).classList.add("active");
-renderAll();
-}
+/* DASHBOARD UPDATE */
+function updateDashboard(){
 
-/* STORAGE */
 let barang = JSON.parse(localStorage.getItem("barang")) || [];
 let supplier = JSON.parse(localStorage.getItem("supplier")) || [];
-let masuk = JSON.parse(localStorage.getItem("masuk")) || [];
-let keluar = JSON.parse(localStorage.getItem("keluar")) || [];
+let masuk = JSON.parse(localStorage.getItem("barangMasuk")) || [];
+let keluar = JSON.parse(localStorage.getItem("barangKeluar")) || [];
 
-function save(){
-localStorage.setItem("barang",JSON.stringify(barang));
-localStorage.setItem("supplier",JSON.stringify(supplier));
-localStorage.setItem("masuk",JSON.stringify(masuk));
-localStorage.setItem("keluar",JSON.stringify(keluar));
-}
+document.getElementById("dbBarang").innerText = barang.length;
+document.getElementById("dbSupplier").innerText = supplier.length;
+document.getElementById("dbMasuk").innerText = masuk.length;
+document.getElementById("dbKeluar").innerText = keluar.length;
 
-/* DASHBOARD */
-function dashboard(){
-document.getElementById("dbBarang").innerText=barang.length;
-document.getElementById("dbSupplier").innerText=supplier.length;
-document.getElementById("dbMasuk").innerText=masuk.length;
-document.getElementById("dbKeluar").innerText=keluar.length;
-}
-
-/* BARANG */
-function addBarang(){
-barang.push({
-kode:bKode.value,
-nama:bNama.value,
-stok:bStok.value
-});
-save(); renderAll();
-}
-
-function renderBarang(){
-listBarang.innerHTML=barang.map((b,i)=>
-`<div class="card">
-${b.kode} - ${b.nama} - ${b.stok}
-<button onclick="hapusBarang(${i})">Hapus</button>
-</div>`
-).join("");
-}
-
-function hapusBarang(i){
-barang.splice(i,1);
-save(); renderAll();
-}
-
-/* SUPPLIER */
-function addSupplier(){
-supplier.push({nama:sNama.value});
-save(); renderAll();
-}
-
-function renderSupplier(){
-listSupplier.innerHTML=supplier.map((s,i)=>
-`<div class="card">
-${s.nama}
-<button onclick="hapusSupplier(${i})">Hapus</button>
-</div>`
-).join("");
-}
-
-function hapusSupplier(i){
-supplier.splice(i,1);
-save(); renderAll();
-}
-
-/* MASUK */
-function addMasuk(){
-masuk.push({barang:mBarang.value,jumlah:mJumlah.value});
-save(); renderAll();
-}
-
-function renderMasuk(){
-listMasuk.innerHTML=masuk.map((m,i)=>
-`<div class="card">
-${m.barang} - ${m.jumlah}
-<button onclick="hapusMasuk(${i})">Hapus</button>
-</div>`
-).join("");
-}
-
-function hapusMasuk(i){
-masuk.splice(i,1);
-save(); renderAll();
-}
-
-/* KELUAR */
-function addKeluar(){
-keluar.push({barang:kBarang.value,jumlah:kJumlah.value});
-save(); renderAll();
-}
-
-function renderKeluar(){
-listKeluar.innerHTML=keluar.map((k,i)=>
-`<div class="card">
-${k.barang} - ${k.jumlah}
-<button onclick="hapusKeluar(${i})">Hapus</button>
-</div>`
-).join("");
-}
-
-function hapusKeluar(i){
-keluar.splice(i,1);
-save(); renderAll();
-}
-
-/* RENDER SEMUA */
-function renderAll(){
-dashboard();
-renderBarang();
-renderSupplier();
-renderMasuk();
-renderKeluar();
 }
 
 </script>
