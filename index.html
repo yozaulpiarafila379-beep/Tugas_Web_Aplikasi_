@@ -1,619 +1,629 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Pendataan Barang di Gudang</title>
-    <style>
-        :root {
-            --cyan: #22d3ee;
-            --purple: #a855f7;
-            --bg-deep: #020617;
-            --bg-card: rgba(15, 23, 42, 0.70);
-            --border-cyan: rgba(34, 211, 238, 0.4);
-            --text-body: #bae6fd;
-            --text-glow: #e0f2fe;
-            --yellow: #facc15;
-            --pink: #c084fc;
-            --green: #34d399;
-            --orange: #fb923c;
-            --red: #f87171;
-        }
+// ============================================================
+// SISTEM INFORMASI PENDATAAN BARANG DI GUDANG
+// ============================================================
+// Nama 1 : Yoza Ulpia Rafila | NIM : 251410004
+// Nama 2 : Rifqi Prayoga      | NIM : 251410005
+// Kelas  : SI2A
+// ============================================================
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+import 'dart:io';
 
-        body {
-            font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
-            background:
-                radial-gradient(circle at top left, #1e1b4b, transparent 45%),
-                radial-gradient(circle at bottom right, #0f766e, transparent 45%),
-                radial-gradient(circle at 50% 50%, #0a0a1a, transparent 70%),
-                #020617;
-            color: #e0f2fe;
-            min-height: 100vh;
-            line-height: 1.7;
-            scroll-behavior: smooth;
-        }
+// ============================================================
+// 1. CLASS USER - Autentikasi Pengguna
+// ============================================================
+class User {
+  String username;
+  String password;
+  String levelUser;
 
-        /* BACKGROUND GLOW */
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background:
-                linear-gradient(120deg,
-                    rgba(34, 211, 238, 0.10),
-                    rgba(168, 85, 247, 0.10),
-                    rgba(34, 211, 238, 0.05));
-            z-index: -1;
-            pointer-events: none;
-        }
+  User(this.username, this.password, this.levelUser);
 
-        /* SCROLLBAR */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #020617;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #22d3ee, #a855f7);
-            border-radius: 10px;
-        }
+  bool login() {
+    if (username == "admin" && password == "12345") {
+      print("✅ Login berhasil");
+      print("👤 User  : $username");
+      print("🔑 Level : $levelUser");
+      return true;
+    } else {
+      print("❌ Login gagal — periksa username & password");
+      return false;
+    }
+  }
 
-        /* HEADER */
-        .header {
-            background: rgba(2, 6, 23, 0.75);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(34, 211, 238, 0.5);
-            position: relative;
-            overflow: hidden;
-        }
-        .header::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #22d3ee, #a855f7, transparent);
-            animation: headerShine 3s ease-in-out infinite;
-        }
-        @keyframes headerShine {
-            0%,
-            100% {
-                opacity: 0.3;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-        .header h1 {
-            background: linear-gradient(90deg, #22d3ee, #a855f7, #22d3ee);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 15px rgba(34, 211, 238, 0.7);
-            animation: titleShine 4s ease-in-out infinite;
-        }
-        @keyframes titleShine {
-            0%,
-            100% {
-                background-position: 0% center;
-            }
-            50% {
-                background-position: 200% center;
-            }
-        }
-        .identitas p {
-            color: #67e8f9;
-            text-shadow: 0 0 10px #22d3ee;
-            letter-spacing: 0.5px;
-        }
-        .identitas h3 {
-            color: #a855f7;
-            text-shadow: 0 0 10px #a855f7;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-        hr {
-            background: linear-gradient(90deg, #22d3ee, #a855f7) !important;
-        }
+  void tampilkanInfo() {
+    print("👤 Username: $username");
+    print("🔑 Level   : $levelUser");
+  }
+}
 
-        /* MAIN CONTAINER */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 10px;
-        }
+// ============================================================
+// 2. CLASS KATEGORI - Pengelompokan Barang
+// ============================================================
+class Kategori {
+  String idKategori;
+  String namaKategori;
 
-        /* BOX SECTION */
-        .section {
-            margin: 20px 10px;
-            padding: 22px 24px;
-            border-radius: 18px;
-            background: rgba(15, 23, 42, 0.70);
-            border: 1px solid rgba(34, 211, 238, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .section::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.6), transparent);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-        .section:hover {
-            transform: translateY(-6px);
-            border-color: #a855f7;
-            box-shadow: 0 0 35px rgba(168, 85, 247, 0.5), 0 0 60px rgba(34, 211, 238, 0.2);
-        }
-        .section:hover::before {
-            opacity: 1;
-        }
-        .section h2 {
-            color: #22d3ee !important;
-            text-shadow: 0 0 12px #22d3ee;
-            font-size: 1.4em;
-            margin-bottom: 6px;
-            letter-spacing: 1px;
-        }
-        .section h2::after {
-            content: "";
-            display: block;
-            width: 100%;
-            height: 2px;
-            margin-top: 8px;
-            background: linear-gradient(90deg, #22d3ee, #a855f7);
-            border-radius: 2px;
-        }
-        .section h3 {
-            color: #a855f7;
-            margin-top: 14px;
-            margin-bottom: 6px;
-            text-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
-        }
-        .section p,
-        .section li,
-        .nama {
-            color: #bae6fd;
-            text-shadow: 0 0 6px rgba(34, 211, 238, 0.5);
-        }
-        .section ul {
-            padding-left: 22px;
-        }
-        .section ul li {
-            margin-bottom: 4px;
-        }
-        .section b {
-            color: #facc15;
-            text-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
-        }
+  Kategori(this.idKategori, this.namaKategori);
 
-        /* CODE BOX */
-        .code-box {
-            background: #020617;
-            padding: 16px 18px;
-            border-radius: 12px;
-            border: 1px solid #22d3ee;
-            box-shadow: inset 0 0 20px rgba(34, 211, 238, 0.15);
-            overflow: auto;
-            margin-top: 10px;
-            position: relative;
-        }
-        .code-box pre {
-            margin: 0;
-            white-space: pre-wrap;
-            word-break: break-word;
-            font-size: 0.88em;
-            line-height: 1.6;
-        }
-        .code-box code {
-            color: #e0f2fe;
-        }
-        .keyword {
-            color: #c084fc;
-            font-weight: bold;
-        }
-        .type {
-            color: #22d3ee;
-        }
-        .string {
-            color: #facc15;
-        }
-        .comment {
-            color: #94a3b8;
-            font-style: italic;
-        }
-        .number {
-            color: #fb923c;
-        }
+  void tampilkanKategori() {
+    print("🏷️ $idKategori - $namaKategori");
+  }
+}
 
-        /* BUTTON */
-        .button {
-            margin-top: 12px;
-            padding: 10px 20px;
-            background: linear-gradient(90deg, #22d3ee, #a855f7);
-            border: none;
-            cursor: pointer;
-            color: #fff;
-            border-radius: 10px;
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
-            box-shadow: 0 0 18px rgba(168, 85, 247, 0.5);
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-        .button:hover {
-            transform: scale(1.06);
-            box-shadow: 0 0 30px #22d3ee, 0 0 50px rgba(168, 85, 247, 0.6);
-            background: linear-gradient(90deg, #a855f7, #22d3ee);
-        }
-        .button:active {
-            transform: scale(0.96);
-        }
+// ============================================================
+// 3. CLASS SUPPLIER - Data Pemasok
+// ============================================================
+class Supplier {
+  String kodeSupplier;
+  String namaSupplier;
+  String alamat;
+  String telepon;
+  String email;
 
-        /* IFRAME */
-        iframe {
-            margin-top: 10px;
-            max-width: 100%;
-            height: 320px;
-            display: none;
-            border-radius: 10px;
-            border: 1px solid rgba(34, 211, 238, 0.5);
-            background: #020617;
-        }
+  Supplier(this.kodeSupplier, this.namaSupplier, this.alamat,
+      this.telepon, this.email);
 
-        /* ============ CLASS DIAGRAM STYLES ============ */
-        .diagram-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            padding: 20px 0;
-        }
-        .uml-class {
-            background: rgba(2, 6, 23, 0.85);
-            border: 2px solid #22d3ee;
-            border-radius: 12px;
-            min-width: 220px;
-            max-width: 280px;
-            flex: 1 1 220px;
-            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
-            transition: all 0.3s ease;
-            overflow: hidden;
-            position: relative;
-        }
-        .uml-class:hover {
-            border-color: #a855f7;
-            box-shadow: 0 0 35px rgba(168, 85, 247, 0.6);
-            transform: translateY(-5px);
-            z-index: 2;
-        }
-        .uml-class .class-name {
-            background: linear-gradient(90deg, #1e3a5f, #1a1a3e);
-            padding: 10px 14px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.05em;
-            color: #facc15;
-            border-bottom: 2px solid #22d3ee;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(250, 204, 21, 0.6);
-        }
-        .uml-class .class-attrs {
-            padding: 10px 14px;
-            border-bottom: 1px dashed rgba(34, 211, 238, 0.4);
-            font-size: 0.82em;
-            color: #bae6fd;
-            line-height: 1.7;
-        }
-        .uml-class .class-attrs span {
-            display: block;
-        }
-        .uml-class .class-attrs .attr-type {
-            color: #22d3ee;
-            font-size: 0.85em;
-        }
-        .uml-class .class-methods {
-            padding: 10px 14px;
-            font-size: 0.82em;
-            color: #c084fc;
-            line-height: 1.7;
-        }
-        .uml-class .class-methods span {
-            display: block;
-        }
-        .uml-class .class-methods .method-return {
-            color: #facc15;
-            font-size: 0.85em;
-        }
-        /* diagram legend */
-        .diagram-legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            justify-content: center;
-            padding: 12px;
-            font-size: 0.8em;
-            color: #94a3b8;
-        }
-        .diagram-legend span {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .legend-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-        .legend-dot.cyan {
-            background: #22d3ee;
-            box-shadow: 0 0 8px #22d3ee;
-        }
-        .legend-dot.purple {
-            background: #a855f7;
-            box-shadow: 0 0 8px #a855f7;
-        }
-        .legend-dot.yellow {
-            background: #facc15;
-            box-shadow: 0 0 8px #facc15;
-        }
-        .legend-dot.green {
-            background: #34d399;
-            box-shadow: 0 0 8px #34d399;
-        }
-        .relation-arrow {
-            text-align: center;
-            color: #94a3b8;
-            font-size: 0.75em;
-            padding: 4px 0;
-        }
+  void tampilkanSupplier() {
+    print("🚚 SUPPLIER");
+    print("   Kode   : $kodeSupplier");
+    print("   Nama   : $namaSupplier");
+    print("   Alamat : $alamat");
+    print("   Telp   : $telepon");
+    print("   Email  : $email");
+  }
+}
 
-        /* FOOTER */
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #38bdf8;
-            font-size: 14px;
-            text-shadow: 0 0 10px #38bdf8;
-            border-top: 1px solid rgba(56, 189, 248, 0.3);
-            margin-top: 30px;
-            letter-spacing: 1px;
-        }
+// ============================================================
+// 4. CLASS BARANG - Data Barang
+// ============================================================
+class Barang {
+  String kodeBarang;
+  String namaBarang;
+  String kategori;
+  String merk;
+  int jumlahStok;
+  String satuan;
+  String kondisi;
 
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .section {
-                padding: 16px;
-                margin: 14px 4px;
-            }
-            .section h2 {
-                font-size: 1.15em;
-            }
-            .uml-class {
-                min-width: 150px;
-                flex: 1 1 150px;
-                font-size: 0.75em;
-            }
-            .code-box pre {
-                font-size: 0.72em;
-            }
-            iframe {
-                height: 240px;
-            }
-        }
-    </style>
-    <script>
-        let activeElement = null;
+  Barang(this.kodeBarang, this.namaBarang, this.kategori, this.merk,
+      this.jumlahStok, this.satuan, this.kondisi);
 
-        function showContent(id) {
-            if (activeElement && activeElement !== document.getElementById(id)) {
-                activeElement.style.display = "none";
-            }
-            const el = document.getElementById(id);
-            if (activeElement === el) {
-                el.style.display = "none";
-                activeElement = null;
-                return;
-            }
-            el.style.display = "block";
-            activeElement = el;
-        }
+  void tampilkanBarang() {
+    print("📦 BARANG");
+    print("   Kode   : $kodeBarang");
+    print("   Nama   : $namaBarang");
+    print("   Kategori: $kategori");
+    print("   Merk   : $merk");
+    print("   Stok   : $jumlahStok $satuan");
+    print("   Kondisi: $kondisi");
+  }
 
-        function runDart(id, url) {
-            if (activeElement && activeElement !== document.getElementById(id)) {
-                activeElement.style.display = "none";
-            }
-            const frame = document.getElementById(id);
-            if (activeElement === frame) {
-                frame.style.display = "none";
-                frame.src = "";
-                activeElement = null;
-                return;
-            }
-            frame.src = url;
-            frame.style.display = "block";
-            activeElement = frame;
-        }
+  void tambahStok(int jumlah) {
+    if (jumlah > 0) {
+      jumlahStok += jumlah;
+      print("✅ Stok $namaBarang bertambah $jumlah $satuan. Total: $jumlahStok");
+    } else {
+      print("❌ Jumlah harus lebih dari 0");
+    }
+  }
 
-        // Fungsi untuk scroll ke section diagram
-        function scrollToDiagram() {
-            const el = document.getElementById('section-diagram');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }
-    </script>
-</head>
+  void kurangiStok(int jumlah) {
+    if (jumlah > 0 && jumlah <= jumlahStok) {
+      jumlahStok -= jumlah;
+      print("✅ Stok $namaBarang berkurang $jumlah $satuan. Total: $jumlahStok");
+    } else if (jumlah > jumlahStok) {
+      print("❌ Stok tidak mencukupi! Stok tersedia: $jumlahStok $satuan");
+    } else {
+      print("❌ Jumlah harus lebih dari 0");
+    }
+  }
 
-<body>
-    <div class="container">
+  bool cekStokMenipis(int batas) {
+    return jumlahStok <= batas;
+  }
+}
 
-        <!-- ==================== HEADER ==================== -->
-        <div class="header" style="padding: 30px 20px; text-align:center;">
-            <h1 style="font-size: clamp(1.6em, 5vw, 2.6em); margin: 0; line-height: 1.3; font-weight: bold;">
-                Sistem</h1>
-            <h1 style="font-size: clamp(1.6em, 5vw, 2.6em); margin: 5px 0; line-height: 1.3; font-weight: bold;">
-                Pendataan Barang</h1>
-            <h1 style="font-size: clamp(1.6em, 5vw, 2.6em); margin: 0; line-height: 1.3; font-weight: bold;">
-                di Gudang</h1>
-            <hr style="width: 60%; max-width: 300px; margin: 20px auto; border: none; height: 2px; background-color: #38bdf8;">
-            <div class="identitas">
-                <h3>✨ KELOMPOK ✨</h3>
-                <p>Yoza Ulpia Rafila — 251410004 — SI2A</p>
-                <p>Rifqi Prayoga — 251410005 — SI2A</p>
-            </div>
-        </div>
+// ============================================================
+// 5. CLASS BARANG MASUK - Transaksi Masuk
+// ============================================================
+class BarangMasuk {
+  String idBarangMasuk;
+  String tanggalMasuk;
+  String kodeBarang;
+  String namaBarang;
+  int jumlahMasuk;
+  Barang? barang; // Referensi ke objek Barang
 
-        <!-- ==================== NAVIGASI CEPAT ==================== -->
-        <div class="section" style="text-align:center;">
-            <h2>📑 Daftar Isi</h2>
-            <p style="color:#94a3b8; font-size:0.85em;">
-                1. Class User &nbsp;|&nbsp; 2. Class Barang &nbsp;|&nbsp; 3. Class Kategori &nbsp;|&nbsp;
-                4. Class Supplier &nbsp;|&nbsp; 5. Class BarangMasuk &nbsp;|&nbsp; 6. Class BarangKeluar<br>
-                7. Class StokBarang &nbsp;|&nbsp; 8. Class Laporan &nbsp;|&nbsp; 9. Class RiwayatBarang &nbsp;|&nbsp;
-                10. Class Gudang &nbsp;|&nbsp; 11. Class Peminjaman<br>
-                12. Class Notifikasi &nbsp;|&nbsp; 13. Class Dashboard &nbsp;|&nbsp;
-                <button class="button" style="font-size:0.8em; padding:6px 12px; margin:4px;"
-            onclick="scrollToDiagram()">📊 Diagram Class</button>
-            &nbsp;|&nbsp; 15. Penggunaan Aplikasi &nbsp;|&nbsp; 16. Kesimpulan &nbsp;|&nbsp; 17. Penutup
-        </p>
-    </div>
+  BarangMasuk(this.idBarangMasuk, this.tanggalMasuk, this.kodeBarang,
+      this.namaBarang, this.jumlahMasuk);
 
-    <!-- ==================== 1. CLASS USER ==================== -->
-    <div class="section">
-        <h2>1. Class User (Login Sistem)</h2>
-        <ul>
-            <li><b>Class User</b> merepresentasikan data pengguna yang memiliki hak akses terhadap sistem informasi
-                pendataan barang di gudang.</li>
-            <li>Atribut: <b>username</b>, <b>password</b>, dan <b>levelUser</b> — digunakan sebagai informasi autentikasi.
-            </li>
-            <li><b>Constructor User()</b> — melakukan inisialisasi data ketika objek User dibuat.</li>
-            <li><b>Method login()</b> — melakukan validasi username dan password sebelum mengakses sistem.</li>
-            <li><b>Fungsi main()</b> — membuat objek User dan menjalankan proses autentikasi.</li>
-        </ul>
-        <h3>Input / Proses / Output:</h3>
-        <ul>
-            <li>Input: Username, password, level akses pengguna.</li>
-            <li>Proses: Membuat objek User → menyimpan data → menjalankan login() → validasi data.</li>
-            <li>Output: Informasi login berhasil / gagal + data pengguna yang masuk.</li>
-        </ul>
-        <h3>Kode Dart:</h3>
-        <div class="code-box">
-            <pre><code><span class="comment">// ==========================================</span>
-                <span class="comment">// Nama 1 : Yoza Ulpia Rafila | NIM : 251410004</span>
-                <span class="comment">// Nama 2 : Rifqi Prayoga      | NIM : 251410005</span>
-                <span class="comment">// Kelas  : SI2A | Sistem Informasi Pendataan Barang Gudang</span>
-                <span class="comment">// ==========================================</span>
-                <span class="comment">// Class User: Mengelola autentikasi pengguna sistem</span>
-                <span class="keyword">class</span> <span class="type">User</span> {
-                <span class="comment">// --- Properti / Atribut ---</span>
-                <span class="type">String</span> username;   <span class="comment">// Nama pengguna untuk login</span>
-                <span class="type">String</span> password;   <span class="comment">// Kata sandi untuk autentikasi</span>
-                <span class="type">String</span> levelUser;  <span class="comment">// Level akses: Admin Gudang, Staff, dll.</span>
+  void setBarang(Barang b) {
+    barang = b;
+  }
 
-                <span class="comment">// --- Constructor: Inisialisasi data pengguna ---</span>
-                <span class="type">User</span>(<span class="keyword">this</span>.username, <span class="keyword">this</span>.password, <span class="keyword">this</span>.levelUser);
+  void prosesMasuk() {
+    if (barang != null) {
+      barang!.tambahStok(jumlahMasuk);
+      print("📥 Barang Masuk: $namaBarang ($kodeBarang)");
+      print("   Tanggal : $tanggalMasuk");
+      print("   Jumlah  : $jumlahMasuk");
+      print("   Status  : ✅ Berhasil");
+    } else {
+      print("❌ Barang tidak ditemukan!");
+    }
+  }
+}
 
-                <span class="comment">// --- Method login(): Validasi kredensial pengguna ---</span>
-                <span class="keyword">void</span> <span class="type">login</span>() {
-                <span class="keyword">if</span> (username == <span class="string">"admin"</span> && password == <span class="string">"12345"</span>) {
-                <span class="type">print</span>(<span class="string">"✅ Login berhasil"</span>);
-                <span class="type">print</span>(<span class="string">"👤 User  : $username"</span>);
-                <span class="type">print</span>(<span class="string">"🔑 Level : $levelUser"</span>);
-                } <span class="keyword">else</span> {
-                <span class="type">print</span>(<span class="string">"❌ Login gagal — periksa username & password"</span>);
-                }
-                }
-                }
+// ============================================================
+// 6. CLASS BARANG KELUAR - Transaksi Keluar
+// ============================================================
+class BarangKeluar {
+  String kodeBarang;
+  int jumlahKeluar;
+  String tujuan;
+  Barang? barang;
 
-                <span class="comment">// --- Fungsi main(): Entry point program ---</span>
-                <span class="keyword">void</span> <span class="type">main</span>() {
-                <span class="comment">// Membuat objek User dengan data login</span>
-                <span class="keyword">var</span> user1 = <span class="type">User</span>(<span class="string">"admin"</span>, <span class="string">"12345"</span>, <span class="string">"Admin Gudang"</span>);
-                user1.login(); <span class="comment">// Menjalankan proses autentikasi</span>
-            }</code></pre>
-        </div>
-        <button class="button" onclick="runDart('dart1','https://dartpad.dev/embed-inline.html?id=00afd86673c22e4df79467b1f4be113a&split=60&run=true')">▶ Tampilkan DartPad 1</button>
-        <iframe id="dart1" style="display:none; width:100%; height:300px;"></iframe>
-    </div>
+  BarangKeluar(this.kodeBarang, this.jumlahKeluar, this.tujuan);
 
-<!-- ==================== 2. CLASS BARANG ==================== -->
-    <div class="section">
-        <h2>2. Class Barang (Data Barang)</h2>
-        <ul>
-            <li><b>Class Barang</b> merepresentasikan data barang dalam sistem informasi gudang.</li>
-            <li>Atribut: <b>kodeBarang</b>, <b>namaBarang</b>, <b>kategori</b>, <b>merk</b>, <b>jumlahStok</b>,
-                <b>satuan</b>, <b>kondisi</b>.</li>
-            <li><b>Constructor Barang()</b> — inisialisasi data barang.</li>
-            <li><b>Method tampilkanBarang()</b> — menampilkan detail barang.</li>
-            <li><b>Method tambahStok()</b> — menambah stok (barang masuk).</li>
-            <li><b>Method kurangiStok()</b> — mengurangi stok (barang keluar).</li>
-        </ul>
-        <h3>Kode Dart:</h3>
-        <div class="code-box">
-            <pre><code><span class="comment">// Class Barang: Merepresentasikan setiap item di gudang</span>
-                <span class="keyword">class</span> <span class="type">Barang</span> {
-                <span class="comment">// --- Properti ---</span>
-                <span class="type">String</span> kodeBarang;  <span class="comment">// Kode unik identifikasi barang</span>
-                <span class="type">String</span> namaBarang;  <span class="comment">// Nama lengkap barang</span>
-                <span class="type">String</span> kategori;    <span class="comment">// Kategori / jenis barang</span>
-                <span class="type">String</span> merk;        <span class="comment">// Merek barang</span>
-                <span class="type">int</span> jumlahStok;      <span class="comment">// Jumlah stok tersedia</span>
-                <span class="type">String</span> satuan;      <span class="comment">// Satuan: Unit, Box, Pcs, dll.</span>
-                <span class="type">String</span> kondisi;     <span class="comment">// Kondisi: Baik, Rusak, Expired</span>
+  void setBarang(Barang b) {
+    barang = b;
+  }
 
-                <span class="comment">// --- Constructor ---</span>
-                <span class="type">Barang</span>(<span class="keyword">this</span>.kodeBarang, <span class="keyword">this</span>.namaBarang, <span class="keyword">this</span>.kategori,
-                <span class="keyword">this</span>.merk, <span class="keyword">this</span>.jumlahStok, <span class="keyword">this</span>.satuan, <span class="keyword">this</span>.kondisi);
+  void prosesKeluar() {
+    if (barang != null) {
+      if (barang!.jumlahStok >= jumlahKeluar) {
+        barang!.kurangiStok(jumlahKeluar);
+        print("📤 Barang Keluar: ${barang!.namaBarang} ($kodeBarang)");
+        print("   Tujuan  : $tujuan");
+        print("   Jumlah  : $jumlahKeluar");
+        print("   Status  : ✅ Berhasil");
+      } else {
+        print("❌ Gagal! Stok tidak mencukupi.");
+      }
+    } else {
+      print("❌ Barang tidak ditemukan!");
+    }
+  }
+}
 
-                <span class="comment">// --- Method: Menampilkan detail barang ---</span>
-                <span class="keyword">void</span> <span class="type">tampilkanBarang</span>() { <span class="comment">/* ... */</span> }
-                <span class="comment">// --- Method: Menambah stok ---</span>
-                <span class="keyword">void</span> <span class="type">tambahStok</span>(<span class="type">int</span> jumlah) { jumlahStok += jumlah; }
-                <span class="comment">// --- Method: Mengurangi stok ---</span>
-                <span class="keyword">void</span> <span class="type">kurangiStok</span>(<span class="type">int</span> jumlah) { jumlahStok -= jumlah; }
-            }</code></pre>
-        </div>
-        <button class="button" onclick="runDart('dart2','https://dartpad.dev/embed-inline.html?id=715ed6aadf60f9d87ba5a111f199b260&split=60&run=true')">▶ Tampilkan DartPad 2</button>
-        <iframe id="dart2" style="display:none; width:100%; height:300px;"></iframe>
-    </div>
+// ============================================================
+// 7. CLASS STOK BARANG - Perhitungan Stok
+// ============================================================
+class StokBarang {
+  int stokAwal;
+  int barangMasuk;
+  int barangKeluar;
 
-    <!-- ==================== 3. CLASS KATEGORI ==================== -->
-    <div class="section">
-        <h2>3. Class Kategori (Data Kategori Barang)</h2>
-        <ul>
-            <li><b>Class Kategori</b> mengelompokkan barang berdasarkan jenis/kategori.</li>
-            <li>Atribut: <b>idKategori</b>, <b>namaKategori</b>.</li>
-            <li><b>Method tampilkanKategori()</b> — menampilkan daftar kategori.</li>
-        </ul>
-        <div class="code-box">
-            <pre><code><span class="comment">// Class Kategori: Pengelompokan barang agar lebih terstruktur</span>
-                <span class="keyword">class</span> <span class="type">Kategori</span> {
-                <span class="type">String</span> idKategori;   <span class="comment">// ID unik kategori</span>
-                <span class="type">String</span> namaKategori; <span class="comment">// Nama: Elektronik, ATK, dll.</span>
-                <span class="type">Kategori</span>(<span class="keyword">this</span>.idKategori, <span class="keyword">this</span>.namaKategori);
-                <span class="keyword">void</span> <span class="type">tampilkanKategori</span>() { <span class="comment">/* menampilkan data kategori */</span> }
-            }</code></pre>
-        </div>
-        <button class="button" onclick="runDart('dart3','https://dartpad.dev/embed-inline.html?id=1bfaab26e1c7aacc40186fdb3213e7d9&split=60&run=true')">▶ Tampilkan DartPad 3</button>
-        <iframe id="dart3" style="display:none; width:100%; height:300px;"></iframe>
-    </div>
+  StokBarang(this.stokAwal, this.barangMasuk, this.barangKeluar);
 
+  int hitungStokAkhir() {
+    return stokAwal + barangMasuk - barangKeluar;
+  }
+
+  String getStatusStok(int batasKritis) {
+    int stokAkhir = hitungStokAkhir();
+    if (stokAkhir <= 0) {
+      return "🔴 HABIS";
+    } else if (stokAkhir <= batasKritis) {
+      return "🟡 MENIPIS";
+    } else {
+      return "🟢 AMAN";
+    }
+  }
+
+  void tampilkanStok(int batasKritis) {
+    int stokAkhir = hitungStokAkhir();
+    print("📊 PERHITUNGAN STOK");
+    print("   Stok Awal    : $stokAwal");
+    print("   Barang Masuk : +$barangMasuk");
+    print("   Barang Keluar: -$barangKeluar");
+    print("   ───────────────────");
+    print("   Stok Akhir   : $stokAkhir");
+    print("   Status       : ${getStatusStok(batasKritis)}");
+  }
+}
+
+// ============================================================
+// 8. CLASS LAPORAN - Rekapitulasi Data
+// ============================================================
+class Laporan {
+  String jenisLaporan;
+  String periodeLaporan;
+  List<Barang> daftarBarang;
+  List<BarangMasuk> daftarMasuk;
+  List<BarangKeluar> daftarKeluar;
+
+  Laporan(this.jenisLaporan, this.periodeLaporan,
+      {this.daftarBarang = const [], this.daftarMasuk = const [], this.daftarKeluar = const []});
+
+  void cetakLaporan() {
+    print("╔════════════════════════════════════════════╗");
+    print("║           📄 LAPORAN GUDANG              ║");
+    print("╠════════════════════════════════════════════╣");
+    print("║ Jenis   : $jenisLaporan");
+    print("║ Periode : $periodeLaporan");
+    print("║────────────────────────────────────────────║");
+
+    print("║ 📦 DATA BARANG (${daftarBarang.length} item)");
+    for (var b in daftarBarang) {
+      print("║   • ${b.kodeBarang} - ${b.namaBarang} (${b.jumlahStok} ${b.satuan})");
+    }
+
+    print("║────────────────────────────────────────────║");
+    print("║ 📥 BARANG MASUK (${daftarMasuk.length} transaksi)");
+    for (var m in daftarMasuk) {
+      print("║   • $m.tanggalMasuk: ${m.namaBarang} +${m.jumlahMasuk}");
+    }
+
+    print("║────────────────────────────────────────────║");
+    print("║ 📤 BARANG KELUAR (${daftarKeluar.length} transaksi)");
+    for (var k in daftarKeluar) {
+      print("║   • ${k.tujuan}: ${k.kodeBarang} -${k.jumlahKeluar}");
+    }
+    print("╚════════════════════════════════════════════╝");
+  }
+}
+
+// ============================================================
+// 9. CLASS RIWAYAT BARANG - Histori Aktivitas
+// ============================================================
+class RiwayatBarang {
+  String idRiwayat;
+  String tanggal;
+  String kodeBarang;
+  String namaBarang;
+  String jenisAktivitas;
+  int jumlah;
+  String keterangan;
+
+  RiwayatBarang(this.idRiwayat, this.tanggal, this.kodeBarang,
+      this.namaBarang, this.jenisAktivitas, this.jumlah,
+      {this.keterangan = ""});
+
+  void tampilkanRiwayat() {
+    print("📜 [$idRiwayat] $tanggal");
+    print("   Barang : $namaBarang ($kodeBarang)");
+    print("   Aktivitas: $jenisAktivitas");
+    print("   Jumlah : $jumlah");
+    if (keterangan.isNotEmpty) print("   Catatan: $keterangan");
+    print("   ──────────────────────");
+  }
+}
+
+// ============================================================
+// 10. CLASS GUDANG - Manajemen Lokasi & Kapasitas
+// ============================================================
+class Gudang {
+  String kodeGudang;
+  String namaGudang;
+  String lokasi;
+  double luas;
+  int kapasitas;
+  int jumlahBarangSaatIni;
+  List<Barang> daftarBarang;
+
+  Gudang(this.kodeGudang, this.namaGudang, this.lokasi, this.luas,
+      this.kapasitas, this.jumlahBarangSaatIni,
+      {this.daftarBarang = const []});
+
+  void tampilkanGudang() {
+    print("🏭 GUDANG");
+    print("   Kode      : $kodeGudang");
+    print("   Nama      : $namaGudang");
+    print("   Lokasi    : $lokasi");
+    print("   Luas      : ${luas.toStringAsFixed(1)} m²");
+    print("   Kapasitas : $kapasitas item");
+    print("   Terisi    : $jumlahBarangSaatIni item");
+  }
+
+  void cekKapasitas() {
+    double persentase = (jumlahBarangSaatIni / kapasitas) * 100;
+    print("📊 Kapasitas terpakai: ${persentase.toStringAsFixed(1)}%");
+    if (jumlahBarangSaatIni >= kapasitas) {
+      print("⚠️ Status: GUDANG PENUH!");
+    } else if (persentase >= 80) {
+      print("🟡 Status: Hampir penuh");
+    } else {
+      print("🟢 Status: Kapasitas aman");
+    }
+  }
+
+  bool tambahBarangKeGudang(int jumlah) {
+    if (jumlahBarangSaatIni + jumlah > kapasitas) {
+      print("❌ Gagal! Melebihi kapasitas gudang.");
+      return false;
+    } else {
+      jumlahBarangSaatIni += jumlah;
+      print("✅ $jumlah item ditambahkan ke gudang. Total: $jumlahBarangSaatIni");
+      return true;
+    }
+  }
+
+  void tampilkanDaftarBarang() {
+    print("📦 DAFTAR BARANG DI GUDANG ($kodeGudang)");
+    if (daftarBarang.isEmpty) {
+      print("   (Belum ada barang)");
+      return;
+    }
+    for (var b in daftarBarang) {
+      print("   • ${b.kodeBarang} - ${b.namaBarang} (${b.jumlahStok} ${b.satuan})");
+    }
+  }
+}
+
+// ============================================================
+// 11. CLASS PEMINJAMAN - Peminjaman Barang
+// ============================================================
+class Peminjaman {
+  String idPinjam;
+  String tanggalPinjam;
+  String tanggalKembali;
+  String kodeBarang;
+  String namaPeminjam;
+  int jumlahPinjam;
+  String status;
+  Barang? barang;
+
+  Peminjaman(this.idPinjam, this.tanggalPinjam, this.tanggalKembali,
+      this.kodeBarang, this.namaPeminjam, this.jumlahPinjam,
+      {this.status = "Aktif"});
+
+  void setBarang(Barang b) {
+    barang = b;
+  }
+
+  void catatPeminjaman() {
+    if (barang != null && barang!.jumlahStok >= jumlahPinjam) {
+      barang!.kurangiStok(jumlahPinjam);
+      status = "Aktif";
+      print("📋 PEMINJAMAN BARU DICATAT");
+      print("   ID        : $idPinjam");
+      print("   Peminjam  : $namaPeminjam");
+      print("   Barang    : $kodeBarang - ${barang!.namaBarang}");
+      print("   Jumlah    : $jumlahPinjam");
+      print("   Tgl Pinjam: $tanggalPinjam");
+      print("   Tgl Kembali: $tanggalKembali");
+      print("   Status    : $status");
+    } else if (barang != null && barang!.jumlahStok < jumlahPinjam) {
+      print("❌ Gagal! Stok ${barang!.namaBarang} tidak mencukupi.");
+    } else {
+      print("❌ Barang tidak ditemukan!");
+    }
+  }
+
+  void kembalikan() {
+    if (status == "Aktif" || status == "Terlambat") {
+      status = "Selesai";
+      if (barang != null) {
+        barang!.tambahStok(jumlahPinjam);
+      }
+      print("✅ Barang telah dikembalikan. Status: $status");
+    } else {
+      print("⚠️ Peminjaman ini sudah selesai.");
+    }
+  }
+
+  void cekStatus() {
+    print("🔍 Status peminjaman [$idPinjam]: $status");
+    if (status == "Terlambat") {
+      print("⚠️ PERINGATAN: Pengembalian terlambat!");
+    } else if (status == "Selesai") {
+      print("✅ Peminjaman telah selesai.");
+    } else {
+      print("⏳ Peminjaman masih aktif.");
+    }
+  }
+}
+
+// ============================================================
+// 12. CLASS NOTIFIKASI - Peringatan Stok
+// ============================================================
+class Notifikasi {
+  String idNotif;
+  String pesan;
+  String tanggal;
+  String jenis;
+  bool statusDibaca;
+
+  Notifikasi(this.idNotif, this.pesan, this.tanggal, this.jenis,
+      {this.statusDibaca = false});
+
+  void kirimNotifikasi() {
+    String icon = jenis == "Bahaya" ? "🔴" :
+        jenis == "Peringatan" ? "🟡" : "🔵";
+    print("$icon NOTIFIKASI [$jenis]: $pesan");
+    print("   📅 $tanggal | ID: $idNotif");
+  }
+
+  void tampilkanNotifikasi() {
+    print("📬 Detail Notifikasi");
+    print("   ID      : $idNotif");
+    print("   Pesan   : $pesan");
+    print("   Tanggal : $tanggal");
+    print("   Jenis   : $jenis");
+    print("   Dibaca  : ${statusDibaca ? '✅ Sudah' : '❌ Belum'}");
+  }
+
+  void tandaiDibaca() {
+    statusDibaca = true;
+    print("✅ Notifikasi [$idNotif] ditandai sudah dibaca.");
+  }
+}
+
+// ============================================================
+// 13. CLASS DASHBOARD - Ringkasan Sistem
+// ============================================================
+class Dashboard {
+  int totalBarang;
+  int totalBarangMasuk;
+  int totalBarangKeluar;
+  int stokMenipis;
+  int notifikasiAktif;
+  List<Barang> daftarBarang;
+  List<Notifikasi> daftarNotifikasi;
+
+  Dashboard(this.totalBarang, this.totalBarangMasuk, this.totalBarangKeluar,
+      this.stokMenipis, this.notifikasiAktif,
+      {this.daftarBarang = const [], this.daftarNotifikasi = const []});
+
+  void tampilkanRingkasan() {
+    print("╔════════════════════════════════════════════╗");
+    print("║         📊 DASHBOARD GUDANG              ║");
+    print("╠════════════════════════════════════════════╣");
+    print("║ Total Jenis Barang : ${totalBarang.toString().padLeft(6)}  ║");
+    print("║ Barang Masuk       : ${totalBarangMasuk.toString().padLeft(6)}  ║");
+    print("║ Barang Keluar      : ${totalBarangKeluar.toString().padLeft(6)}  ║");
+    print("║ Stok Menipis       : ${stokMenipis.toString().padLeft(6)}  ║");
+    print("║ Notifikasi Aktif   : ${notifikasiAktif.toString().padLeft(6)}  ║");
+    print("╚════════════════════════════════════════════╝");
+  }
+
+  void cekAlert() {
+    bool adaAlert = false;
+    if (stokMenipis > 0) {
+      print("⚠️ ALERT: Ada $stokMenipis barang dengan stok menipis!");
+      adaAlert = true;
+    }
+    if (notifikasiAktif > 0) {
+      print("📬 Ada $notifikasiAktif notifikasi belum dibaca.");
+      adaAlert = true;
+    }
+    if (!adaAlert) {
+      print("✅ Semua aman, tidak ada alert.");
+    }
+  }
+
+  void tampilkanNotifikasiTerbaru() {
+    print("📬 NOTIFIKASI TERBARU");
+    if (daftarNotifikasi.isEmpty) {
+      print("   (Tidak ada notifikasi)");
+      return;
+    }
+    for (var n in daftarNotifikasi) {
+      if (!n.statusDibaca) {
+        print("   • ${n.jenis}: ${n.pesan.substring(0, n.pesan.length > 40 ? 40 : n.pesan.length)}...");
+      }
+    }
+  }
+}
+
+// ============================================================
+// MAIN PROGRAM - Menjalankan Seluruh Sistem
+// ============================================================
+void main() {
+  print("╔═══════════════════════════════════════════════════════╗");
+  print("║     SISTEM INFORMASI PENDATAAN BARANG DI GUDANG     ║");
+  print("║         SI2A - 2026 - Dart OOP                      ║");
+  print("╚═══════════════════════════════════════════════════════╝\n");
+
+  // ============================================================
+  // DEMO 1: LOGIN USER
+  // ============================================================
+  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  print("1️⃣  DEMO LOGIN");
+  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+  var user1 = User("admin", "12345", "Admin Gudang");
+  bool loginBerhasil = user1.login();
+  print("");
+
+  // ============================================================
+  // DEMO 2: DATA MASTER (KATEGORI & SUPPLIER)
+  // ============================================================
+  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  print("2️⃣  DATA MASTER");
+  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+  // Kategori
+  var kategori1 = Kategori("KTG-01", "Elektronik");
+  var kategori2 = Kategori("KTG-02", "Perkantoran");
+  var kategori3 = Kategori("KTG-03", "Peralatan Rumah Tangga");
+
+  print("🏷️ DAFTAR KATEGORI");
+  kategori1.tampilkanKategori();
+  kategori2.tampilkanKategori();
+  kategori3.tampilkanKategori();
+  print("");
+
+  // Supplier
+  var supplier1 = Supplier("SUP-01", "PT Elektronik Jaya",
+      "Jl. Rajawali No. 12, Palembang", "0711-123456", "info@elektronikjaya.co.id");
+  var supplier2 = Supplier("SUP-02", "CV Perkantoran Maju",
+      "Jl. Merdeka No. 45, Palembang", "0711-654321", "cs@perkantoranku.com");
+
+  print("🚚 DAFTAR SUPPLIER");
+  supplier1.tampilkanSupplier();
+  print("");
+  supplier2.tampilkanSupplier();
+  print("");
+
+  // ============================================================
+  // DEMO 3: DATA BARANG
+  // ============================================================
+  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  print("3️⃣  DATA BARANG");
+  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+  var barang1 = Barang("BRG-001", "Laptop Asus TUF", "Elektronik",
+      "Asus", 25, "Unit", "Baik");
+  var barang2 = Barang("BRG-002", "Printer Epson L3110", "Perkantoran",
+      "Epson", 12, "Unit", "Baik");
+  var barang3 = Barang("BRG-003", "Kertas A4 80gr", "Perkantoran",
+      "Sinar Dunia", 150, "Rim", "Baik");
+  var barang4 = Barang("BRG-004", "Kipas Angin Miyako", "Peralatan Rumah Tangga",
+      "Miyako", 8, "Unit", "Baik");
+  var barang5 = Barang("BRG-005", "Monitor LED 22 Inch", "Elektronik",
+      "LG", 5, "Unit", "Baik");
+
+  List<Barang> daftarBarang = [barang1, barang2, barang3, barang4, barang5];
+
+  print("📦 DAFTAR BARANG DI GUDANG");
+  for (var b in daftarBarang) {
+    b.tampilkanBarang();
+    print("");
+  }
+
+  // ============================================================
+  // DEMO 4: BARANG MASUK
+  // ============================================================
+  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  print("4️⃣  TRANSAKSI BARANG MASUK");
+  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+  var barangMasuk1 = BarangMasuk("BM-001", "01-06-2026", "BRG-001",
+      "Laptop Asus TUF", 10);
+  barangMasuk1.setBarang(barang1);
+  barangMasuk1.prosesMasuk();
+  print("");
+
+  var barangMasuk2 = BarangMasuk("BM-002", "03-06-2026", "BRG-003",
+      "Kertas A4 80gr", 50);
+  barangMasuk2.setBarang(barang3);
+  barangMasuk2.prosesMasuk();
+  print("");
+
+  List<BarangMasuk> daftarMasuk = [barangMasuk1, barangMasuk2];
+
+  // ============================================================
+  // DEMO 5: BARANG KELUAR
+  // ============================================================
+  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+  print("5️⃣  TRANSAKSI BARANG KELUAR");
+  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+  var barangKeluar1 = BarangKeluar("BRG-002", 3, "Ruang Marketing");
+  barangKeluar1.setBarang(barang2);
+  barangKeluar1.prosesKeluar();
+  print("");
+
+  var barangKeluar2 = BarangKeluar("BRG-003", 20, "Ruang HRD");
+  barangKeluar2.setBarang(barang3);
+  barangKeluar2.prosesKeluar();
+  print("");
+
+  List<BarangKeluar> daftarKeluar = [barangKeluar1, barangKeluar2];
+
+  // ============================================================
+  // DEMO 6: STOK BARANG
+  // ============================================================
+  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
