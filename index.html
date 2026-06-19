@@ -1,581 +1,622 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Pendataan Barang di Gudang</title>
-    <style>
-        :root {
-            --cyan: #22d3ee;
-            --purple: #a855f7;
-            --bg-deep: #020617;
-            --bg-card: rgba(15, 23, 42, 0.70);
-            --border-cyan: rgba(34, 211, 238, 0.4);
-            --text-body: #bae6fd;
-            --text-glow: #e0f2fe;
-            --yellow: #facc15;
-            --pink: #c084fc;
-            --green: #34d399;
-            --orange: #fb923c;
-            --red: #f87171;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistem Pendataan Barang di Gudang</title>
+<style>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
 
-        body {
-            font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
-            background:
-                radial-gradient(circle at top left, #1e1b4b, transparent 45%),
-                radial-gradient(circle at bottom right, #0f766e, transparent 45%),
-                radial-gradient(circle at 50% 50%, #0a0a1a, transparent 70%),
-                #020617;
-            color: #e0f2fe;
-            min-height: 100vh;
-            line-height: 1.7;
-            scroll-behavior: smooth;
-        }
 
-        /* BACKGROUND GLOW */
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            background:
-                linear-gradient(120deg,
-                    rgba(34, 211, 238, 0.10),
-                    rgba(168, 85, 247, 0.10),
-                    rgba(34, 211, 238, 0.05));
-            z-index: -1;
-            pointer-events: none;
-        }
+body{
+    font-family:'Courier New', monospace;
 
-        /* SCROLLBAR */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #020617;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #22d3ee, #a855f7);
-            border-radius: 10px;
-        }
+    background:
+    radial-gradient(circle at top left,#1e1b4b,transparent 45%),
+    radial-gradient(circle at bottom right,#0f766e,transparent 45%),
+    #020617;
 
-        /* HEADER */
-        .header {
-            background: rgba(2, 6, 23, 0.75);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(34, 211, 238, 0.5);
-            position: relative;
-            overflow: hidden;
-        }
-        .header::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #22d3ee, #a855f7, transparent);
-            animation: headerShine 3s ease-in-out infinite;
-        }
-        @keyframes headerShine {
-            0%,
-            100% {
-                opacity: 0.3;
-            }
-            50% {
-                opacity: 1;
-            }
-        }
-        .header h1 {
-            background: linear-gradient(90deg, #22d3ee, #a855f7, #22d3ee);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 15px rgba(34, 211, 238, 0.7);
-            animation: titleShine 4s ease-in-out infinite;
-        }
-        @keyframes titleShine {
-            0%,
-            100% {
-                background-position: 0% center;
-            }
-            50% {
-                background-position: 200% center;
-            }
-        }
-        .identitas p {
-            color: #67e8f9;
-            text-shadow: 0 0 10px #22d3ee;
-            letter-spacing: 0.5px;
-        }
-        .identitas h3 {
-            color: #a855f7;
-            text-shadow: 0 0 10px #a855f7;
-            margin-bottom: 10px;
-            letter-spacing: 2px;
-        }
-        hr {
-            background: linear-gradient(90deg, #22d3ee, #a855f7) !important;
-        }
+    color:#e0f2fe;
+}
 
-        /* MAIN CONTAINER */
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 10px;
-        }
 
-        /* BOX SECTION */
-        .section {
-            margin: 20px 10px;
-            padding: 22px 24px;
-            border-radius: 18px;
-            background: rgba(15, 23, 42, 0.70);
-            border: 1px solid rgba(34, 211, 238, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-        .section::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.6), transparent);
-            opacity: 0;
-            transition: opacity 0.4s;
-        }
-        .section:hover {
-            transform: translateY(-6px);
-            border-color: #a855f7;
-            box-shadow: 0 0 35px rgba(168, 85, 247, 0.5), 0 0 60px rgba(34, 211, 238, 0.2);
-        }
-        .section:hover::before {
-            opacity: 1;
-        }
-        .section h2 {
-            color: #22d3ee !important;
-            text-shadow: 0 0 12px #22d3ee;
-            font-size: 1.4em;
-            margin-bottom: 6px;
-            letter-spacing: 1px;
-        }
-        .section h2::after {
-            content: "";
-            display: block;
-            width: 100%;
-            height: 2px;
-            margin-top: 8px;
-            background: linear-gradient(90deg, #22d3ee, #a855f7);
-            border-radius: 2px;
-        }
-        .section h3 {
-            color: #a855f7;
-            margin-top: 14px;
-            margin-bottom: 6px;
-            text-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
-        }
-        .section p,
-        .section li,
-        .nama {
-            color: #bae6fd;
-            text-shadow: 0 0 6px rgba(34, 211, 238, 0.5);
-        }
-        .section ul {
-            padding-left: 22px;
-        }
-        .section ul li {
-            margin-bottom: 4px;
-        }
-        .section b {
-            color: #facc15;
-            text-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
-        }
+/* BACKGROUND GLOW */
 
-        /* CODE BOX */
-        .code-box {
-            background: #020617;
-            padding: 16px 18px;
-            border-radius: 12px;
-            border: 1px solid #22d3ee;
-            box-shadow: inset 0 0 20px rgba(34, 211, 238, 0.15);
-            overflow: auto;
-            margin-top: 10px;
-            position: relative;
-        }
-        .code-box pre {
-            margin: 0;
-            white-space: pre-wrap;
-            word-break: break-word;
-            font-size: 0.88em;
-            line-height: 1.6;
-        }
-        .code-box code {
-            color: #e0f2fe;
-        }
-        .keyword {
-            color: #c084fc;
-            font-weight: bold;
-        }
-        .type {
-            color: #22d3ee;
-        }
-        .string {
-            color: #facc15;
-        }
-        .comment {
-            color: #94a3b8;
-            font-style: italic;
-        }
-        .number {
-            color: #fb923c;
-        }
+body::before{
 
-        /* BUTTON */
-        .button {
-            margin-top: 12px;
-            padding: 10px 20px;
-            background: linear-gradient(90deg, #22d3ee, #a855f7);
-            border: none;
-            cursor: pointer;
-            color: #fff;
-            border-radius: 10px;
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 1px;
-            box-shadow: 0 0 18px rgba(168, 85, 247, 0.5);
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-        .button:hover {
-            transform: scale(1.06);
-            box-shadow: 0 0 30px #22d3ee, 0 0 50px rgba(168, 85, 247, 0.6);
-            background: linear-gradient(90deg, #a855f7, #22d3ee);
-        }
-        .button:active {
-            transform: scale(0.96);
-        }
+    content:"";
 
-        /* IFRAME */
-        iframe {
-            margin-top: 10px;
-            max-width: 100%;
-            height: 320px;
-            display: none;
-            border-radius: 10px;
-            border: 1px solid rgba(34, 211, 238, 0.5);
-            background: #020617;
-        }
+    position:fixed;
 
-        /* ============ CLASS DIAGRAM STYLES ============ */
-        .diagram-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            padding: 20px 0;
-        }
-        .uml-class {
-            background: rgba(2, 6, 23, 0.85);
-            border: 2px solid #22d3ee;
-            border-radius: 12px;
-            min-width: 220px;
-            max-width: 280px;
-            flex: 1 1 220px;
-            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
-            transition: all 0.3s ease;
-            overflow: hidden;
-            position: relative;
-        }
-        .uml-class:hover {
-            border-color: #a855f7;
-            box-shadow: 0 0 35px rgba(168, 85, 247, 0.6);
-            transform: translateY(-5px);
-            z-index: 2;
-        }
-        .uml-class .class-name {
-            background: linear-gradient(90deg, #1e3a5f, #1a1a3e);
-            padding: 10px 14px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 1.05em;
-            color: #facc15;
-            border-bottom: 2px solid #22d3ee;
-            letter-spacing: 1px;
-            text-shadow: 0 0 10px rgba(250, 204, 21, 0.6);
-        }
-        .uml-class .class-attrs {
-            padding: 10px 14px;
-            border-bottom: 1px dashed rgba(34, 211, 238, 0.4);
-            font-size: 0.82em;
-            color: #bae6fd;
-            line-height: 1.7;
-        }
-        .uml-class .class-attrs span {
-            display: block;
-        }
-        .uml-class .class-attrs .attr-type {
-            color: #22d3ee;
-            font-size: 0.85em;
-        }
-        .uml-class .class-methods {
-            padding: 10px 14px;
-            font-size: 0.82em;
-            color: #c084fc;
-            line-height: 1.7;
-        }
-        .uml-class .class-methods span {
-            display: block;
-        }
-        .uml-class .class-methods .method-return {
-            color: #facc15;
-            font-size: 0.85em;
-        }
-        /* diagram legend */
-        .diagram-legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 14px;
-            justify-content: center;
-            padding: 12px;
-            font-size: 0.8em;
-            color: #94a3b8;
-        }
-        .diagram-legend span {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .legend-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-        .legend-dot.cyan {
-            background: #22d3ee;
-            box-shadow: 0 0 8px #22d3ee;
-        }
-        .legend-dot.purple {
-            background: #a855f7;
-            box-shadow: 0 0 8px #a855f7;
-        }
-        .legend-dot.yellow {
-            background: #facc15;
-            box-shadow: 0 0 8px #facc15;
-        }
-        .legend-dot.green {
-            background: #34d399;
-            box-shadow: 0 0 8px #34d399;
-        }
-        .relation-arrow {
-            text-align: center;
-            color: #94a3b8;
-            font-size: 0.75em;
-            padding: 4px 0;
-        }
+    inset:0;
 
-        /* FOOTER */
-        footer {
-            text-align: center;
-            padding: 20px;
-            color: #38bdf8;
-            font-size: 14px;
-            text-shadow: 0 0 10px #38bdf8;
-            border-top: 1px solid rgba(56, 189, 248, 0.3);
-            margin-top: 30px;
-            letter-spacing: 1px;
-        }
+    background:
+    linear-gradient(
+        120deg,
+        rgba(34,211,238,.12),
+        rgba(168,85,247,.12)
+    );
 
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .section {
-                padding: 16px;
-                margin: 14px 4px;
-            }
-            .section h2 {
-                font-size: 1.15em;
-            }
-            .uml-class {
-                min-width: 150px;
-                flex: 1 1 150px;
-                font-size: 0.75em;
-            }
-            .code-box pre {
-                font-size: 0.72em;
-            }
-            iframe {
-                height: 240px;
-            }
-        }
-    </style>
-    <script>
-        let activeElement = null;
+    z-index:-1;
 
-        function showContent(id) {
-            if (activeElement && activeElement !== document.getElementById(id)) {
-                activeElement.style.display = "none";
-            }
-            const el = document.getElementById(id);
-            if (activeElement === el) {
-                el.style.display = "none";
-                activeElement = null;
-                return;
-            }
-            el.style.display = "block";
-            activeElement = el;
-        }
+}
 
-        function runDart(id, url) {
-            if (activeElement && activeElement !== document.getElementById(id)) {
-                activeElement.style.display = "none";
-            }
-            const frame = document.getElementById(id);
-            if (activeElement === frame) {
-                frame.style.display = "none";
-                frame.src = "";
-                activeElement = null;
-                return;
-            }
-            frame.src = url;
-            frame.style.display = "block";
-            activeElement = frame;
-        }
+/* HEADER */
 
-        // Fungsi untuk scroll ke section diagram
-        function scrollToDiagram() {
-            const el = document.getElementById('section-diagram');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
-        }
-    </script>
+.header{
+
+    background:
+    rgba(2,6,23,.75);
+
+    backdrop-filter:
+    blur(15px);
+
+    border-bottom:
+    1px solid rgba(34,211,238,.5);
+
+}
+
+/* JUDUL UTAMA */
+
+.header h1{
+
+    background:
+    linear-gradient(
+        90deg,
+        #22d3ee,
+        #a855f7
+    );
+
+    -webkit-background-clip:text;
+
+    color:transparent;
+
+    text-shadow:
+    0 0 15px rgba(34,211,238,.7);
+
+}
+
+/* IDENTITAS */
+
+.identitas p{
+
+    color:#67e8f9;
+
+    text-shadow:
+    0 0 10px #22d3ee;
+
+}
+
+/* JUDUL KELOMPOK */
+
+.identitas h3{
+
+    color:#a855f7;
+
+    text-shadow:
+    0 0 10px #a855f7;
+
+    margin-bottom:10px;
+
+}
+
+/* GARIS HEADER */
+
+hr{
+
+    background:
+    linear-gradient(
+    90deg,
+    #22d3ee,
+    #a855f7
+    ) !important;
+
+}
+
+/* BOX SECTION */
+
+.section{
+
+    margin:20px;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    background:
+    rgba(15,23,42,.70);
+
+    border:
+    1px solid rgba(34,211,238,.4);
+
+    backdrop-filter:
+    blur(12px);
+
+
+    box-shadow:
+
+    0 0 20px rgba(34,211,238,.2);
+
+    transition:.4s;
+
+}
+
+.section:hover{
+
+    transform:
+    translateY(-8px);
+
+
+    border-color:#a855f7;
+
+    box-shadow:
+
+    0 0 30px rgba(168,85,247,.6);
+
+}
+
+/* JUDUL SOAL */
+
+.section h2{
+
+    color:#22d3ee !important;
+
+    text-shadow:
+
+    0 0 12px #22d3ee;
+
+}
+
+.section h2::after{
+
+    content:"";
+
+    display:block;
+
+    width:100%;
+
+    height:2px;
+
+    margin-top:8px;
+
+
+    background:
+
+    linear-gradient(
+    90deg,
+    #22d3ee,
+    #a855f7
+    );
+
+}
+
+/* TEKS */
+
+.section p,
+.nama{
+
+    color:#bae6fd;
+
+    text-shadow:
+
+    0 0 6px rgba(34,211,238,.6);
+
+}
+
+
+/* CODE BOX */
+
+.code-box{
+
+    background:#020617;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    border:
+
+    1px solid #22d3ee;
+
+
+    box-shadow:
+
+    inset 0 0 20px rgba(34,211,238,.2);
+
+    overflow:auto;
+
+}
+
+/* WARNA CODE */
+
+.keyword{
+
+    color:#c084fc;
+
+}
+
+.type{
+
+    color:#22d3ee;
+
+}
+
+.string{
+
+    color:#facc15;
+
+}
+
+.comment{
+
+    color:#94a3b8;
+
+}
+
+/* BUTTON */
+
+.button{
+
+    margin-top:10px;
+
+    padding:9px 18px;
+
+    background:
+
+    linear-gradient(
+    90deg,
+    #22d3ee,
+    #a855f7
+    );
+
+    border:none;
+
+    cursor:pointer;
+
+    color:white;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+    box-shadow:
+
+    0 0 15px rgba(168,85,247,.5);
+
+
+    transition:.3s;
+
+}
+
+.button:hover{
+
+    transform:scale(1.05);
+
+    box-shadow:
+
+    0 0 30px #22d3ee;
+
+}
+
+/* IMAGE */
+
+img{
+
+    margin-top:10px;
+
+    max-width:100%;
+
+    height:auto;
+
+    display:none;
+
+    border-radius:10px;
+
+}
+
+</style>
+<script>
+let activeElement = null;
+
+function showContent(id) {
+    if (activeElement) {
+        activeElement.style.display = "none";
+    }
+
+    const el = document.getElementById(id);
+
+    if (activeElement === el) {
+        activeElement = null;
+        return;
+    }
+
+    el.style.display = "block";
+    activeElement = el;
+}
+
+// TAMBAHKAN DI SINI (di bawah showContent, masih dalam <script>)
+function runDart(id, url) {
+    if (activeElement) {
+        activeElement.style.display = "none";
+    }
+
+    const frame = document.getElementById(id);
+
+    if (activeElement === frame) {
+        activeElement = null;
+        return;
+    }
+
+    frame.src = url;
+    frame.style.display = "block";
+
+    activeElement = frame;
+}
+</script>
 </head>
 
 <body>
-    <div class="container">
+<div class="container">
 
-        <!-- ==================== HEADER ==================== -->
-        <div class="header" style="padding: 30px 20px; text-align:center;">
-            <h1 style="font-size: clamp(1.6em, 5vw, 2.6em); margin: 0; line-height: 1.3; font-weight: bold;">
-                Sistem</h1>
-            <h1 style="font-size: clamp(1.6em, 5vw, 2.6em); margin: 5px 0; line-height: 1.3; font-weight: bold;">
-                Pendataan Barang</h1>
-            <h1 style="font-size: clamp(1.6em, 5vw, 2.6em); margin: 0; line-height: 1.3; font-weight: bold;">
-                di Gudang</h1>
-            <hr style="width: 60%; max-width: 300px; margin: 20px auto; border: none; height: 2px; background-color: #38bdf8;">
-            <div class="identitas">
-                <h3>✨ KELOMPOK ✨</h3>
-                <p>Yoza Ulpia Rafila — 251410004 — SI2A</p>
-                <p>Rifqi Prayoga — 251410005 — SI2A</p>
-            </div>
-        </div>
+<div class="header" style="padding: 30px; text-align:center;">
+    
+<!-- JUDUL UTAMA -->
+<h1 style="font-size: clamp(1.8em, 6vw, 2.8em); margin: 0; line-height: 1.3; font-weight: bold;">
+Sistem
+</h1>
 
-        <!-- ==================== NAVIGASI CEPAT ==================== -->
-        <div class="section" style="text-align:center;">
-            <h2>📑 Daftar Isi</h2>
-            <p style="color:#94a3b8; font-size:0.85em;">
-                1. Class User &nbsp;|&nbsp; 2. Class Barang &nbsp;|&nbsp; 3. Class Kategori &nbsp;|&nbsp;
-                4. Class Supplier &nbsp;|&nbsp; 5. Class BarangMasuk &nbsp;|&nbsp; 6. Class BarangKeluar<br>
-                7. Class StokBarang &nbsp;|&nbsp; 8. Class Laporan &nbsp;|&nbsp; 9. Class RiwayatBarang &nbsp;|&nbsp;
-                10. Class Gudang &nbsp;|&nbsp; 11. Class Peminjaman<br>
-                12. Class Notifikasi &nbsp;|&nbsp; 13. Class Dashboard &nbsp;|&nbsp;
-                <button class="button" style="font-size:0.8em; padding:6px 12px; margin:4px;"
-            onclick="scrollToDiagram()">📊 Diagram Class</button>
-            &nbsp;|&nbsp; 15. Penggunaan Aplikasi &nbsp;|&nbsp; 16. Kesimpulan &nbsp;|&nbsp; 17. Penutup
-        </p>
-    </div>
+<h1 style="font-size: clamp(1.8em, 6vw, 2.8em); margin: 5px 0; line-height: 1.3; font-weight: bold;">
+Pendataan Barang
+</h1>
 
-// ============================================================
-// SISTEM INFORMASI PENDATAAN BARANG DI GUDANG
-// ============================================================
-// Nama 1 : Yoza Ulpia Rafila | NIM : 251410004
-// Nama 2 : Rifqi Prayoga      | NIM : 251410005
+<h1 style="font-size: clamp(1.8em, 6vw, 2.8em); margin: 0; line-height: 1.3; font-weight: bold;">
+di Gudang
+</h1>
+    
+    <!-- GARIS PEMBATAS -->
+    <hr style="width: 60%; max-width: 300px; margin: 20px auto; border: none; height: 2px; background-color: #38bdf8;">
+
+<div class="identitas">
+
+<h3>KELOMPOK</h3>
+
+<p>Yoza Ulpia Rafila</p>
+<p>251410004</p>
+<p>SI2A</p>
+
+<br>
+
+<p>Rifqi Prayoga</p>
+<p>251410005</p>
+<p>SI2A</p>
+
+</div>
+</div>
+
+<!-- 1 -->
+<div class="section">
+
+<h2>1. Class User (Login Sistem)</h2>
+
+<ul>
+
+<li>
+<b>Class User</b> digunakan untuk merepresentasikan data pengguna yang memiliki hak akses terhadap sistem informasi pendataan barang di gudang.
+</li>
+
+<li>
+Class User memiliki atribut berupa <b>username</b>, <b>password</b>, dan <b>levelUser</b> yang digunakan sebagai informasi autentikasi pengguna.
+</li>
+
+<li>
+Constructor <b>User()</b> digunakan untuk melakukan inisialisasi data ketika objek User dibuat.
+</li>
+
+<li>
+Method <b>login()</b> digunakan untuk melakukan proses validasi username dan password pengguna sebelum mengakses sistem.
+</li>
+
+<li>
+Fungsi <b>main()</b> digunakan untuk membuat objek User dan menjalankan proses autentikasi melalui method login().
+</li>
+
+<li>
+Hasil proses autentikasi menampilkan informasi mengenai keberhasilan atau kegagalan pengguna dalam melakukan login.
+</li>
+
+</ul>
+
+<h3>Input:</h3>
+
+<ul>
+<li>Username pengguna</li>
+<li>Password pengguna</li>
+<li>Level akses pengguna</li>
+</ul>
+
+<h3>Proses:</h3>
+
+<ul>
+<li>Membuat objek dari class User menggunakan constructor.</li>
+<li>Menyimpan data pengguna ke dalam atribut class.</li>
+<li>Menjalankan method login() untuk melakukan validasi.</li>
+<li>Melakukan pengecekan kesesuaian data pengguna.</li>
+</ul>
+
+<h3>Output:</h3>
+
+<ul>
+<li>Informasi login berhasil.</li>
+<li>Informasi login gagal.</li>
+<li>Menampilkan data pengguna yang berhasil masuk.</li>
+</ul>
+
+<h3>Kode Dart:</h3>
+
+<div class="code-box">
+
+<pre><code>
+// ==========================================
+// Nama 1 : Yoza Ulpia Rafila
+// NIM    : 251410004
+//
+// Nama 2 : Rifqi Prayoga
+// NIM    : 251410005
+//
 // Kelas  : SI2A
-// ============================================================
+// Sistem Informasi Pendataan Barang Gudang
+// ==========================================
 
-import 'dart:io';
-
-// ============================================================
-// 1. CLASS USER - Autentikasi Pengguna
-// ============================================================
 class User {
+
   String username;
   String password;
   String levelUser;
 
-  User(this.username, this.password, this.levelUser);
 
-  bool login() {
-    if (username == "admin" && password == "12345") {
-      print("✅ Login berhasil");
-      print("👤 User  : $username");
-      print("🔑 Level : $levelUser");
-      return true;
-    } else {
-      print("❌ Login gagal — periksa username & password");
-      return false;
+  // Constructor
+  User(
+    this.username,
+    this.password,
+    this.levelUser
+  );
+
+  // Method Login
+  void login(){
+
+    if(username == "admin" && password == "12345"){
+
+      print("Login berhasil");
+      print("User : $username");
+      print("Level : $levelUser");
+
+    }else{
+
+      print("Login gagal");
+
     }
+
   }
 
-  void tampilkanInfo() {
-    print("👤 Username: $username");
-    print("🔑 Level   : $levelUser");
-  }
 }
 
-// ============================================================
-// 2. CLASS KATEGORI - Pengelompokan Barang
-// ============================================================
-class Kategori {
-  String idKategori;
-  String namaKategori;
+void main(){
 
-  Kategori(this.idKategori, this.namaKategori);
+  // Input data user
+  var user1 = User(
+    "admin",
+    "12345",
+    "Admin Gudang"
+  );
 
-  void tampilkanKategori() {
-    print("🏷️ $idKategori - $namaKategori");
-  }
+  // Proses login
+  user1.login();
+
 }
+</code></pre>
 
-// ============================================================
-// 3. CLASS SUPPLIER - Data Pemasok
-// ============================================================
-class Supplier {
-  String kodeSupplier;
-  String namaSupplier;
-  String alamat;
-  String telepon;
-  String email;
+</div>
 
-  Supplier(this.kodeSupplier, this.namaSupplier, this.alamat,
-      this.telepon, this.email);
+<button class="button"
+onclick="runDart('dart1','https://dartpad.dev/embed-inline.html?id=00afd86673c22e4df79467b1f4be113a&split=60&run=true')">
+Tampilkan DartPad 1
+</button>
+<iframe id="dart1"
+style="display:none; width:100%; height:300px;">
+</iframe>
+</div>
 
-  void tampilkanSupplier() {
-    print("🚚 SUPPLIER");
-    print("   Kode   : $kodeSupplier");
-    print("   Nama   : $namaSupplier");
-    print("   Alamat : $alamat");
-    print("   Telp   : $telepon");
-    print("   Email  : $email");
-  }
-}
+<!-- 2 -->
+<div class="section">
 
-// ============================================================
-// 4. CLASS BARANG - Data Barang
-// ============================================================
+<h2>2. Class Barang (Data Barang)</h2>
+
+<ul>
+
+<li>
+<b>Class Barang</b> digunakan untuk merepresentasikan data barang yang terdapat pada sistem informasi pendataan barang di gudang.
+</li>
+
+<li>
+Class Barang memiliki atribut berupa <b>kodeBarang</b>, <b>namaBarang</b>, <b>kategori</b>, <b>merk</b>, <b>jumlahStok</b>, <b>satuan</b>, dan <b>kondisi</b> sebagai informasi detail barang.
+</li>
+
+<li>
+Constructor <b>Barang()</b> digunakan untuk melakukan inisialisasi data barang ketika objek Barang dibuat.
+</li>
+
+<li>
+Method <b>tampilkanBarang()</b> digunakan untuk menampilkan informasi data barang yang telah tersimpan.
+</li>
+
+<li>
+Method <b>tambahStok()</b> digunakan untuk menambahkan jumlah stok barang ketika terdapat barang masuk.
+</li>
+
+<li>
+Method <b>kurangiStok()</b> digunakan untuk mengurangi jumlah stok barang ketika terdapat barang keluar.
+</li>
+
+<li>
+Hasil proses pengelolaan barang menampilkan informasi data barang dan perubahan jumlah stok.
+</li>
+
+</ul>
+
+<h3>Input:</h3>
+
+<ul>
+<li>Kode Barang</li>
+<li>Nama Barang</li>
+<li>Kategori</li>
+<li>Merk</li>
+<li>Jumlah Stok</li>
+<li>Satuan</li>
+<li>Kondisi</li>
+</ul>
+
+<h3>Proses:</h3>
+
+<ul>
+<li>Membuat objek dari class Barang menggunakan constructor.</li>
+<li>Menyimpan data barang ke dalam atribut class.</li>
+<li>Menampilkan data barang menggunakan method tampilkanBarang().</li>
+<li>Menambahkan stok barang menggunakan method tambahStok().</li>
+<li>Mengurangi stok barang menggunakan method kurangiStok().</li>
+</ul>
+
+<h3>Output:</h3>
+
+<ul>
+<li>Data barang tampil.</li>
+<li>Jumlah stok bertambah.</li>
+<li>Jumlah stok berkurang.</li>
+<li>Informasi kondisi barang.</li>
+</ul>
+
+<h3>Kode Dart:</h3>
+
+<div class="code-box">
+
+<pre><code>
+// ==========================================
+// Nama 1 : Yoza Ulpia Rafila
+// NIM    : 251410004
+//
+// Nama 2 : Rifqi Prayoga
+// NIM    : 251410005
+//
+// Kelas  : SI2A
+// Sistem Informasi Pendataan Barang Gudang
+// ==========================================
+
 class Barang {
+
   String kodeBarang;
   String namaBarang;
   String kategori;
@@ -584,545 +625,1142 @@ class Barang {
   String satuan;
   String kondisi;
 
-  Barang(this.kodeBarang, this.namaBarang, this.kategori, this.merk,
-      this.jumlahStok, this.satuan, this.kondisi);
+  // Constructor
+  Barang(
+    this.kodeBarang,
+    this.namaBarang,
+    this.kategori,
+    this.merk,
+    this.jumlahStok,
+    this.satuan,
+    this.kondisi
+  );
 
-  void tampilkanBarang() {
-    print("📦 BARANG");
-    print("   Kode   : $kodeBarang");
-    print("   Nama   : $namaBarang");
-    print("   Kategori: $kategori");
-    print("   Merk   : $merk");
-    print("   Stok   : $jumlahStok $satuan");
-    print("   Kondisi: $kondisi");
+  // Method tampilkan barang
+  void tampilkanBarang(){
+
+    print("Kode Barang : $kodeBarang");
+    print("Nama Barang : $namaBarang");
+    print("Kategori : $kategori");
+    print("Merk : $merk");
+    print("Jumlah Stok : $jumlahStok");
+    print("Satuan : $satuan");
+    print("Kondisi : $kondisi");
+
   }
 
-  void tambahStok(int jumlah) {
-    if (jumlah > 0) {
-      jumlahStok += jumlah;
-      print("✅ Stok $namaBarang bertambah $jumlah $satuan. Total: $jumlahStok");
-    } else {
-      print("❌ Jumlah harus lebih dari 0");
-    }
+  // Method tambah stok
+  void tambahStok(int jumlah){
+
+    jumlahStok += jumlah;
+
+    print("Stok bertambah menjadi $jumlahStok");
+
   }
 
-  void kurangiStok(int jumlah) {
-    if (jumlah > 0 && jumlah <= jumlahStok) {
-      jumlahStok -= jumlah;
-      print("✅ Stok $namaBarang berkurang $jumlah $satuan. Total: $jumlahStok");
-    } else if (jumlah > jumlahStok) {
-      print("❌ Stok tidak mencukupi! Stok tersedia: $jumlahStok $satuan");
-    } else {
-      print("❌ Jumlah harus lebih dari 0");
-    }
+
+  // Method kurangi stok
+  void kurangiStok(int jumlah){
+
+    jumlahStok -= jumlah;
+
+    print("Stok berkurang menjadi $jumlahStok");
+
   }
 
-  bool cekStokMenipis(int batas) {
-    return jumlahStok <= batas;
-  }
 }
 
-// ============================================================
-// 5. CLASS BARANG MASUK - Transaksi Masuk
-// ============================================================
+void main(){
+
+  // Input data barang
+  var barang1 = Barang(
+    "BRG001",
+    "Laptop",
+    "Elektronik",
+    "Asus",
+    10,
+    "Unit",
+    "Baik"
+  );
+
+
+  // Output data barang
+  barang1.tampilkanBarang();
+
+
+  // Proses stok
+  barang1.tambahStok(5);
+  barang1.kurangiStok(3);
+
+}
+</code></pre>
+
+</div>
+
+<button class="button"
+onclick="runDart('dart2','https://dartpad.dev/embed-inline.html?id=715ed6aadf60f9d87ba5a111f199b260&split=60&run=true')">
+Tampilkan DartPad 2
+</button>
+<iframe id="dart2"
+style="display:none; width:100%; height:300px;">
+</iframe>
+</div>
+
+<!-- 3 -->
+<div class="section">
+
+<h2>3. Class Kategori (Data Kategori Barang)</h2>
+
+<ul>
+
+<li>
+<b>Class Kategori</b> digunakan untuk mengelompokkan data barang berdasarkan jenis atau kategori tertentu dalam sistem informasi pendataan barang di gudang.
+</li>
+
+<li>
+Class Kategori memiliki atribut berupa <b>idKategori</b> dan <b>namaKategori</b> yang digunakan sebagai informasi pengelompokan barang.
+</li>
+
+<li>
+Constructor <b>Kategori()</b> digunakan untuk melakukan inisialisasi data kategori ketika objek Kategori dibuat.
+</li>
+
+<li>
+Method <b>tampilkanKategori()</b> digunakan untuk menampilkan daftar kategori barang yang telah tersimpan.
+</li>
+
+<li>
+Pengelompokan kategori membantu proses pencarian dan pengelolaan data barang agar lebih terstruktur.
+</li>
+
+</ul>
+
+<h3>Input:</h3>
+
+<ul>
+<li>ID Kategori</li>
+<li>Nama Kategori</li>
+</ul>
+
+<h3>Proses:</h3>
+
+<ul>
+<li>Membuat objek dari class Kategori menggunakan constructor.</li>
+<li>Menyimpan data kategori ke dalam atribut class.</li>
+<li>Menjalankan method tampilkanKategori().</li>
+<li>Menampilkan informasi kategori barang.</li>
+</ul>
+
+<h3>Output:</h3>
+
+<ul>
+<li>Daftar kategori barang.</li>
+<li>Informasi kategori yang tersimpan.</li>
+</ul>
+
+<h3>Kode Dart:</h3>
+
+<div class="code-box">
+
+<pre><code>
+// ==========================================
+// Nama 1 : Yoza Ulpia Rafila
+// NIM    : 251410004
+//
+// Nama 2 : Rifqi Prayoga
+// NIM    : 251410005
+//
+// Kelas  : SI2A
+// Sistem Informasi Pendataan Barang Gudang
+// ==========================================
+
+class Kategori {
+
+  String idKategori;
+  String namaKategori;
+
+
+  // Constructor
+  Kategori(
+    this.idKategori,
+    this.namaKategori
+  );
+
+  // Method tampilkan kategori
+  void tampilkanKategori(){
+
+    print("ID Kategori : $idKategori");
+    print("Nama Kategori : $namaKategori");
+
+  }
+
+}
+
+void main(){
+
+  // Input data kategori
+  var kategori1 = Kategori(
+    "K001",
+    "Elektronik"
+  );
+
+
+  // Output data kategori
+  kategori1.tampilkanKategori();
+
+}
+</code></pre>
+
+</div>
+    
+<button class="button"
+onclick="runDart('dart3','https://dartpad.dev/embed-inline.html?id=1bfaab26e1c7aacc40186fdb3213e7d9&split=60&run=true')">
+Tampilkan DartPad 3
+</button>
+<iframe id="dart3"
+style="display:none; width:100%; height:300px;">
+</iframe>
+
+</div>
+
+<!-- 4 -->
+<div class="section">
+
+<h2>4. Class Supplier (Data Supplier)</h2>
+
+<ul>
+
+<li>
+<b>Class Supplier</b> digunakan untuk merepresentasikan data pemasok barang yang bekerja sama dengan sistem informasi pendataan barang di gudang.
+</li>
+
+<li>
+Class Supplier memiliki atribut berupa <b>kodeSupplier</b>, <b>namaSupplier</b>, <b>alamat</b>, <b>telepon</b>, dan <b>email</b> sebagai informasi data pemasok.
+</li>
+
+<li>
+Constructor <b>Supplier()</b> digunakan untuk melakukan inisialisasi data supplier ketika objek dibuat.
+</li>
+
+<li>
+Method <b>tampilkanSupplier()</b> digunakan untuk menampilkan informasi data supplier yang telah tersimpan.
+</li>
+
+<li>
+Fungsi <b>main()</b> digunakan untuk membuat objek Supplier dan menjalankan proses menampilkan data supplier.
+</li>
+
+<li>
+Hasil proses menampilkan informasi supplier yang digunakan sebagai sumber data barang masuk ke gudang.
+</li>
+
+</ul>
+
+
+<h3>Input:</h3>
+
+<ul>
+<li>Kode Supplier</li>
+<li>Nama Supplier</li>
+<li>Alamat Supplier</li>
+<li>Nomor Telepon</li>
+<li>Email Supplier</li>
+</ul>
+
+
+<h3>Proses:</h3>
+
+<ul>
+<li>Membuat objek dari class Supplier menggunakan constructor.</li>
+<li>Menyimpan data supplier ke dalam atribut class.</li>
+<li>Menjalankan method tampilkanSupplier().</li>
+<li>Menampilkan informasi supplier.</li>
+</ul>
+
+
+<h3>Output:</h3>
+
+<ul>
+<li>Data supplier tampil.</li>
+<li>Informasi pemasok barang.</li>
+</ul>
+
+
+<h3>Kode Dart:</h3>
+
+<div class="code-box">
+
+<pre><code>
+// ==========================================
+// Nama 1 : Yoza Ulpia Rafila
+// NIM    : 251410004
+//
+// Nama 2 : Rifqi Prayoga
+// NIM    : 251410005
+//
+// Kelas  : SI2A
+// Sistem Informasi Pendataan Barang Gudang
+// ==========================================
+
+class Supplier {
+
+  String kodeSupplier;
+  String namaSupplier;
+  String alamat;
+  String telepon;
+  String email;
+
+  // Constructor
+  Supplier(
+    this.kodeSupplier,
+    this.namaSupplier,
+    this.alamat,
+    this.telepon,
+    this.email
+  );
+
+  // Method tampilkan supplier
+  void tampilkanSupplier(){
+
+    print("Data Supplier");
+    print("Kode Supplier : $kodeSupplier");
+    print("Nama Supplier : $namaSupplier");
+    print("Alamat : $alamat");
+    print("Telepon : $telepon");
+    print("Email : $email");
+
+  }
+
+}
+
+void main(){
+
+  // Input data supplier
+  var supplier1 = Supplier(
+    "SUP001",
+    "PT Maju Jaya",
+    "Jakarta",
+    "08123456789",
+    "majujaya@gmail.com"
+  );
+
+
+  // Proses tampilkan data
+  supplier1.tampilkanSupplier();
+
+}
+</code></pre>
+
+</div>
+
+<button class="button"
+onclick="runDart('dart4','https://dartpad.dev/embed-inline.html?id=537155b314fcf5b87b3d7fad7b40482c&split=60&run=true')">
+
+Tampilkan DartPad 4
+
+</button>
+
+<iframe id="dart4"
+style="display:none; width:100%; height:300px;">
+</iframe>
+
+</div>
+
+<!-- 5 -->
+<div class="section">
+
+<h2>5. Class Barang Masuk</h2>
+
+<ul>
+
+<li>
+<b>Class BarangMasuk</b> digunakan untuk merepresentasikan proses pencatatan barang yang masuk ke dalam gudang.
+</li>
+
+<li>
+Class ini berfungsi untuk menambah jumlah stok barang berdasarkan transaksi barang masuk dari supplier.
+</li>
+
+<li>
+Constructor <b>BarangMasuk()</b> digunakan untuk menginisialisasi data transaksi barang masuk.
+</li>
+
+<li>
+Method <b>tambahStok()</b> digunakan untuk menambahkan jumlah stok barang berdasarkan jumlah barang yang diterima.
+</li>
+
+<li>
+Proses transaksi barang masuk akan tersimpan sebagai riwayat pemasukan barang di sistem.
+</li>
+
+</ul>
+
+
+<h3>Input:</h3>
+
+<ul>
+<li>ID Barang Masuk</li>
+<li>Tanggal Masuk</li>
+<li>Kode Barang</li>
+<li>Nama Barang</li>
+<li>Jumlah Masuk</li>
+</ul>
+
+
+<h3>Proses:</h3>
+
+<ul>
+<li>Membuat objek dari class BarangMasuk</li>
+<li>Menyimpan data transaksi barang masuk</li>
+<li>Menjalankan method tambahStok()</li>
+<li>Menambahkan jumlah stok barang</li>
+</ul>
+
+
+<h3>Output:</h3>
+
+<ul>
+<li>Data barang masuk tersimpan</li>
+<li>Stok barang bertambah</li>
+<li>Informasi transaksi barang masuk</li>
+</ul>
+
+
+<h3>Kode Dart:</h3>
+
+<div class="code-box">
+
+<pre><code>
+// ==========================================
+// Nama 1 : Yoza Ulpia Rafila
+// NIM    : 251410004
+//
+// Nama 2 : Rifqi Prayoga
+// NIM    : 251410005
+//
+// Kelas  : SI2A
+// Sistem Informasi Pendataan Barang Gudang
+// ==========================================
+
 class BarangMasuk {
+
   String idBarangMasuk;
   String tanggalMasuk;
   String kodeBarang;
   String namaBarang;
   int jumlahMasuk;
-  Barang? barang; // Referensi ke objek Barang
 
-  BarangMasuk(this.idBarangMasuk, this.tanggalMasuk, this.kodeBarang,
-      this.namaBarang, this.jumlahMasuk);
+  BarangMasuk(
+    this.idBarangMasuk,
+    this.tanggalMasuk,
+    this.kodeBarang,
+    this.namaBarang,
+    this.jumlahMasuk
+  );
 
-  void setBarang(Barang b) {
-    barang = b;
+  void tambahStok(){
+
+    print("=== TRANSAKSI BARANG MASUK ===");
+    print("ID        : $idBarangMasuk");
+    print("Tanggal   : $tanggalMasuk");
+    print("Kode      : $kodeBarang");
+    print("Barang    : $namaBarang");
+    print("Jumlah    : $jumlahMasuk");
+    print("Status    : Stok berhasil ditambahkan");
+
   }
 
-  void prosesMasuk() {
-    if (barang != null) {
-      barang!.tambahStok(jumlahMasuk);
-      print("📥 Barang Masuk: $namaBarang ($kodeBarang)");
-      print("   Tanggal : $tanggalMasuk");
-      print("   Jumlah  : $jumlahMasuk");
-      print("   Status  : ✅ Berhasil");
-    } else {
-      print("❌ Barang tidak ditemukan!");
-    }
-  }
 }
 
-// ============================================================
-// 6. CLASS BARANG KELUAR - Transaksi Keluar
-// ============================================================
+void main(){
+
+  // Input data barang masuk
+  var bm1 = BarangMasuk(
+    "BM001",
+    "14-06-2026",
+    "BRG001",
+    "Keyboard",
+    10
+  );
+
+  // Proses
+  bm1.tambahStok();
+
+}
+</code></pre>
+
+</div>
+
+<button class="button"
+onclick="runDart('dart5','https://dartpad.dev/embed-inline.html?id=f4bfe7845e8da34250ef925a9447b76c&split=60&run=true')">
+
+Tampilkan DartPad 5
+
+</button>
+
+<iframe id="dart5"
+style="display:none; width:100%; height:300px;">
+</iframe>
+
+</div>
+    
+<!-- 6 -->
+<div class="section">
+
+<h2>6. Class Barang Keluar (Transaksi Barang Keluar)</h2>
+
+<ul>
+
+<li>
+<b>Class BarangKeluar</b> digunakan untuk merepresentasikan proses pengeluaran barang dari gudang ke pihak tujuan tertentu.
+</li>
+
+<li>
+Class ini berfungsi mencatat data barang yang keluar serta mengurangi jumlah stok yang tersedia.
+</li>
+
+<li>
+Constructor <b>BarangKeluar()</b> digunakan untuk menginisialisasi data transaksi barang keluar.
+</li>
+
+<li>
+Method <b>kurangiStok()</b> digunakan untuk mengurangi jumlah stok berdasarkan jumlah barang yang dikeluarkan.
+</li>
+
+<li>
+Proses ini memastikan stok barang selalu diperbarui secara akurat setelah transaksi keluar dilakukan.
+</li>
+
+<li>
+Hasil akhir berupa informasi data barang keluar dan perubahan jumlah stok.
+</li>
+
+</ul>
+
+
+<h3>Input:</h3>
+
+<ul>
+<li>ID Barang Keluar</li>
+<li>Tanggal Keluar</li>
+<li>Kode Barang</li>
+<li>Jumlah Barang Keluar</li>
+<li>Tujuan Pengiriman</li>
+</ul>
+
+
+<h3>Proses:</h3>
+
+<ul>
+<li>Membuat objek dari class BarangKeluar.</li>
+<li>Menyimpan data transaksi barang keluar.</li>
+<li>Melakukan pengurangan stok barang.</li>
+<li>Memperbarui data persediaan barang.</li>
+</ul>
+
+
+<h3>Output:</h3>
+
+<ul>
+<li>Data barang keluar tersimpan</li>
+<li>Stok barang berkurang</li>
+<li>Informasi transaksi barang keluar</li>
+</ul>
+
+
+<h3>Kode Dart:</h3>
+
+<div class="code-box">
+
+<pre><code>
+// ==========================================
+// Nama 1 : Yoza Ulpia Rafila
+// NIM    : 251410004
+//
+// Nama 2 : Rifqi Prayoga
+// NIM    : 251410005
+//
+// Kelas  : SI2A
+// Sistem Informasi Pendataan Barang Gudang
+// ==========================================
+
 class BarangKeluar {
+
   String kodeBarang;
   int jumlahKeluar;
   String tujuan;
-  Barang? barang;
 
-  BarangKeluar(this.kodeBarang, this.jumlahKeluar, this.tujuan);
 
-  void setBarang(Barang b) {
-    barang = b;
+  // Constructor
+  BarangKeluar(
+    this.kodeBarang,
+    this.jumlahKeluar,
+    this.tujuan
+  );
+
+  // Method kurangi stok
+  void kurangiStok(){
+
+    int stokAwal = 100;
+
+    int stokAkhir = stokAwal - jumlahKeluar;
+
+    print("Barang keluar berhasil dicatat");
+    print("Kode Barang : $kodeBarang");
+    print("Jumlah Keluar : $jumlahKeluar");
+    print("Tujuan : $tujuan");
+    print("Sisa Stok : $stokAkhir");
+
   }
 
-  void prosesKeluar() {
-    if (barang != null) {
-      if (barang!.jumlahStok >= jumlahKeluar) {
-        barang!.kurangiStok(jumlahKeluar);
-        print("📤 Barang Keluar: ${barang!.namaBarang} ($kodeBarang)");
-        print("   Tujuan  : $tujuan");
-        print("   Jumlah  : $jumlahKeluar");
-        print("   Status  : ✅ Berhasil");
-      } else {
-        print("❌ Gagal! Stok tidak mencukupi.");
-      }
-    } else {
-      print("❌ Barang tidak ditemukan!");
-    }
-  }
 }
 
-// ============================================================
-// 7. CLASS STOK BARANG - Perhitungan Stok
-// ============================================================
+void main(){
+
+  // Input data barang keluar
+  var bk1 = BarangKeluar(
+    "BRG001",
+    10,
+    "Toko A"
+  );
+
+
+  // Proses transaksi
+  bk1.kurangiStok();
+
+}
+</code></pre>
+
+</div>
+
+<button class="button"
+onclick="runDart('dart6','https://dartpad.dev/embed-inline.html?id=bb5aff697e49cdf7722ffe798e5efc0b&split=60&run=true')">
+
+Tampilkan DartPad 6
+
+</button>
+
+<iframe id="dart6"
+style="display:none; width:100%; height:300px;">
+</iframe>
+
+</div>
+
+<!-- 7 -->
+<div class="section">
+
+<h2>7. Class Stok Barang</h2>
+
+<ul>
+
+<li>
+<b>Class StokBarang</b> digunakan untuk mengelola dan menghitung total stok barang dalam sistem informasi gudang.
+</li>
+
+<li>
+Class ini menggabungkan data dari barang masuk dan barang keluar untuk menghasilkan stok akhir.
+</li>
+
+<li>
+Constructor <b>StokBarang()</b> digunakan untuk menginisialisasi nilai stok awal, barang masuk, dan barang keluar.
+</li>
+
+<li>
+Method <b>hitungStok()</b> digunakan untuk melakukan perhitungan stok akhir berdasarkan transaksi yang terjadi.
+</li>
+
+<li>
+Hasil perhitungan digunakan untuk mengetahui kondisi stok barang saat ini.
+</li>
+
+</ul>
+
+
+<h3>Input:</h3>
+
+<ul>
+<li>Stok awal barang</li>
+<li>Jumlah barang masuk</li>
+<li>Jumlah barang keluar</li>
+</ul>
+
+
+<h3>Proses:</h3>
+
+<ul>
+<li>Membuat objek class StokBarang</li>
+<li>Menyimpan data stok awal</li>
+<li>Menambahkan barang masuk</li>
+<li>Mengurangi barang keluar</li>
+<li>Menghitung stok akhir</li>
+</ul>
+
+
+<h3>Output:</h3>
+
+<ul>
+<li>Total stok akhir barang</li>
+<li>Status ketersediaan stok</li>
+</ul>
+
+
+<h3>Kode Dart:</h3>
+
+<div class="code-box">
+
+<pre><code>
+// ==========================================
+// Nama 1 : Yoza Ulpia Rafila
+// NIM    : 251410004
+//
+// Nama 2 : Rifqi Prayoga
+// NIM    : 251410005
+//
+// Kelas  : SI2A
+// Sistem Informasi Pendataan Barang Gudang
+// ==========================================
+
+
 class StokBarang {
+
   int stokAwal;
   int barangMasuk;
   int barangKeluar;
 
-  StokBarang(this.stokAwal, this.barangMasuk, this.barangKeluar);
 
-  int hitungStokAkhir() {
-    return stokAwal + barangMasuk - barangKeluar;
-  }
+  // Constructor
+  StokBarang(
+    this.stokAwal,
+    this.barangMasuk,
+    this.barangKeluar
+  );
 
-  String getStatusStok(int batasKritis) {
-    int stokAkhir = hitungStokAkhir();
-    if (stokAkhir <= 0) {
-      return "🔴 HABIS";
-    } else if (stokAkhir <= batasKritis) {
-      return "🟡 MENIPIS";
+
+  // Method hitung stok
+  void hitungStok(){
+
+    int stokAkhir = stokAwal + barangMasuk - barangKeluar;
+
+    print("Stok Awal : $stokAwal");
+    print("Barang Masuk : $barangMasuk");
+    print("Barang Keluar : $barangKeluar");
+    print("Stok Akhir : $stokAkhir");
+
+    if(stokAkhir <= 0){
+      print("Status : Stok Habis");
+    } else if(stokAkhir < 10){
+      print("Status : Stok Menipis");
     } else {
-      return "🟢 AMAN";
+      print("Status : Stok Aman");
     }
   }
 
-  void tampilkanStok(int batasKritis) {
-    int stokAkhir = hitungStokAkhir();
-    print("📊 PERHITUNGAN STOK");
-    print("   Stok Awal    : $stokAwal");
-    print("   Barang Masuk : +$barangMasuk");
-    print("   Barang Keluar: -$barangKeluar");
-    print("   ───────────────────");
-    print("   Stok Akhir   : $stokAkhir");
-    print("   Status       : ${getStatusStok(batasKritis)}");
-  }
 }
 
-// ============================================================
-// 8. CLASS LAPORAN - Rekapitulasi Data
-// ============================================================
+
+void main(){
+
+  // Input data stok
+  var stok1 = StokBarang(50, 20, 10);
+
+  // Proses hitung stok
+  stok1.hitungStok();
+
+}
+</code></pre>
+
+</div>
+
+<button class="button"
+onclick="runDart('dart7','https://dartpad.dev/embed-inline.html?id=8d289db6c0b98a3ffd7d7dce34ad6667&split=60&run=true')">
+
+Tampilkan DartPad 7
+
+</button>
+
+<iframe id="dart7"
+style="display:none; width:100%; height:300px;">
+</iframe>
+
+</div>
+    
+<!-- 8 -->
+<div class="section">
+
+<h2>8. Class Laporan</h2>
+
+<ul>
+
+<li>
+<b>Class Laporan</b> digunakan untuk mengelola dan menampilkan seluruh hasil data transaksi pada sistem informasi pendataan barang di gudang.
+</li>
+
+<li>
+Class ini berfungsi sebagai media rekapitulasi data seperti barang masuk, barang keluar, dan stok akhir barang.
+</li>
+
+<li>
+Constructor <b>Laporan()</b> digunakan untuk menginisialisasi data laporan yang akan ditampilkan.
+</li>
+
+<li>
+Method <b>cetakLaporan()</b> digunakan untuk menampilkan hasil laporan berdasarkan data yang telah diproses sebelumnya.
+</li>
+
+<li>
+Laporan bertujuan untuk memberikan informasi keseluruhan aktivitas gudang secara terstruktur.
+</li>
+
+</ul>
+
+
+<h3>Input:</h3>
+
+<ul>
+<li>Jenis laporan</li>
+<li>Periode laporan</li>
+<li>Data barang masuk</li>
+<li>Data barang keluar</li>
+<li>Data stok barang</li>
+</ul>
+
+
+<h3>Proses:</h3>
+
+<ul>
+<li>Membuat objek dari class Laporan</li>
+<li>Mengumpulkan seluruh data transaksi gudang</li>
+<li>Melakukan rekapitulasi data</li>
+<li>Menjalankan method cetakLaporan()</li>
+</ul>
+
+
+<h3>Output:</h3>
+
+<ul>
+<li>Laporan data barang</li>
+<li>Laporan barang masuk</li>
+<li>Laporan barang keluar</li>
+<li>Laporan stok akhir</li>
+</ul>
+
+
+<h3>Kode Dart:</h3>
+
+<div class="code-box">
+
+<pre><code>
+// ==========================================
+// Nama 1 : Yoza Ulpia Rafila
+// NIM    : 251410004
+//
+// Nama 2 : Rifqi Prayoga
+// NIM    : 251410005
+//
+// Kelas  : SI2A
+// Sistem Informasi Pendataan Barang Gudang
+// ==========================================
+
 class Laporan {
+
   String jenisLaporan;
   String periodeLaporan;
-  List<Barang> daftarBarang;
-  List<BarangMasuk> daftarMasuk;
-  List<BarangKeluar> daftarKeluar;
 
-  Laporan(this.jenisLaporan, this.periodeLaporan,
-      {this.daftarBarang = const [], this.daftarMasuk = const [], this.daftarKeluar = const []});
+  Laporan(
+    this.jenisLaporan,
+    this.periodeLaporan
+  );
 
-  void cetakLaporan() {
-    print("╔════════════════════════════════════════════╗");
-    print("║           📄 LAPORAN GUDANG              ║");
-    print("╠════════════════════════════════════════════╣");
-    print("║ Jenis   : $jenisLaporan");
-    print("║ Periode : $periodeLaporan");
-    print("║────────────────────────────────────────────║");
+  void cetakLaporan(){
 
-    print("║ 📦 DATA BARANG (${daftarBarang.length} item)");
-    for (var b in daftarBarang) {
-      print("║   • ${b.kodeBarang} - ${b.namaBarang} (${b.jumlahStok} ${b.satuan})");
-    }
+    print("===== LAPORAN GUDANG =====");
+    print("Jenis   : $jenisLaporan");
+    print("Periode : $periodeLaporan");
+    print("--------------------------");
+    print("Data barang masuk");
+    print("Data barang keluar");
+    print("Data stok barang");
+    print("==========================");
 
-    print("║────────────────────────────────────────────║");
-    print("║ 📥 BARANG MASUK (${daftarMasuk.length} transaksi)");
-    for (var m in daftarMasuk) {
-      print("║   • $m.tanggalMasuk: ${m.namaBarang} +${m.jumlahMasuk}");
-    }
-
-    print("║────────────────────────────────────────────║");
-    print("║ 📤 BARANG KELUAR (${daftarKeluar.length} transaksi)");
-    for (var k in daftarKeluar) {
-      print("║   • ${k.tujuan}: ${k.kodeBarang} -${k.jumlahKeluar}");
-    }
-    print("╚════════════════════════════════════════════╝");
   }
+
 }
 
-// ============================================================
-// 9. CLASS RIWAYAT BARANG - Histori Aktivitas
-// ============================================================
+void main(){
+
+  var laporan1 = Laporan(
+    "Laporan Bulanan",
+    "Januari 2026"
+  );
+
+  laporan1.cetakLaporan();
+
+}
+</code></pre>
+
+</div>
+
+<button class="button"
+onclick="runDart('dart8','https://dartpad.dev/embed-inline.html?id=71eeb354596b8a19af23ecaf87dae3db&split=60&run=true')">
+
+Tampilkan DartPad 8
+
+</button>
+
+<iframe id="dart8"
+style="display:none; width:100%; height:300px;">
+</iframe>
+    
+</div>
+
+<!-- 9 -->
+<div class="section">
+
+<h2>9. Class Riwayat Barang</h2>
+
+<ul>
+
+<li>
+<b>Class RiwayatBarang</b> digunakan untuk mencatat seluruh aktivitas perubahan data barang pada sistem informasi gudang.
+</li>
+
+<li>
+Class ini berfungsi menyimpan informasi transaksi seperti barang masuk, barang keluar, perubahan stok, dan waktu kejadian.
+</li>
+
+<li>
+Constructor <b>RiwayatBarang()</b> digunakan untuk menginisialisasi data riwayat barang.
+</li>
+
+<li>
+Method <b>tampilkanRiwayat()</b> digunakan untuk menampilkan seluruh aktivitas barang yang telah dilakukan.
+</li>
+
+<li>
+Riwayat barang membantu admin mengetahui perubahan data barang secara terstruktur dan memudahkan proses pengecekan.
+</li>
+
+</ul>
+
+
+<h3>Input:</h3>
+
+<ul>
+<li>ID Riwayat</li>
+<li>Tanggal Transaksi</li>
+<li>Kode Barang</li>
+<li>Nama Barang</li>
+<li>Jenis Aktivitas</li>
+<li>Jumlah Perubahan</li>
+</ul>
+
+
+<h3>Proses:</h3>
+
+<ul>
+<li>Membuat objek dari class RiwayatBarang menggunakan constructor.</li>
+<li>Menyimpan data aktivitas barang.</li>
+<li>Mencatat perubahan jumlah barang.</li>
+<li>Menampilkan riwayat transaksi barang.</li>
+</ul>
+
+
+<h3>Output:</h3>
+
+<ul>
+<li>Data riwayat barang.</li>
+<li>Informasi barang masuk dan keluar.</li>
+<li>Catatan perubahan stok.</li>
+</ul>
+
+
+<h3>Kode Dart:</h3>
+
+<div class="code-box">
+
+<pre><code>
+// ==========================================
+// Nama 1 : Yoza Ulpia Rafila
+// NIM    : 251410004
+//
+// Nama 2 : Rifqi Prayoga
+// NIM    : 251410005
+//
+// Kelas  : SI2A
+// Sistem Informasi Pendataan Barang Gudang
+// ==========================================
+
+
 class RiwayatBarang {
+
+  // Atribut
   String idRiwayat;
   String tanggal;
   String kodeBarang;
   String namaBarang;
   String jenisAktivitas;
   int jumlah;
-  String keterangan;
 
-  RiwayatBarang(this.idRiwayat, this.tanggal, this.kodeBarang,
-      this.namaBarang, this.jenisAktivitas, this.jumlah,
-      {this.keterangan = ""});
 
-  void tampilkanRiwayat() {
-    print("📜 [$idRiwayat] $tanggal");
-    print("   Barang : $namaBarang ($kodeBarang)");
-    print("   Aktivitas: $jenisAktivitas");
-    print("   Jumlah : $jumlah");
-    if (keterangan.isNotEmpty) print("   Catatan: $keterangan");
-    print("   ──────────────────────");
+  // Constructor
+  RiwayatBarang(
+    this.idRiwayat,
+    this.tanggal,
+    this.kodeBarang,
+    this.namaBarang,
+    this.jenisAktivitas,
+    this.jumlah
+  );
+
+
+  // Method tampilkan riwayat barang
+  void tampilkanRiwayat(){
+
+    print("============================");
+    print("      RIWAYAT BARANG        ");
+    print("============================");
+
+    print("ID Riwayat       : $idRiwayat");
+    print("Tanggal          : $tanggal");
+    print("Kode Barang      : $kodeBarang");
+    print("Nama Barang      : $namaBarang");
+    print("Jenis Aktivitas  : $jenisAktivitas");
+    print("Jumlah Perubahan : $jumlah");
+
+    print("============================");
+
   }
+
 }
 
-// ============================================================
-// 10. CLASS GUDANG - Manajemen Lokasi & Kapasitas
-// ============================================================
-class Gudang {
-  String kodeGudang;
-  String namaGudang;
-  String lokasi;
-  double luas;
-  int kapasitas;
-  int jumlahBarangSaatIni;
-  List<Barang> daftarBarang;
 
-  Gudang(this.kodeGudang, this.namaGudang, this.lokasi, this.luas,
-      this.kapasitas, this.jumlahBarangSaatIni,
-      {this.daftarBarang = const []});
+void main(){
 
-  void tampilkanGudang() {
-    print("🏭 GUDANG");
-    print("   Kode      : $kodeGudang");
-    print("   Nama      : $namaGudang");
-    print("   Lokasi    : $lokasi");
-    print("   Luas      : ${luas.toStringAsFixed(1)} m²");
-    print("   Kapasitas : $kapasitas item");
-    print("   Terisi    : $jumlahBarangSaatIni item");
-  }
+  // Membuat objek riwayat barang
+  var riwayat1 = RiwayatBarang(
 
-  void cekKapasitas() {
-    double persentase = (jumlahBarangSaatIni / kapasitas) * 100;
-    print("📊 Kapasitas terpakai: ${persentase.toStringAsFixed(1)}%");
-    if (jumlahBarangSaatIni >= kapasitas) {
-      print("⚠️ Status: GUDANG PENUH!");
-    } else if (persentase >= 80) {
-      print("🟡 Status: Hampir penuh");
-    } else {
-      print("🟢 Status: Kapasitas aman");
-    }
-  }
+    "R001",
+    "15-06-2026",
+    "BRG001",
+    "Laptop Asus",
+    "Barang Masuk",
+    10
 
-  bool tambahBarangKeGudang(int jumlah) {
-    if (jumlahBarangSaatIni + jumlah > kapasitas) {
-      print("❌ Gagal! Melebihi kapasitas gudang.");
-      return false;
-    } else {
-      jumlahBarangSaatIni += jumlah;
-      print("✅ $jumlah item ditambahkan ke gudang. Total: $jumlahBarangSaatIni");
-      return true;
-    }
-  }
+  );
 
-  void tampilkanDaftarBarang() {
-    print("📦 DAFTAR BARANG DI GUDANG ($kodeGudang)");
-    if (daftarBarang.isEmpty) {
-      print("   (Belum ada barang)");
-      return;
-    }
-    for (var b in daftarBarang) {
-      print("   • ${b.kodeBarang} - ${b.namaBarang} (${b.jumlahStok} ${b.satuan})");
-    }
-  }
+
+  // Menampilkan data riwayat
+  riwayat1.tampilkanRiwayat();
+
 }
+</code></pre>
 
-// ============================================================
-// 11. CLASS PEMINJAMAN - Peminjaman Barang
-// ============================================================
-class Peminjaman {
-  String idPinjam;
-  String tanggalPinjam;
-  String tanggalKembali;
-  String kodeBarang;
-  String namaPeminjam;
-  int jumlahPinjam;
-  String status;
-  Barang? barang;
+</div>
 
-  Peminjaman(this.idPinjam, this.tanggalPinjam, this.tanggalKembali,
-      this.kodeBarang, this.namaPeminjam, this.jumlahPinjam,
-      {this.status = "Aktif"});
+<button class="button"
+onclick="runDart('dart9','https://dartpad.dev/embed-inline.html?id=b408e4f1cca1446b365254b8e7aa3ae6&split=60&run=true')">
 
-  void setBarang(Barang b) {
-    barang = b;
-  }
+Tampilkan DartPad 9
 
-  void catatPeminjaman() {
-    if (barang != null && barang!.jumlahStok >= jumlahPinjam) {
-      barang!.kurangiStok(jumlahPinjam);
-      status = "Aktif";
-      print("📋 PEMINJAMAN BARU DICATAT");
-      print("   ID        : $idPinjam");
-      print("   Peminjam  : $namaPeminjam");
-      print("   Barang    : $kodeBarang - ${barang!.namaBarang}");
-      print("   Jumlah    : $jumlahPinjam");
-      print("   Tgl Pinjam: $tanggalPinjam");
-      print("   Tgl Kembali: $tanggalKembali");
-      print("   Status    : $status");
-    } else if (barang != null && barang!.jumlahStok < jumlahPinjam) {
-      print("❌ Gagal! Stok ${barang!.namaBarang} tidak mencukupi.");
-    } else {
-      print("❌ Barang tidak ditemukan!");
-    }
-  }
+</button>
 
-  void kembalikan() {
-    if (status == "Aktif" || status == "Terlambat") {
-      status = "Selesai";
-      if (barang != null) {
-        barang!.tambahStok(jumlahPinjam);
-      }
-      print("✅ Barang telah dikembalikan. Status: $status");
-    } else {
-      print("⚠️ Peminjaman ini sudah selesai.");
-    }
-  }
+<iframe id="dart9"
+style="display:none; width:100%; height:300px;">
+</iframe>
+    
+</div>
 
-  void cekStatus() {
-    print("🔍 Status peminjaman [$idPinjam]: $status");
-    if (status == "Terlambat") {
-      print("⚠️ PERINGATAN: Pengembalian terlambat!");
-    } else if (status == "Selesai") {
-      print("✅ Peminjaman telah selesai.");
-    } else {
-      print("⏳ Peminjaman masih aktif.");
-    }
-  }
-}
+    
+<!-- 10 -->
+<div class="section">
 
-// ============================================================
-// 12. CLASS NOTIFIKASI - Peringatan Stok
-// ============================================================
-class Notifikasi {
-  String idNotif;
-  String pesan;
-  String tanggal;
-  String jenis;
-  bool statusDibaca;
+<h2>10. Kesimpulan</h2>
 
-  Notifikasi(this.idNotif, this.pesan, this.tanggal, this.jenis,
-      {this.statusDibaca = false});
+<div class="code-box">
 
-  void kirimNotifikasi() {
-    String icon = jenis == "Bahaya" ? "🔴" :
-        jenis == "Peringatan" ? "🟡" : "🔵";
-    print("$icon NOTIFIKASI [$jenis]: $pesan");
-    print("   📅 $tanggal | ID: $idNotif");
-  }
+<p>
+Berdasarkan hasil perancangan Sistem Informasi Pendataan Barang di Gudang berbasis pemrograman Dart dengan konsep Object-Oriented Programming (OOP), dapat disimpulkan bahwa:
+</p>
 
-  void tampilkanNotifikasi() {
-    print("📬 Detail Notifikasi");
-    print("   ID      : $idNotif");
-    print("   Pesan   : $pesan");
-    print("   Tanggal : $tanggal");
-    print("   Jenis   : $jenis");
-    print("   Dibaca  : ${statusDibaca ? '✅ Sudah' : '❌ Belum'}");
-  }
+<ul>
 
-  void tandaiDibaca() {
-    statusDibaca = true;
-    print("✅ Notifikasi [$idNotif] ditandai sudah dibaca.");
-  }
-}
+<li>
+Sistem dibangun menggunakan konsep class untuk memisahkan setiap komponen seperti User, Barang, Supplier, dan transaksi barang.
+</li>
 
-// ============================================================
-// 13. CLASS DASHBOARD - Ringkasan Sistem
-// ============================================================
-class Dashboard {
-  int totalBarang;
-  int totalBarangMasuk;
-  int totalBarangKeluar;
-  int stokMenipis;
-  int notifikasiAktif;
-  List<Barang> daftarBarang;
-  List<Notifikasi> daftarNotifikasi;
+<li>
+Penerapan constructor memudahkan proses inisialisasi data pada setiap objek yang dibuat.
+</li>
 
-  Dashboard(this.totalBarang, this.totalBarangMasuk, this.totalBarangKeluar,
-      this.stokMenipis, this.notifikasiAktif,
-      {this.daftarBarang = const [], this.daftarNotifikasi = const []});
+<li>
+Method pada setiap class digunakan untuk menjalankan fungsi utama seperti login, pengelolaan barang, dan transaksi stok.
+</li>
 
-  void tampilkanRingkasan() {
-    print("╔════════════════════════════════════════════╗");
-    print("║         📊 DASHBOARD GUDANG              ║");
-    print("╠════════════════════════════════════════════╣");
-    print("║ Total Jenis Barang : ${totalBarang.toString().padLeft(6)}  ║");
-    print("║ Barang Masuk       : ${totalBarangMasuk.toString().padLeft(6)}  ║");
-    print("║ Barang Keluar      : ${totalBarangKeluar.toString().padLeft(6)}  ║");
-    print("║ Stok Menipis       : ${stokMenipis.toString().padLeft(6)}  ║");
-    print("║ Notifikasi Aktif   : ${notifikasiAktif.toString().padLeft(6)}  ║");
-    print("╚════════════════════════════════════════════╝");
-  }
+<li>
+Struktur input, proses, dan output membantu dalam merancang sistem yang lebih terarah dan mudah dipahami.
+</li>
 
-  void cekAlert() {
-    bool adaAlert = false;
-    if (stokMenipis > 0) {
-      print("⚠️ ALERT: Ada $stokMenipis barang dengan stok menipis!");
-      adaAlert = true;
-    }
-    if (notifikasiAktif > 0) {
-      print("📬 Ada $notifikasiAktif notifikasi belum dibaca.");
-      adaAlert = true;
-    }
-    if (!adaAlert) {
-      print("✅ Semua aman, tidak ada alert.");
-    }
-  }
+<li>
+Sistem ini mampu mengelola data barang masuk dan keluar sehingga stok dapat terkontrol dengan baik.
+</li>
 
-  void tampilkanNotifikasiTerbaru() {
-    print("📬 NOTIFIKASI TERBARU");
-    if (daftarNotifikasi.isEmpty) {
-      print("   (Tidak ada notifikasi)");
-      return;
-    }
-    for (var n in daftarNotifikasi) {
-      if (!n.statusDibaca) {
-        print("   • ${n.jenis}: ${n.pesan.substring(0, n.pesan.length > 40 ? 40 : n.pesan.length)}...");
-      }
-    }
-  }
-}
+<li>
+Penggunaan OOP membuat program lebih terstruktur, mudah dikembangkan, dan mudah dipelihara.
+</li>
 
-// ============================================================
-// MAIN PROGRAM - Menjalankan Seluruh Sistem
-// ============================================================
-void main() {
-  print("╔═══════════════════════════════════════════════════════╗");
-  print("║     SISTEM INFORMASI PENDATAAN BARANG DI GUDANG     ║");
-  print("║         SI2A - 2026 - Dart OOP                      ║");
-  print("╚═══════════════════════════════════════════════════════╝\n");
+<li>
+Secara keseluruhan, sistem ini membantu dalam proses pendataan barang di gudang agar lebih efektif dan efisien.
+</li>
 
-  // ============================================================
-  // DEMO 1: LOGIN USER
-  // ============================================================
-  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  print("1️⃣  DEMO LOGIN");
-  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+</ul>
 
-  var user1 = User("admin", "12345", "Admin Gudang");
-  bool loginBerhasil = user1.login();
-  print("");
+</div>
 
-  // ============================================================
-  // DEMO 2: DATA MASTER (KATEGORI & SUPPLIER)
-  // ============================================================
-  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  print("2️⃣  DATA MASTER");
-  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+</div>
 
-  // Kategori
-  var kategori1 = Kategori("KTG-01", "Elektronik");
-  var kategori2 = Kategori("KTG-02", "Perkantoran");
-  var kategori3 = Kategori("KTG-03", "Peralatan Rumah Tangga");
 
-  print("🏷️ DAFTAR KATEGORI");
-  kategori1.tampilkanKategori();
-  kategori2.tampilkanKategori();
-  kategori3.tampilkanKategori();
-  print("");
+<!-- 11 -->
+<div class="section">
 
-  // Supplier
-  var supplier1 = Supplier("SUP-01", "PT Elektronik Jaya",
-      "Jl. Rajawali No. 12, Palembang", "0711-123456", "info@elektronikjaya.co.id");
-  var supplier2 = Supplier("SUP-02", "CV Perkantoran Maju",
-      "Jl. Merdeka No. 45, Palembang", "0711-654321", "cs@perkantoranku.com");
+<h2>11. Penutup</h2>
 
-  print("🚚 DAFTAR SUPPLIER");
-  supplier1.tampilkanSupplier();
-  print("");
-  supplier2.tampilkanSupplier();
-  print("");
+<div class="code-box">
 
-  // ============================================================
-  // DEMO 3: DATA BARANG
-  // ============================================================
-  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  print("3️⃣  DATA BARANG");
-  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+<p>
+Demikian laporan mengenai Sistem Informasi Pendataan Barang di Gudang berbasis Dart dan konsep Object-Oriented Programming (OOP).
+</p>
 
-  var barang1 = Barang("BRG-001", "Laptop Asus TUF", "Elektronik",
-      "Asus", 25, "Unit", "Baik");
-  var barang2 = Barang("BRG-002", "Printer Epson L3110", "Perkantoran",
-      "Epson", 12, "Unit", "Baik");
-  var barang3 = Barang("BRG-003", "Kertas A4 80gr", "Perkantoran",
-      "Sinar Dunia", 150, "Rim", "Baik");
-  var barang4 = Barang("BRG-004", "Kipas Angin Miyako", "Peralatan Rumah Tangga",
-      "Miyako", 8, "Unit", "Baik");
-  var barang5 = Barang("BRG-005", "Monitor LED 22 Inch", "Elektronik",
-      "LG", 5, "Unit", "Baik");
+<p>
+Penyusunan sistem ini diharapkan dapat memberikan pemahaman mengenai penerapan class, constructor, dan method dalam pengembangan aplikasi sederhana.
+</p>
 
-  List<Barang> daftarBarang = [barang1, barang2, barang3, barang4, barang5];
+<p>
+Penulis menyadari bahwa dalam penyusunan tugas ini masih terdapat kekurangan, baik dari segi penulisan maupun implementasi program.
+</p>
 
-  print("📦 DAFTAR BARANG DI GUDANG");
-  for (var b in daftarBarang) {
-    b.tampilkanBarang();
-    print("");
-  }
+<p>
+Oleh karena itu, kritik dan saran yang membangun sangat diharapkan untuk perbaikan di masa mendatang.
+</p>
 
-  // ============================================================
-  // DEMO 4: BARANG MASUK
-  // ============================================================
-  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  print("4️⃣  TRANSAKSI BARANG MASUK");
-  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+<p>
+Semoga laporan ini dapat bermanfaat sebagai bahan pembelajaran dalam memahami pemrograman Dart dan konsep OOP.
+</p>
 
-  var barangMasuk1 = BarangMasuk("BM-001", "01-06-2026", "BRG-001",
-      "Laptop Asus TUF", 10);
-  barangMasuk1.setBarang(barang1);
-  barangMasuk1.prosesMasuk();
-  print("");
+</div>
 
-  var barangMasuk2 = BarangMasuk("BM-002", "03-06-2026", "BRG-003",
-      "Kertas A4 80gr", 50);
-  barangMasuk2.setBarang(barang3);
-  barangMasuk2.prosesMasuk();
-  print("");
+</div>
 
-  List<BarangMasuk> daftarMasuk = [barangMasuk1, barangMasuk2];
-
-  // ============================================================
-  // DEMO 5: BARANG KELUAR
-  // ============================================================
-  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-  print("5️⃣  TRANSAKSI BARANG KELUAR");
-  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-
-  var barangKeluar1 = BarangKeluar("BRG-002", 3, "Ruang Marketing");
-  barangKeluar1.setBarang(barang2);
-  barangKeluar1.prosesKeluar();
-  print("");
-
-  var barangKeluar2 = BarangKeluar("BRG-003", 20, "Ruang HRD");
-  barangKeluar2.setBarang(barang3);
-  barangKeluar2.prosesKeluar();
-  print("");
-
-  List<BarangKeluar> daftarKeluar = [barangKeluar1, barangKeluar2];
-
-  // ============================================================
-  // DEMO 6: STOK BARANG
-  // ============================================================
-  print("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+<footer style="
+text-align:center;
+padding:20px;
+color:#38bdf8;
+font-size:14px;
+text-shadow:0 0 10px #38bdf8;
+border-top:1px solid rgba(56,189,248,0.3);
+margin-top:20px;
+">
+Sistem Informasi Pendataan Barang di Gudang<br>
+Universitas Bina Darma
+</footer>
+</body>
+</html>
