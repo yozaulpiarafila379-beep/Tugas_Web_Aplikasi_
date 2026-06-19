@@ -1,3 +1,501 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pendataan Barang di Gudang</title>
+    <style>
+        :root {
+            --cyan: #22d3ee;
+            --purple: #a855f7;
+            --bg-deep: #020617;
+            --bg-card: rgba(15, 23, 42, 0.70);
+            --border-cyan: rgba(34, 211, 238, 0.4);
+            --text-body: #bae6fd;
+            --text-glow: #e0f2fe;
+            --yellow: #facc15;
+            --pink: #c084fc;
+            --green: #34d399;
+            --orange: #fb923c;
+            --red: #f87171;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', 'Consolas', 'Monaco', monospace;
+            background:
+                radial-gradient(circle at top left, #1e1b4b, transparent 45%),
+                radial-gradient(circle at bottom right, #0f766e, transparent 45%),
+                radial-gradient(circle at 50% 50%, #0a0a1a, transparent 70%),
+                #020617;
+            color: #e0f2fe;
+            min-height: 100vh;
+            line-height: 1.7;
+            scroll-behavior: smooth;
+        }
+
+        /* BACKGROUND GLOW */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                linear-gradient(120deg,
+                    rgba(34, 211, 238, 0.10),
+                    rgba(168, 85, 247, 0.10),
+                    rgba(34, 211, 238, 0.05));
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #22d3ee, #a855f7);
+            border-radius: 10px;
+        }
+
+        /* HEADER */
+        .header {
+            background: rgba(2, 6, 23, 0.75);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(34, 211, 238, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+        .header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #22d3ee, #a855f7, transparent);
+            animation: headerShine 3s ease-in-out infinite;
+        }
+        @keyframes headerShine {
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        .header h1 {
+            background: linear-gradient(90deg, #22d3ee, #a855f7, #22d3ee);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(34, 211, 238, 0.7);
+            animation: titleShine 4s ease-in-out infinite;
+        }
+        @keyframes titleShine {
+            0%,
+            100% {
+                background-position: 0% center;
+            }
+            50% {
+                background-position: 200% center;
+            }
+        }
+        .identitas p {
+            color: #67e8f9;
+            text-shadow: 0 0 10px #22d3ee;
+            letter-spacing: 0.5px;
+        }
+        .identitas h3 {
+            color: #a855f7;
+            text-shadow: 0 0 10px #a855f7;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        hr {
+            background: linear-gradient(90deg, #22d3ee, #a855f7) !important;
+        }
+
+        /* MAIN CONTAINER */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 10px;
+        }
+
+        /* BOX SECTION */
+        .section {
+            margin: 20px 10px;
+            padding: 22px 24px;
+            border-radius: 18px;
+            background: rgba(15, 23, 42, 0.70);
+            border: 1px solid rgba(34, 211, 238, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.6), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .section:hover {
+            transform: translateY(-6px);
+            border-color: #a855f7;
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.5), 0 0 60px rgba(34, 211, 238, 0.2);
+        }
+        .section:hover::before {
+            opacity: 1;
+        }
+        .section h2 {
+            color: #22d3ee !important;
+            text-shadow: 0 0 12px #22d3ee;
+            font-size: 1.4em;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+        .section h2::after {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 2px;
+            margin-top: 8px;
+            background: linear-gradient(90deg, #22d3ee, #a855f7);
+            border-radius: 2px;
+        }
+        .section h3 {
+            color: #a855f7;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            text-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
+        }
+        .section p,
+        .section li,
+        .nama {
+            color: #bae6fd;
+            text-shadow: 0 0 6px rgba(34, 211, 238, 0.5);
+        }
+        .section ul {
+            padding-left: 22px;
+        }
+        .section ul li {
+            margin-bottom: 4px;
+        }
+        .section b {
+            color: #facc15;
+            text-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
+        }
+
+        /* CODE BOX */
+        .code-box {
+            background: #020617;
+            padding: 16px 18px;
+            border-radius: 12px;
+            border: 1px solid #22d3ee;
+            box-shadow: inset 0 0 20px rgba(34, 211, 238, 0.15);
+            overflow: auto;
+            margin-top: 10px;
+            position: relative;
+        }
+        .code-box pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 0.88em;
+            line-height: 1.6;
+        }
+        .code-box code {
+            color: #e0f2fe;
+        }
+        .keyword {
+            color: #c084fc;
+            font-weight: bold;
+        }
+        .type {
+            color: #22d3ee;
+        }
+        .string {
+            color: #facc15;
+        }
+        .comment {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        .number {
+            color: #fb923c;
+        }
+
+        /* BUTTON */
+        .button {
+            margin-top: 12px;
+            padding: 10px 20px;
+            background: linear-gradient(90deg, #22d3ee, #a855f7);
+            border: none;
+            cursor: pointer;
+            color: #fff;
+            border-radius: 10px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            box-shadow: 0 0 18px rgba(168, 85, 247, 0.5);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .button:hover {
+            transform: scale(1.06);
+            box-shadow: 0 0 30px #22d3ee, 0 0 50px rgba(168, 85, 247, 0.6);
+            background: linear-gradient(90deg, #a855f7, #22d3ee);
+        }
+        .button:active {
+            transform: scale(0.96);
+        }
+
+        /* IFRAME */
+        iframe {
+            margin-top: 10px;
+            max-width: 100%;
+            height: 320px;
+            display: none;
+            border-radius: 10px;
+            border: 1px solid rgba(34, 211, 238, 0.5);
+            background: #020617;
+        }
+
+        /* ============ CLASS DIAGRAM STYLES ============ */
+        .diagram-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px 0;
+        }
+        .uml-class {
+            background: rgba(2, 6, 23, 0.85);
+            border: 2px solid #22d3ee;
+            border-radius: 12px;
+            min-width: 220px;
+            max-width: 280px;
+            flex: 1 1 220px;
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+            transition: all 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+        .uml-class:hover {
+            border-color: #a855f7;
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.6);
+            transform: translateY(-5px);
+            z-index: 2;
+        }
+        .uml-class .class-name {
+            background: linear-gradient(90deg, #1e3a5f, #1a1a3e);
+            padding: 10px 14px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.05em;
+            color: #facc15;
+            border-bottom: 2px solid #22d3ee;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.6);
+        }
+        .uml-class .class-attrs {
+            padding: 10px 14px;
+            border-bottom: 1px dashed rgba(34, 211, 238, 0.4);
+            font-size: 0.82em;
+            color: #bae6fd;
+            line-height: 1.7;
+        }
+        .uml-class .class-attrs span {
+            display: block;
+        }
+        .uml-class .class-attrs .attr-type {
+            color: #22d3ee;
+            font-size: 0.85em;
+        }
+        .uml-class .class-methods {
+            padding: 10px 14px;
+            font-size: 0.82em;
+            color: #c084fc;
+            line-height: 1.7;
+        }
+        .uml-class .class-methods span {
+            display: block;
+        }
+        .uml-class .class-methods .method-return {
+            color: #facc15;
+            font-size: 0.85em;
+        }
+        /* diagram legend */
+        .diagram-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+            padding: 12px;
+            font-size: 0.8em;
+            color: #94a3b8;
+        }
+        .diagram-legend span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .legend-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        .legend-dot.cyan {
+            background: #22d3ee;
+            box-shadow: 0 0 8px #22d3ee;
+        }
+        .legend-dot.purple {
+            background: #a855f7;
+            box-shadow: 0 0 8px #a855f7;
+        }
+        .legend-dot.yellow {
+            background: #facc15;
+            box-shadow: 0 0 8px #facc15;
+        }
+        .legend-dot.green {
+            background: #34d399;
+            box-shadow: 0 0 8px #34d399;
+        }
+        .relation-arrow {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.75em;
+            padding: 4px 0;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #38bdf8;
+            font-size: 14px;
+            text-shadow: 0 0 10px #38bdf8;
+            border-top: 1px solid rgba(56, 189, 248, 0.3);
+            margin-top: 30px;
+            letter-spacing: 1px;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .section {
+                padding: 16px;
+                margin: 14px 4px;
+            }
+            .section h2 {
+                font-size: 1.15em;
+            }
+            .uml-class {
+                min-width: 150px;
+                flex: 1 1 150px;
+                font-size: 0.75em;
+            }
+            .code-box pre {
+                font-size: 0.72em;
+            }
+            iframe {
+                height: 240px;
+            }
+        }
+    </style>
+    <script>
+        let activeElement = null;
+
+        function showContent(id) {
+            if (activeElement && activeElement !== document.getElementById(id)) {
+                activeElement.style.display = "none";
+            }
+            const el = document.getElementById(id);
+            if (activeElement === el) {
+                el.style.display = "none";
+                activeElement = null;
+                return;
+            }
+            el.style.display = "block";
+            activeElement = el;
+        }
+
+        function runDart(id, url) {
+            if (activeElement && activeElement !== document.getElementById(id)) {
+                activeElement.style.display = "none";
+            }
+            const frame = document.getElementById(id);
+            if (activeElement === frame) {
+                frame.style.display = "none";
+                frame.src = "";
+                activeElement = null;
+                return;
+            }
+            frame.src = url;
+            frame.style.display = "block";
+            activeElement = frame;
+        }
+
+        // Fungsi untuk scroll ke section diagram
+        function scrollToDiagram() {
+            const el = document.getElementById('section-diagram');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container">
+
+        <!-- ==================== HEADER ==================== -->
+        <div class="header" style="padding: 30px 20px; text-align:center;">
+            <h1 style="font-size: clamp(1.6em, 5vw, 2.6em); margin: 0; line-height: 1.3; font-weight: bold;">
+                Sistem</h1>
+            <h1 style="font-size: clamp(1.6em, 5vw, 2.6em); margin: 5px 0; line-height: 1.3; font-weight: bold;">
+                Pendataan Barang</h1>
+            <h1 style="font-size: clamp(1.6em, 5vw, 2.6em); margin: 0; line-height: 1.3; font-weight: bold;">
+                di Gudang</h1>
+            <hr style="width: 60%; max-width: 300px; margin: 20px auto; border: none; height: 2px; background-color: #38bdf8;">
+            <div class="identitas">
+                <h3>✨ KELOMPOK ✨</h3>
+                <p>Yoza Ulpia Rafila — 251410004 — SI2A</p>
+                <p>Rifqi Prayoga — 251410005 — SI2A</p>
+            </div>
+        </div>
+
+        <!-- ==================== NAVIGASI CEPAT ==================== -->
+        <div class="section" style="text-align:center;">
+            <h2>📑 Daftar Isi</h2>
+            <p style="color:#94a3b8; font-size:0.85em;">
+                1. Class User &nbsp;|&nbsp; 2. Class Barang &nbsp;|&nbsp; 3. Class Kategori &nbsp;|&nbsp;
+                4. Class Supplier &nbsp;|&nbsp; 5. Class BarangMasuk &nbsp;|&nbsp; 6. Class BarangKeluar<br>
+                7. Class StokBarang &nbsp;|&nbsp; 8. Class Laporan &nbsp;|&nbsp; 9. Class RiwayatBarang &nbsp;|&nbsp;
+                10. Class Gudang &nbsp;|&nbsp; 11. Class Peminjaman<br>
+                12. Class Notifikasi &nbsp;|&nbsp; 13. Class Dashboard &nbsp;|&nbsp;
+                <button class="button" style="font-size:0.8em; padding:6px 12px; margin:4px;"
+            onclick="scrollToDiagram()">📊 Diagram Class</button>
+            &nbsp;|&nbsp; 15. Penggunaan Aplikasi &nbsp;|&nbsp; 16. Kesimpulan &nbsp;|&nbsp; 17. Penutup
+        </p>
+    </div>
 // ============================================================
 // SISTEM INFORMASI PENDATAAN BARANG DI GUDANG
 // ============================================================
