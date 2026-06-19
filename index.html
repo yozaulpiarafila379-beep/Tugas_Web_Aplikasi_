@@ -1,1766 +1,1954 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sistem Pendataan Barang di Gudang</title>
-<style>
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-
-body{
-    font-family:'Courier New', monospace;
-
-    background:
-    radial-gradient(circle at top left,#1e1b4b,transparent 45%),
-    radial-gradient(circle at bottom right,#0f766e,transparent 45%),
-    #020617;
-
-    color:#e0f2fe;
-}
-
-
-/* BACKGROUND GLOW */
-
-body::before{
-
-    content:"";
-
-    position:fixed;
-
-    inset:0;
-
-    background:
-    linear-gradient(
-        120deg,
-        rgba(34,211,238,.12),
-        rgba(168,85,247,.12)
-    );
-
-    z-index:-1;
-
-}
-
-/* HEADER */
-
-.header{
-
-    background:
-    rgba(2,6,23,.75);
-
-    backdrop-filter:
-    blur(15px);
-
-    border-bottom:
-    1px solid rgba(34,211,238,.5);
-
-}
-
-/* JUDUL UTAMA */
-
-.header h1{
-
-    background:
-    linear-gradient(
-        90deg,
-        #22d3ee,
-        #a855f7
-    );
-
-    -webkit-background-clip:text;
-
-    color:transparent;
-
-    text-shadow:
-    0 0 15px rgba(34,211,238,.7);
-
-}
-
-/* IDENTITAS */
-
-.identitas p{
-
-    color:#67e8f9;
-
-    text-shadow:
-    0 0 10px #22d3ee;
-
-}
-
-/* JUDUL KELOMPOK */
-
-.identitas h3{
-
-    color:#a855f7;
-
-    text-shadow:
-    0 0 10px #a855f7;
-
-    margin-bottom:10px;
-
-}
-
-/* GARIS HEADER */
-
-hr{
-
-    background:
-    linear-gradient(
-    90deg,
-    #22d3ee,
-    #a855f7
-    ) !important;
-
-}
-
-/* BOX SECTION */
-
-.section{
-
-    margin:20px;
-
-    padding:20px;
-
-    border-radius:18px;
-
-    background:
-    rgba(15,23,42,.70);
-
-    border:
-    1px solid rgba(34,211,238,.4);
-
-    backdrop-filter:
-    blur(12px);
-
-
-    box-shadow:
-
-    0 0 20px rgba(34,211,238,.2);
-
-    transition:.4s;
-
-}
-
-.section:hover{
-
-    transform:
-    translateY(-8px);
-
-
-    border-color:#a855f7;
-
-    box-shadow:
-
-    0 0 30px rgba(168,85,247,.6);
-
-}
-
-/* JUDUL SOAL */
-
-.section h2{
-
-    color:#22d3ee !important;
-
-    text-shadow:
-
-    0 0 12px #22d3ee;
-
-}
-
-.section h2::after{
-
-    content:"";
-
-    display:block;
-
-    width:100%;
-
-    height:2px;
-
-    margin-top:8px;
-
-
-    background:
-
-    linear-gradient(
-    90deg,
-    #22d3ee,
-    #a855f7
-    );
-
-}
-
-/* TEKS */
-
-.section p,
-.nama{
-
-    color:#bae6fd;
-
-    text-shadow:
-
-    0 0 6px rgba(34,211,238,.6);
-
-}
-
-
-/* CODE BOX */
-
-.code-box{
-
-    background:#020617;
-
-    padding:15px;
-
-    border-radius:12px;
-
-    border:
-
-    1px solid #22d3ee;
-
-
-    box-shadow:
-
-    inset 0 0 20px rgba(34,211,238,.2);
-
-    overflow:auto;
-
-}
-
-/* WARNA CODE */
-
-.keyword{
-
-    color:#c084fc;
-
-}
-
-.type{
-
-    color:#22d3ee;
-
-}
-
-.string{
-
-    color:#facc15;
-
-}
-
-.comment{
-
-    color:#94a3b8;
-
-}
-
-/* BUTTON */
-
-.button{
-
-    margin-top:10px;
-
-    padding:9px 18px;
-
-    background:
-
-    linear-gradient(
-    90deg,
-    #22d3ee,
-    #a855f7
-    );
-
-    border:none;
-
-    cursor:pointer;
-
-    color:white;
-
-    border-radius:10px;
-
-    font-weight:bold;
-
-    box-shadow:
-
-    0 0 15px rgba(168,85,247,.5);
-
-
-    transition:.3s;
-
-}
-
-.button:hover{
-
-    transform:scale(1.05);
-
-    box-shadow:
-
-    0 0 30px #22d3ee;
-
-}
-
-/* IMAGE */
-
-img{
-
-    margin-top:10px;
-
-    max-width:100%;
-
-    height:auto;
-
-    display:none;
-
-    border-radius:10px;
-
-}
-
-</style>
-<script>
-let activeElement = null;
-
-function showContent(id) {
-    if (activeElement) {
-        activeElement.style.display = "none";
-    }
-
-    const el = document.getElementById(id);
-
-    if (activeElement === el) {
-        activeElement = null;
-        return;
-    }
-
-    el.style.display = "block";
-    activeElement = el;
-}
-
-// TAMBAHKAN DI SINI (di bawah showContent, masih dalam <script>)
-function runDart(id, url) {
-    if (activeElement) {
-        activeElement.style.display = "none";
-    }
-
-    const frame = document.getElementById(id);
-
-    if (activeElement === frame) {
-        activeElement = null;
-        return;
-    }
-
-    frame.src = url;
-    frame.style.display = "block";
-
-    activeElement = frame;
-}
-</script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistem Pendataan Barang — OOP + Pseudocode + Flowchart</title>
+    <style>
+        /* ── reset & variabel ── */
+        :root {
+            --cyan: #22d3ee;
+            --purple: #a855f7;
+            --bg-deep: #020617;
+            --bg-card: rgba(15, 23, 42, 0.75);
+            --border-cyan: rgba(34, 211, 238, 0.4);
+            --text-body: #bae6fd;
+            --text-glow: #e0f2fe;
+            --yellow: #facc15;
+            --pink: #c084fc;
+            --green: #34d399;
+            --orange: #fb923c;
+            --red: #f87171;
+            --gray: #94a3b8;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Courier New', 'Consolas', monospace;
+            background:
+                radial-gradient(circle at top left, #1e1b4b, transparent 45%),
+                radial-gradient(circle at bottom right, #0f766e, transparent 45%),
+                radial-gradient(circle at 50% 50%, #0a0a1a, transparent 70%),
+                #020617;
+            color: #e0f2fe;
+            min-height: 100vh;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(120deg, rgba(34, 211, 238, 0.08), rgba(168, 85, 247, 0.08), rgba(34, 211, 238, 0.04));
+            z-index: -1;
+            pointer-events: none;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #22d3ee, #a855f7);
+            border-radius: 10px;
+        }
+
+        .header {
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(34, 211, 238, 0.5);
+            position: relative;
+            overflow: hidden;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .header::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #22d3ee, #a855f7, transparent);
+            animation: headerShine 3s ease-in-out infinite;
+        }
+        @keyframes headerShine {
+            0%,
+            100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+        .header h1 {
+            background: linear-gradient(90deg, #22d3ee, #a855f7, #22d3ee);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(34, 211, 238, 0.7);
+            animation: titleShine 4s ease-in-out infinite;
+            font-size: clamp(1.6em, 5vw, 2.6em);
+            margin: 0;
+            line-height: 1.3;
+            font-weight: bold;
+        }
+        @keyframes titleShine {
+            0%,
+            100% {
+                background-position: 0% center;
+            }
+            50% {
+                background-position: 200% center;
+            }
+        }
+        .header .subtitle {
+            font-size: clamp(0.9em, 2vw, 1.2em);
+            color: #67e8f9;
+            text-shadow: 0 0 10px #22d3ee;
+            letter-spacing: 0.5px;
+            margin-top: 4px;
+        }
+        .header .identitas {
+            margin-top: 12px;
+        }
+        .header .identitas h3 {
+            color: #a855f7;
+            text-shadow: 0 0 10px #a855f7;
+            letter-spacing: 2px;
+            font-size: 1.1em;
+        }
+        .header .identitas p {
+            color: #67e8f9;
+            text-shadow: 0 0 10px #22d3ee;
+            letter-spacing: 0.5px;
+            margin: 2px 0;
+        }
+        .header hr {
+            width: 60%;
+            max-width: 300px;
+            margin: 16px auto;
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #22d3ee, #a855f7);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 16px;
+        }
+
+        .section {
+            margin: 20px 0;
+            padding: 22px 24px;
+            border-radius: 18px;
+            background: rgba(15, 23, 42, 0.70);
+            border: 1px solid rgba(34, 211, 238, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.6), transparent);
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+        .section:hover {
+            transform: translateY(-4px);
+            border-color: #a855f7;
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.4), 0 0 60px rgba(34, 211, 238, 0.15);
+        }
+        .section:hover::before {
+            opacity: 1;
+        }
+        .section h2 {
+            color: #22d3ee !important;
+            text-shadow: 0 0 12px #22d3ee;
+            font-size: 1.4em;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+        .section h2::after {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 2px;
+            margin-top: 8px;
+            background: linear-gradient(90deg, #22d3ee, #a855f7);
+            border-radius: 2px;
+        }
+        .section h3 {
+            color: #a855f7;
+            margin-top: 14px;
+            margin-bottom: 6px;
+            text-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
+        }
+        .section p,
+        .section li {
+            color: #bae6fd;
+            text-shadow: 0 0 6px rgba(34, 211, 238, 0.3);
+        }
+        .section ul {
+            padding-left: 22px;
+        }
+        .section ul li {
+            margin-bottom: 4px;
+        }
+        .section b {
+            color: #facc15;
+            text-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
+        }
+
+        .badge {
+            display: inline-block;
+            background: #a855f7;
+            color: #fff;
+            font-size: 0.65em;
+            padding: 2px 12px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(168, 85, 247, 0.8);
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        .badge.cyan {
+            background: #22d3ee;
+            color: #020617;
+            text-shadow: none;
+        }
+        .badge.green {
+            background: #34d399;
+            color: #020617;
+            text-shadow: none;
+        }
+        .badge.orange {
+            background: #fb923c;
+            color: #020617;
+            text-shadow: none;
+        }
+        .badge.red {
+            background: #f87171;
+            color: #020617;
+            text-shadow: none;
+        }
+        .badge.pink {
+            background: #f472b6;
+            color: #020617;
+            text-shadow: none;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+        @media (max-width: 900px) {
+            .grid-2,
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 600px) {
+            .grid-2,
+            .grid-3,
+            .grid-4 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: rgba(2, 6, 23, 0.7);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 12px;
+            padding: 14px 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .card:hover {
+            border-color: #a855f7;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+            transform: translateY(-3px);
+        }
+        .card .card-title {
+            font-weight: bold;
+            color: #facc15;
+            font-size: 0.95em;
+            margin-bottom: 4px;
+            text-shadow: 0 0 8px rgba(250, 204, 21, 0.3);
+        }
+        .card .card-sub {
+            color: #94a3b8;
+            font-size: 0.8em;
+        }
+        .card .card-status {
+            font-size: 0.8em;
+            margin-top: 6px;
+        }
+        .card .card-status .avail {
+            color: #34d399;
+        }
+        .card .card-status .unavail {
+            color: #f87171;
+        }
+        .card .card-actions {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            color: #fff;
+            background: linear-gradient(90deg, #22d3ee, #a855f7);
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+        }
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #22d3ee, 0 0 30px rgba(168, 85, 247, 0.4);
+        }
+        .btn:active {
+            transform: scale(0.95);
+        }
+        .btn.small {
+            padding: 4px 10px;
+            font-size: 0.65em;
+        }
+        .btn.green {
+            background: linear-gradient(90deg, #34d399, #22d3ee);
+        }
+        .btn.orange {
+            background: linear-gradient(90deg, #fb923c, #facc15);
+        }
+        .btn.red {
+            background: linear-gradient(90deg, #f87171, #fb923c);
+        }
+        .btn.purple {
+            background: linear-gradient(90deg, #a855f7, #c084fc);
+        }
+        .btn.cyan {
+            background: linear-gradient(90deg, #22d3ee, #67e8f9);
+            color: #020617;
+        }
+        .btn.outline {
+            background: transparent;
+            border: 1px solid #22d3ee;
+            box-shadow: none;
+        }
+        .btn.outline:hover {
+            background: rgba(34, 211, 238, 0.15);
+        }
+
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 14px;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .form-row label {
+            color: #94a3b8;
+            font-size: 0.8em;
+            min-width: 80px;
+        }
+        .form-row input,
+        .form-row select {
+            background: rgba(2, 6, 23, 0.8);
+            border: 1px solid rgba(34, 211, 238, 0.4);
+            border-radius: 8px;
+            padding: 6px 12px;
+            color: #e0f2fe;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            flex: 1;
+            min-width: 120px;
+            transition: border 0.3s;
+        }
+        .form-row input:focus,
+        .form-row select:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+        }
+        .form-row input::placeholder {
+            color: #475569;
+        }
+        .form-row .btn {
+            flex: 0 0 auto;
+        }
+
+        .terminal {
+            background: #020617;
+            border: 1px solid #22d3ee;
+            border-radius: 12px;
+            padding: 14px 18px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.82em;
+            line-height: 1.7;
+            color: #bae6fd;
+            box-shadow: inset 0 0 30px rgba(34, 211, 238, 0.05);
+            margin-top: 10px;
+        }
+        .terminal .log-line {
+            padding: 1px 0;
+            border-bottom: 1px solid rgba(34, 211, 238, 0.05);
+        }
+        .terminal .log-line .time {
+            color: #475569;
+            margin-right: 10px;
+        }
+        .terminal .log-line .ok {
+            color: #34d399;
+        }
+        .terminal .log-line .err {
+            color: #f87171;
+        }
+        .terminal .log-line .warn {
+            color: #facc15;
+        }
+        .terminal .log-line .info {
+            color: #22d3ee;
+        }
+        .terminal .log-line .cyan {
+            color: #22d3ee;
+        }
+        .terminal .log-line .purple {
+            color: #a855f7;
+        }
+        .terminal .log-line .yellow {
+            color: #facc15;
+        }
+        .terminal .log-line .green {
+            color: #34d399;
+        }
+        .terminal .log-line .red {
+            color: #f87171;
+        }
+        .terminal .log-line .gray {
+            color: #94a3b8;
+        }
+
+        .code-box {
+            background: #020617;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid #22d3ee;
+            box-shadow: inset 0 0 20px rgba(34, 211, 238, 0.08);
+            overflow: auto;
+            margin-top: 10px;
+            font-size: 0.82em;
+            line-height: 1.6;
+            color: #e0f2fe;
+        }
+        .code-box .kw {
+            color: #c084fc;
+            font-weight: bold;
+        }
+        .code-box .type {
+            color: #22d3ee;
+        }
+        .code-box .str {
+            color: #facc15;
+        }
+        .code-box .cmt {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        .code-box .num {
+            color: #fb923c;
+        }
+        .code-box .fn {
+            color: #34d399;
+        }
+        .code-box .cls {
+            color: #f472b6;
+        }
+        .code-box .ovr {
+            color: #34d399;
+            font-weight: bold;
+        }
+
+        .diagram-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            padding: 12px 0;
+        }
+        .uml-class {
+            background: rgba(2, 6, 23, 0.85);
+            border: 2px solid #22d3ee;
+            border-radius: 10px;
+            min-width: 170px;
+            max-width: 250px;
+            flex: 1 1 170px;
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.2);
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+        .uml-class:hover {
+            border-color: #a855f7;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+            transform: translateY(-4px);
+        }
+        .uml-class .class-name {
+            background: linear-gradient(90deg, #1e3a5f, #1a1a3e);
+            padding: 8px 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.95em;
+            color: #facc15;
+            border-bottom: 2px solid #22d3ee;
+            letter-spacing: 0.5px;
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+        }
+        .uml-class .class-name.abstract {
+            background: linear-gradient(90deg, #3d1f5f, #1a1a3e);
+            border-bottom-color: #f472b6;
+            font-style: italic;
+        }
+        .uml-class .class-name.abstract::before {
+            content: "⟨abstract⟩ ";
+            font-size: 0.6em;
+            color: #f472b6;
+            font-style: normal;
+        }
+        .uml-class .class-attrs {
+            padding: 8px 12px;
+            border-bottom: 1px dashed rgba(34, 211, 238, 0.3);
+            font-size: 0.75em;
+            color: #bae6fd;
+            line-height: 1.6;
+        }
+        .uml-class .class-attrs span {
+            display: block;
+        }
+        .uml-class .class-attrs .attr-type {
+            color: #22d3ee;
+        }
+        .uml-class .class-methods {
+            padding: 8px 12px;
+            font-size: 0.75em;
+            color: #c084fc;
+            line-height: 1.6;
+        }
+        .uml-class .class-methods span {
+            display: block;
+        }
+        .uml-class .class-methods .method-return {
+            color: #facc15;
+        }
+        .uml-class .class-methods .abstract-method {
+            color: #f472b6;
+            font-style: italic;
+        }
+
+        .pseudo-block {
+            background: #0a0a1a;
+            border-left: 3px solid #f472b6;
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85em;
+            line-height: 1.8;
+            color: #e0f2fe;
+            overflow-x: auto;
+            position: relative;
+        }
+        .pseudo-block .p-comment {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        .pseudo-block .p-keyword {
+            color: #c084fc;
+            font-weight: bold;
+        }
+        .pseudo-block .p-type {
+            color: #22d3ee;
+        }
+        .pseudo-block .p-string {
+            color: #facc15;
+        }
+        .pseudo-block .p-number {
+            color: #fb923c;
+        }
+        .pseudo-block .p-function {
+            color: #34d399;
+        }
+        .pseudo-block .p-class {
+            color: #f472b6;
+            font-weight: bold;
+        }
+        .pseudo-block .p-var {
+            color: #facc15;
+        }
+        .pseudo-block .p-cond {
+            color: #fb923c;
+        }
+        .pseudo-block .p-loop {
+            color: #c084fc;
+        }
+        .pseudo-block .p-op {
+            color: #22d3ee;
+        }
+        .pseudo-block .p-return {
+            color: #34d399;
+        }
+
+        /* ── FLOWCHART dengan GARIS JALUR (tanpa simbol) ── */
+        .flowchart-v {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            gap: 0;
+            width: 100%;
+        }
+        .flowchart-v .fc-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 12px 20px;
+            width: 100%;
+            padding: 2px 0;
+        }
+        .flowchart-v .fc-node {
+            background: rgba(2, 6, 23, 0.9);
+            border: 2px solid #22d3ee;
+            border-radius: 10px;
+            padding: 8px 18px;
+            min-width: 100px;
+            text-align: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #e0f2fe;
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.15);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .flowchart-v .fc-node.start {
+            border-color: #34d399;
+            border-radius: 30px;
+            background: rgba(52, 211, 153, 0.15);
+            box-shadow: 0 0 20px rgba(52, 211, 153, 0.2);
+        }
+        .flowchart-v .fc-node.end {
+            border-color: #34d399;
+            border-radius: 30px;
+            background: rgba(52, 211, 153, 0.15);
+            box-shadow: 0 0 20px rgba(52, 211, 153, 0.2);
+        }
+        .flowchart-v .fc-node.process {
+            border-color: #22d3ee;
+            background: rgba(34, 211, 238, 0.08);
+        }
+        .flowchart-v .fc-node.decision {
+            border-color: #facc15;
+            background: rgba(250, 204, 21, 0.08);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            padding: 16px 24px;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flowchart-v .fc-node.decision .inner {
+            display: block;
+            background: transparent;
+            text-align: center;
+        }
+        .flowchart-v .fc-node.error {
+            border-color: #f87171;
+            background: rgba(248, 113, 113, 0.1);
+        }
+        .flowchart-v .fc-node.sub {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.08);
+            font-size: 0.7em;
+            padding: 4px 12px;
+            min-width: 60px;
+        }
+        .flowchart-v .fc-node:hover {
+            transform: translateY(-2px) scale(1.02);
+            border-color: #a855f7;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.4);
+        }
+
+        /* GARIS VERTIKAL (tanpa simbol) */
+        .fc-line-v {
+            width: 2px;
+            height: 24px;
+            background: linear-gradient(180deg, #475569, #94a3b8);
+            margin: 2px 0;
+            position: relative;
+        }
+        .fc-line-v .label {
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.5em;
+            color: #475569;
+            white-space: nowrap;
+            background: rgba(2, 6, 23, 0.8);
+            padding: 0 6px;
+            border-radius: 4px;
+        }
+
+        /* GARIS HORIZONTAL (tanpa simbol) */
+        .fc-line-h {
+            height: 2px;
+            min-width: 30px;
+            background: linear-gradient(90deg, #475569, #94a3b8);
+            margin: 0 4px;
+            flex: 0 1 40px;
+        }
+        .fc-branch-label {
+            color: #94a3b8;
+            font-size: 0.65em;
+            letter-spacing: 0.5px;
+            padding: 0 4px;
+        }
+
+        /* ── SYSTEM FLOWCHART dengan GARIS JALUR ── */
+        .sys-flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+            gap: 0;
+            width: 100%;
+        }
+        .sys-flowchart .sf-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 8px 14px;
+            width: 100%;
+            padding: 2px 0;
+        }
+        .sys-flowchart .sf-node {
+            background: rgba(2, 6, 23, 0.85);
+            border: 2px solid #22d3ee;
+            padding: 10px 20px;
+            text-align: center;
+            font-size: 0.8em;
+            font-weight: bold;
+            color: #e0f2fe;
+            box-shadow: 0 0 15px rgba(34, 211, 238, 0.1);
+            transition: all 0.3s ease;
+            min-width: 80px;
+            position: relative;
+        }
+        .sys-flowchart .sf-node.start-end {
+            border-radius: 40px;
+            border-color: #34d399;
+            background: rgba(52, 211, 153, 0.12);
+            box-shadow: 0 0 25px rgba(52, 211, 153, 0.15);
+        }
+        .sys-flowchart .sf-node.process {
+            border-radius: 8px;
+            border-color: #22d3ee;
+            background: rgba(34, 211, 238, 0.06);
+        }
+        .sys-flowchart .sf-node.decision {
+            border-color: #facc15;
+            background: rgba(250, 204, 21, 0.06);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            padding: 20px 28px;
+            min-width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sys-flowchart .sf-node.decision .inner {
+            display: block;
+            text-align: center;
+        }
+        .sys-flowchart .sf-node.error {
+            border-color: #f87171;
+            background: rgba(248, 113, 113, 0.08);
+        }
+        .sys-flowchart .sf-node.sub {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.06);
+            font-size: 0.7em;
+            padding: 4px 12px;
+            min-width: 50px;
+        }
+        .sys-flowchart .sf-node:hover {
+            transform: translateY(-2px) scale(1.02);
+            border-color: #a855f7;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+        }
+
+        .sf-line-v {
+            width: 2px;
+            height: 20px;
+            background: linear-gradient(180deg, #475569, #94a3b8);
+            margin: 2px 0;
+            position: relative;
+        }
+        .sf-line-v .label {
+            position: absolute;
+            bottom: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.45em;
+            color: #475569;
+            white-space: nowrap;
+            background: rgba(2, 6, 23, 0.8);
+            padding: 0 6px;
+            border-radius: 4px;
+        }
+        .sf-line-h {
+            height: 2px;
+            min-width: 20px;
+            background: linear-gradient(90deg, #475569, #94a3b8);
+            margin: 0 4px;
+            flex: 0 1 30px;
+        }
+        .sf-branch-label {
+            color: #94a3b8;
+            font-size: 0.65em;
+            letter-spacing: 0.5px;
+            padding: 0 4px;
+        }
+        .sf-divider {
+            width: 60%;
+            max-width: 500px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(34, 211, 238, 0.2), transparent);
+            margin: 4px 0;
+        }
+
+        /* ── iframe ── */
+        iframe {
+            margin-top: 10px;
+            max-width: 100%;
+            height: 320px;
+            display: none;
+            border-radius: 10px;
+            border: 1px solid rgba(34, 211, 238, 0.5);
+            background: #020617;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #38bdf8;
+            font-size: 13px;
+            text-shadow: 0 0 10px #38bdf8;
+            border-top: 1px solid rgba(56, 189, 248, 0.2);
+            margin-top: 30px;
+            letter-spacing: 0.5px;
+        }
+
+        @media (max-width: 768px) {
+            .section {
+                padding: 16px;
+            }
+            .section h2 {
+                font-size: 1.15em;
+            }
+            .uml-class {
+                min-width: 130px;
+                flex: 1 1 130px;
+                font-size: 0.7em;
+            }
+            .terminal {
+                font-size: 0.7em;
+                max-height: 220px;
+            }
+            .form-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .form-row label {
+                min-width: auto;
+            }
+            .form-row .btn {
+                align-self: flex-start;
+            }
+            .pseudo-block {
+                font-size: 0.75em;
+                padding: 10px 12px;
+            }
+            .flowchart-v .fc-node {
+                font-size: 0.65em;
+                padding: 6px 10px;
+                min-width: 60px;
+            }
+            .flowchart-v .fc-node.decision {
+                padding: 10px 14px;
+                min-width: 80px;
+            }
+            .sys-flowchart .sf-node {
+                font-size: 0.65em;
+                padding: 6px 10px;
+                min-width: 50px;
+            }
+            .sys-flowchart .sf-node.decision {
+                padding: 12px 16px;
+                min-width: 70px;
+            }
+            .fc-line-v {
+                height: 16px;
+            }
+            .sf-line-v {
+                height: 14px;
+            }
+        }
+    </style>
+    <script>
+        let activeIframe = null;
+
+        function runDart(id, url) {
+            if (activeIframe && activeIframe !== document.getElementById(id)) {
+                activeIframe.style.display = "none";
+                activeIframe.src = "";
+            }
+            const frame = document.getElementById(id);
+            if (activeIframe === frame) {
+                frame.style.display = "none";
+                frame.src = "";
+                activeIframe = null;
+                return;
+            }
+            frame.src = url;
+            frame.style.display = "block";
+            activeIframe = frame;
+        }
+    </script>
 </head>
-
 <body>
-<div class="container">
 
-<div class="header" style="padding: 30px; text-align:center;">
-    
-<!-- JUDUL UTAMA -->
-<h1 style="font-size: clamp(1.8em, 6vw, 2.8em); margin: 0; line-height: 1.3; font-weight: bold;">
-Sistem
-</h1>
+    <!-- ==================== HEADER ==================== -->
+    <header class="header">
+        <h1>Sistem Pendataan Barang di Gudang</h1>
+        <div class="subtitle">— Tugas Kelompok —</div>
+        <hr />
+        <div class="identitas">
+            <h3>✨ KELOMPOK ✨</h3>
+            <p>Yoza Ulpia Rafila — 251410004 — SI2A</p>
+            <p>Rifqi Prayoga — 251410005 — SI2A</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- ==================== DASHBOARD / KONTROL ==================== -->
+        <div class="section">
+            <h2>📋 Dashboard &amp; Kontrol</h2>
+            <p style="color:#94a3b8; font-size:0.9em;">
+                Tambahkan barang baru ke gudang, atau pilih barang yang sudah terdaftar untuk dikelola.
+                Stok akan otomatis diperbarui dan dicatat di riwayat.
+            </p>
+            <div class="card" style="margin-top:12px; border-color:#a855f7;">
+                <div class="card-title">➕ Tambah Barang Baru</div>
+                <div class="form-row">
+                    <label>Kode</label>
+                    <input type="text" id="newKode" placeholder="BRG-001" value="BRG-001" />
+                    <label>Nama</label>
+                    <input type="text" id="newNama" placeholder="Nama Barang" value="Laptop Asus" />
+                    <label>Kategori</label>
+                    <input type="text" id="newKategori" placeholder="Elektronik" value="Elektronik" />
+                    <label>Stok</label>
+                    <input type="number" id="newStok" placeholder="0" value="10" />
+                    <button class="btn green" onclick="tambahBarang()">➕ Tambah</button>
+                </div>
+            </div>
+            <div class="card" style="margin-top:12px;">
+                <div class="card-title">🎯 Pilih Barang &amp; Aksi</div>
+                <div class="form-row">
+                    <label>Pilih Barang</label>
+                    <select id="selectBarang"></select>
+                    <button class="btn cyan small" onclick="refreshSelect()">↻ Refresh</button>
+                </div>
+                <div class="form-row" style="margin-top:6px;">
+                    <button class="btn green small" onclick="tambahStok()">📥 Tambah Stok (+)</button>
+                    <button class="btn orange small" onclick="kurangiStok()">📤 Kurangi Stok (−)</button>
+                    <button class="btn purple small" onclick="tampilkanBarang()">ℹ️ Detail</button>
+                    <button class="btn red small" onclick="hapusBarang()">🗑️ Hapus</button>
+                </div>
+                <div style="margin-top:6px; font-size:0.8em; color:#94a3b8;">
+                    <span id="infoBarang">Belum ada barang dipilih.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== DAFTAR BARANG ==================== -->
+        <div class="section">
+            <h2>📦 Daftar Barang di Gudang</h2>
+            <div id="inventoryGrid" class="grid-3" style="margin-top:10px;">
+                <!-- akan diisi oleh JS -->
+            </div>
+        </div>
+
+        <!-- ==================== TERMINAL / KONSOL ==================== -->
+        <div class="section" style="border-color:#a855f7;">
+            <h2 style="color:#a855f7 !important; text-shadow:0 0 20px #a855f7;">🖥️ Terminal Console</h2>
+            <p style="color:#94a3b8; font-size:0.8em;">Log aktivitas sistem — semua transaksi tercatat di sini.</p>
+            <div class="terminal" id="terminal">
+                <div class="log-line"><span class="time">[INIT]</span> <span class="cyan">Sistem Pendataan Barang di Gudang</span> — <span class="gray">siap digunakan.</span></div>
+                <div class="log-line"><span class="time">[INIT]</span> <span class="green">✅ 5 barang contoh berhasil di-instansiasi.</span></div>
+            </div>
+            <button class="btn small" onclick="clearTerminal()" style="margin-top:8px;">🧹 Clear Log</button>
+        </div>
+
+        <!-- ==================== FLOWCHART SISTEM (GARIS JALUR) ==================== -->
+        <div class="section" style="border:2px solid rgba(52,211,153,0.6); background:rgba(10,40,30,0.2);">
+            <h2 style="color:#34d399 !important; text-shadow:0 0 25px #34d399;">🔄 Flowchart Sistem (Interaksi Pengguna)</h2>
+            <p style="color:#94a3b8; font-size:0.85em; margin-bottom:12px;">
+                Diagram alir dengan <b>garis jalur</b> (tanpa simbol panah) menunjukkan alur interaksi pengguna.
+                <b style="color:#34d399;">Hijau</b> = mulai/selesai, <b style="color:#22d3ee;">Biru</b> = proses,
+                <b style="color:#facc15;">Kuning</b> = percabangan, <b style="color:#f87171;">Merah</b> = error.
+            </p>
+
+            <div class="sys-flowchart">
+
+                <!-- START -->
+                <div class="sf-row">
+                    <div class="sf-node start-end">🚀 MULAI</div>
+                </div>
+                <div class="sf-line-v"><span class="label">step 1</span></div>
+
+                <!-- Inisialisasi -->
+                <div class="sf-row">
+                    <div class="sf-node process">⚙️ Inisialisasi Sistem</div>
+                </div>
+                <div class="sf-line-v"><span class="label">step 2</span></div>
+
+                <!-- Dashboard -->
+                <div class="sf-row">
+                    <div class="sf-node process">🖥️ Tampilkan Dashboard</div>
+                </div>
+                <div class="sf-line-v"><span class="label">step 3</span></div>
+
+                <!-- Decision: Aksi -->
+                <div class="sf-row">
+                    <div class="sf-node decision"><div class="inner">❓ Pilih Aksi</div></div>
+                </div>
+
+                <!-- Branch: Tambah Barang -->
+                <div class="sf-row" style="gap:6px 12px;">
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+                        <span class="sf-branch-label" style="color:#34d399;">➡️ Tambah Barang</span>
+                        <div class="sf-line-v"></div>
+                        <div class="sf-node process">📝 Input Data</div>
+                        <div class="sf-line-v"></div>
+                        <div class="sf-node decision" style="padding:12px 18px;"><div class="inner">❓ Kode unik?</div></div>
+                        <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin-top:2px;">
+                            <div style="display:flex; flex-direction:column; align-items:center;">
+                                <span style="color:#34d399;font-size:0.7em;">✅ Ya</span>
+                                <div class="sf-line-v"></div>
+                                <div class="sf-node process" style="border-color:#34d399;">✅ Simpan</div>
+                            </div>
+                            <div style="display:flex; flex-direction:column; align-items:center;">
+                                <span style="color:#f87171;font-size:0.7em;">❌ Tidak</span>
+                                <div class="sf-line-v"></div>
+                                <div class="sf-node error">⚠️ Error: Duplikat</div>
+                            </div>
+                        </div>
+                        <div class="sf-line-v" style="margin-top:4px;"><span class="label">kembali</span></div>
+                    </div>
+
+                    <!-- Branch: Pilih Barang -->
+                    <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
+                        <span class="sf-branch-label" style="color:#22d3ee;">➡️ Pilih Barang</span>
+                        <div class="sf-line-v"></div>
+                        <div class="sf-node process">🎯 Pilih Barang</div>
+                        <div class="sf-line-v"></div>
+                        <div class="sf-node process">📋 Detail Barang</div>
+                        <div class="sf-line-v"></div>
+                        <div class="sf-node decision" style="padding:12px 18px;"><div class="inner">❓ Aksi</div></div>
+                        <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:2px;">
+                            <!-- Tambah Stok -->
+                            <div style="display:flex; flex-direction:column; align-items:center;">
+                                <span style="color:#34d399;font-size:0.7em;">📥 Tambah</span>
+                                <div class="sf-line-v"></div>
+                                <div class="sf-node process">📥 Input Jumlah</div>
+                                <div class="sf-line-v"></div>
+                                <div class="sf-node process" style="border-color:#34d399;">🔄 Update</div>
+                                <div class="sf-line-v" style="margin-top:2px;"><span class="label">kembali</span></div>
+                            </div>
+                            <!-- Kurangi Stok -->
+                            <div style="display:flex; flex-direction:column; align-items:center;">
+                                <span style="color:#fb923c;font-size:0.7em;">📤 Kurangi</span>
+                                <div class="sf-line-v"></div>
+                                <div class="sf-node process">📤 Input Jumlah</div>
+                                <div class="sf-line-v"></div>
+                                <div class="sf-node decision" style="padding:10px 14px;"><div class="inner">❓ Stok cukup?</div></div>
+                                <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:2px;">
+                                    <div style="display:flex; flex-direction:column; align-items:center;">
+                                        <span style="color:#34d399;font-size:0.7em;">✅ Ya</span>
+                                        <div class="sf-line-v"></div>
+                                        <div class="sf-node process" style="border-color:#34d399;">🔄 Update</div>
+                                    </div>
+                                    <div style="display:flex; flex-direction:column; align-items:center;">
+                                        <span style="color:#f87171;font-size:0.7em;">❌ Tidak</span>
+                                        <div class="sf-line-v"></div>
+                                        <div class="sf-node error">⚠️ Stok habis</div>
+                                    </div>
+                                </div>
+                                <div class="sf-line-v" style="margin-top:2px;"><span class="label">kembali</span></div>
+                            </div>
+                            <!-- Hapus -->
+                            <div style="display:flex; flex-direction:column; align-items:center;">
+                                <span style="color:#f87171;font-size:0.7em;">🗑️ Hapus</span>
+                                <div class="sf-line-v"></div>
+                                <div class="sf-node decision" style="padding:10px 14px;"><div class="inner">❓ Konfirmasi?</div></div>
+                                <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:2px;">
+                                    <div style="display:flex; flex-direction:column; align-items:center;">
+                                        <span style="color:#34d399;font-size:0.7em;">✅ Ya</span>
+                                        <div class="sf-line-v"></div>
+                                        <div class="sf-node process" style="border-color:#f87171;">🗑️ Hapus</div>
+                                    </div>
+                                    <div style="display:flex; flex-direction:column; align-items:center;">
+                                        <span style="color:#94a3b8;font-size:0.7em;">❌ Batal</span>
+                                        <div class="sf-line-v"></div>
+                                        <div class="sf-node sub" style="border-color:#94a3b8;">⏹️ Kembali</div>
+                                    </div>
+                                </div>
+                                <div class="sf-line-v" style="margin-top:2px;"><span class="label">kembali</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sf-divider"></div>
+
+                <!-- Loop kembali -->
+                <div class="sf-row">
+                    <div class="sf-node process" style="border-color:#34d399; border-style:dashed;">↻ Kembali ke Dashboard</div>
+                </div>
+                <div class="sf-line-v"><span class="label">loop</span></div>
+
+                <!-- END -->
+                <div class="sf-row">
+                    <div class="sf-node start-end">🏁 SELESAI</div>
+                </div>
+
+            </div>
+
+            <div class="code-box" style="margin-top:12px; border-color:#34d399;">
+                <h3 style="color:#34d399;">🔍 Keterangan</h3>
+                <ul>
+                    <li><b style="color:#34d399;">Start / End</b> — titik awal dan akhir.</li>
+                    <li><b style="color:#22d3ee;">Proses</b> — aktivitas eksekusi.</li>
+                    <li><b style="color:#facc15;">Percabangan</b> — pengujian kondisi.</li>
+                    <li><b style="color:#f87171;">Error</b> — kegagalan validasi.</li>
+                    <li>Garis vertikal <b style="color:#94a3b8;">│</b> menunjukkan alur eksekusi tanpa simbol panah.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==================== JALUR DIAGRAM PSEUDOCODE (GARIS JALUR) ==================== -->
+        <div class="section" style="border:2px solid rgba(244,114,182,0.7); background:rgba(40,10,50,0.35);">
+            <h2 style="color:#f472b6 !important; text-shadow:0 0 25px #f472b6;">📊 Diagram Alir Pseudocode (Jalur Eksekusi)</h2>
+            <p style="color:#94a3b8; font-size:0.85em; margin-bottom:12px;">
+                Visualisasi alur logika pseudocode dengan <b>garis jalur</b> (tanpa simbol panah).
+                Warna <b style="color:#34d399;">hijau</b> = mulai/selesai, <b style="color:#22d3ee;">biru</b> = proses,
+                <b style="color:#facc15;">kuning</b> = percabangan, <b style="color:#f87171;">merah</b> = error.
+            </p>
+
+            <div class="flowchart-v">
+
+                <!-- START -->
+                <div class="fc-row">
+                    <div class="fc-node start">🚀 MULAI</div>
+                </div>
+                <div class="fc-line-v"><span class="label">step 1</span></div>
+
+                <!-- Inisialisasi -->
+                <div class="fc-row">
+                    <div class="fc-node process">📂 Inisialisasi Data</div>
+                </div>
+                <div class="fc-line-v"><span class="label">step 2</span></div>
+
+                <!-- Buat Objek Barang -->
+                <div class="fc-row">
+                    <div class="fc-node process">🏭 Buat Objek Barang (x5)</div>
+                </div>
+                <div class="fc-line-v"><span class="label">step 3</span></div>
+
+                <!-- Tampilkan Daftar -->
+                <div class="fc-row">
+                    <div class="fc-node process">📋 Tampilkan Daftar Barang</div>
+                </div>
+                <div class="fc-line-v"><span class="label">step 4</span></div>
+
+                <!-- Transaksi Masuk -->
+                <div class="fc-row">
+                    <div class="fc-node process">📥 Transaksi Barang Masuk</div>
+                </div>
+                <div class="fc-line-v"><span class="label">step 5</span></div>
+
+                <!-- Cek Barang -->
+                <div class="fc-row">
+                    <div class="fc-node decision"><div class="inner">❓ Barang ditemukan?</div></div>
+                </div>
+                <div class="fc-row" style="gap:8px 20px;">
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span style="color:#34d399;font-size:0.8em;">✅ Ya</span>
+                        <div class="fc-line-v"></div>
+                        <div class="fc-node process" style="border-color:#34d399;">➕ tambahStok()</div>
+                        <div class="fc-line-v"></div>
+                        <div class="fc-node sub">📝 Catat Riwayat</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span style="color:#f87171;font-size:0.8em;">❌ Tidak</span>
+                        <div class="fc-line-v"></div>
+                        <div class="fc-node error">⚠️ Error: Barang tidak ditemukan</div>
+                    </div>
+                </div>
+                <div class="fc-line-v"><span class="label">step 6</span></div>
+
+                <!-- Transaksi Keluar -->
+                <div class="fc-row">
+                    <div class="fc-node process">📤 Transaksi Barang Keluar</div>
+                </div>
+                <div class="fc-line-v"><span class="label">step 7</span></div>
+
+                <!-- Cek Stok -->
+                <div class="fc-row">
+                    <div class="fc-node decision"><div class="inner">❓ Stok mencukupi?</div></div>
+                </div>
+                <div class="fc-row" style="gap:8px 20px;">
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span style="color:#34d399;font-size:0.8em;">✅ Ya</span>
+                        <div class="fc-line-v"></div>
+                        <div class="fc-node process" style="border-color:#34d399;">➖ kurangiStok()</div>
+                        <div class="fc-line-v"></div>
+                        <div class="fc-node sub">📝 Catat Riwayat</div>
+                    </div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span style="color:#f87171;font-size:0.8em;">❌ Tidak</span>
+                        <div class="fc-line-v"></div>
+                        <div class="fc-node error">⚠️ Error: Stok tidak cukup</div>
+                    </div>
+                </div>
+                <div class="fc-line-v"><span class="label">step 8</span></div>
+
+                <!-- Hitung Stok Akhir -->
+                <div class="fc-row">
+                    <div class="fc-node process">📊 Hitung Stok Akhir</div>
+                </div>
+                <div class="fc-line-v"><span class="label">step 9</span></div>
+
+                <!-- Tampilkan Output -->
+                <div class="fc-row">
+                    <div class="fc-node process">🖥️ Tampilkan Output</div>
+                </div>
+                <div class="fc-line-v"><span class="label">step 10</span></div>
+
+                <!-- END -->
+                <div class="fc-row">
+                    <div class="fc-node end">🏁 SELESAI</div>
+                </div>
+
+            </div>
+
+            <div class="code-box" style="margin-top:12px; border-color:#f472b6;">
+                <h3 style="color:#f472b6;">🔍 Keterangan</h3>
+                <ul>
+                    <li><b style="color:#34d399;">Mulai / Selesai</b> — titik masuk dan keluar.</li>
+                    <li><b style="color:#22d3ee;">Proses</b> — eksekusi method.</li>
+                    <li><b style="color:#facc15;">Percabangan</b> — pengujian kondisi (if/else).</li>
+                    <li><b style="color:#f87171;">Error</b> — kegagalan validasi.</li>
+                    <li>Garis vertikal <b style="color:#94a3b8;">│</b> menunjukkan alur eksekusi tanpa simbol panah.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==================== PSEUDOCODE + DARTPAD ==================== -->
+        <div class="section" style="border:2px solid rgba(244,114,182,0.5); background:rgba(40,10,50,0.2);">
+            <h2 style="color:#f472b6 !important; text-shadow:0 0 20px #f472b6;">📝 Pseudocode — Algoritma Sistem</h2>
+            <p style="color:#94a3b8; font-size:0.85em; margin-bottom:10px;">
+                Berikut adalah pseudocode untuk setiap class. Klik tombol <b>▶ Tampilkan DartPad</b> untuk melihat kode implementasi di Dart.
+            </p>
+
+            <!-- 1. Abstract Class EntitasGudang -->
+            <h3 style="color:#f472b6;">1. Abstract Class <code>EntitasGudang</code></h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// ABSTRACT CLASS: EntitasGudang</span><br />
+                <span class="p-keyword">abstract class</span> <span class="p-class">EntitasGudang</span> {<br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">kode</span><br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">nama</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">constructor</span> <span class="p-class">EntitasGudang</span>(<span class="p-var">kode</span>, <span class="p-var">nama</span>)<br />
+                &nbsp;&nbsp;<span class="p-keyword">abstract</span> <span class="p-keyword">void</span> <span class="p-function">tampilkanInfo</span>()<br />
+                &nbsp;&nbsp;<span class="p-keyword">void</span> <span class="p-function">cetakIdentitas</span>()<br />
+                }
+            </div>
+            <button class="btn" onclick="runDart('dart0','https://dartpad.dev/embed-inline.html?id=00afd86673c22e4df79467b1f4be113a&split=60&run=true')">▶ Tampilkan DartPad</button>
+            <iframe id="dart0" style="display:none;width:100%;height:280px;"></iframe>
+
+            <!-- 2. Class Barang -->
+            <h3 style="color:#22d3ee; margin-top:16px;">2. Class <code>Barang</code> <span style="color:#94a3b8; font-size:0.7em;">(extends EntitasGudang)</span></h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// CLASS: Barang</span><br />
+                <span class="p-keyword">class</span> <span class="p-class">Barang</span> <span class="p-keyword">extends</span> <span class="p-class">EntitasGudang</span> {<br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">kategori</span><br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">merk</span><br />
+                &nbsp;&nbsp;<span class="p-type">int</span> <span class="p-var">jumlahStok</span><br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">satuan</span><br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">kondisi</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">constructor</span> <span class="p-class">Barang</span>(<span class="p-var">kode</span>, <span class="p-var">nama</span>, <span class="p-var">kategori</span>, <span class="p-var">merk</span>, <span class="p-var">stok</span>, <span class="p-var">satuan</span>, <span class="p-var">kondisi</span>)<br />
+                &nbsp;&nbsp;<span class="p-keyword">@override</span> <span class="p-keyword">void</span> <span class="p-function">tampilkanInfo</span>()<br />
+                &nbsp;&nbsp;<span class="p-keyword">void</span> <span class="p-function">tambahStok</span>(<span class="p-type">int</span> <span class="p-var">jumlah</span>)<br />
+                &nbsp;&nbsp;<span class="p-keyword">void</span> <span class="p-function">kurangiStok</span>(<span class="p-type">int</span> <span class="p-var">jumlah</span>)<br />
+                }
+            </div>
+            <button class="btn" onclick="runDart('dart1','https://dartpad.dev/embed-inline.html?id=715ed6aadf60f9d87ba5a111f199b260&split=60&run=true')">▶ Tampilkan DartPad</button>
+            <iframe id="dart1" style="display:none;width:100%;height:280px;"></iframe>
+
+            <!-- 3. Abstract Class Transaksi -->
+            <h3 style="color:#f472b6; margin-top:16px;">3. Abstract Class <code>Transaksi</code></h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// ABSTRACT CLASS: Transaksi</span><br />
+                <span class="p-keyword">abstract class</span> <span class="p-class">Transaksi</span> {<br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">idTransaksi</span><br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">tanggal</span><br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">kodeBarang</span><br />
+                &nbsp;&nbsp;<span class="p-type">int</span> <span class="p-var">jumlah</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">constructor</span> <span class="p-class">Transaksi</span>(<span class="p-var">id</span>, <span class="p-var">tgl</span>, <span class="p-var">kode</span>, <span class="p-var">jml</span>)<br />
+                &nbsp;&nbsp;<span class="p-keyword">abstract</span> <span class="p-keyword">void</span> <span class="p-function">prosesTransaksi</span>()<br />
+                &nbsp;&nbsp;<span class="p-keyword">void</span> <span class="p-function">cetakHeader</span>()<br />
+                }
+            </div>
+            <button class="btn" onclick="runDart('dart2','https://dartpad.dev/embed-inline.html?id=1bfaab26e1c7aacc40186fdb3213e7d9&split=60&run=true')">▶ Tampilkan DartPad</button>
+            <iframe id="dart2" style="display:none;width:100%;height:280px;"></iframe>
+
+            <!-- 4. Class BarangMasuk -->
+            <h3 style="color:#a855f7; margin-top:16px;">4. Class <code>BarangMasuk</code> <span style="color:#94a3b8; font-size:0.7em;">(extends Transaksi)</span></h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// CLASS: BarangMasuk</span><br />
+                <span class="p-keyword">class</span> <span class="p-class">BarangMasuk</span> <span class="p-keyword">extends</span> <span class="p-class">Transaksi</span> {<br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">namaBarang</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">constructor</span> <span class="p-class">BarangMasuk</span>(<span class="p-var">id</span>, <span class="p-var">tgl</span>, <span class="p-var">kode</span>, <span class="p-var">jml</span>, <span class="p-var">nama</span>)<br />
+                &nbsp;&nbsp;<span class="p-keyword">@override</span> <span class="p-keyword">void</span> <span class="p-function">prosesTransaksi</span>() {<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-var">barang</span> = <span class="p-function">cariBarang</span>(<span class="p-var">kodeBarang</span>)<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">if</span> (<span class="p-var">barang</span> <span class="p-op">!=</span> <span class="p-keyword">null</span>) { <span class="p-var">barang</span>.<span class="p-function">tambahStok</span>(<span class="p-var">jumlah</span>); <span class="p-function">catatRiwayat</span>() }<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">else</span> <span class="p-function">print</span>(<span class="p-string">"❌ Barang tidak ditemukan!"</span>)<br />
+                &nbsp;&nbsp;}<br />
+                }
+            </div>
+            <button class="btn" onclick="runDart('dart3','https://dartpad.dev/embed-inline.html?id=f4bfe7845e8da34250ef925a9447b76c&split=60&run=true')">▶ Tampilkan DartPad</button>
+            <iframe id="dart3" style="display:none;width:100%;height:280px;"></iframe>
+
+            <!-- 5. Class BarangKeluar -->
+            <h3 style="color:#fb923c; margin-top:16px;">5. Class <code>BarangKeluar</code> <span style="color:#94a3b8; font-size:0.7em;">(extends Transaksi)</span></h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// CLASS: BarangKeluar</span><br />
+                <span class="p-keyword">class</span> <span class="p-class">BarangKeluar</span> <span class="p-keyword">extends</span> <span class="p-class">Transaksi</span> {<br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">tujuan</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">constructor</span> <span class="p-class">BarangKeluar</span>(<span class="p-var">id</span>, <span class="p-var">tgl</span>, <span class="p-var">kode</span>, <span class="p-var">jml</span>, <span class="p-var">tujuan</span>)<br />
+                &nbsp;&nbsp;<span class="p-keyword">@override</span> <span class="p-keyword">void</span> <span class="p-function">prosesTransaksi</span>() {<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-var">barang</span> = <span class="p-function">cariBarang</span>(<span class="p-var">kodeBarang</span>)<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">if</span> (<span class="p-var">barang</span> <span class="p-op">!=</span> <span class="p-keyword">null</span>) { <span class="p-var">barang</span>.<span class="p-function">kurangiStok</span>(<span class="p-var">jumlah</span>); <span class="p-function">catatRiwayat</span>() }<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">else</span> <span class="p-function">print</span>(<span class="p-string">"❌ Barang tidak ditemukan!"</span>)<br />
+                &nbsp;&nbsp;}<br />
+                }
+            </div>
+            <button class="btn" onclick="runDart('dart4','https://dartpad.dev/embed-inline.html?id=bb5aff697e49cdf7722ffe798e5efc0b&split=60&run=true')">▶ Tampilkan DartPad</button>
+            <iframe id="dart4" style="display:none;width:100%;height:280px;"></iframe>
+
+            <!-- 6. Class StokBarang -->
+            <h3 style="color:#facc15; margin-top:16px;">6. Class <code>StokBarang</code> <span style="color:#94a3b8; font-size:0.7em;">(Perhitungan Stok)</span></h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// CLASS: StokBarang</span><br />
+                <span class="p-keyword">class</span> <span class="p-class">StokBarang</span> {<br />
+                &nbsp;&nbsp;<span class="p-type">int</span> <span class="p-var">stokAwal</span><br />
+                &nbsp;&nbsp;<span class="p-type">int</span> <span class="p-var">barangMasuk</span><br />
+                &nbsp;&nbsp;<span class="p-type">int</span> <span class="p-var">barangKeluar</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">constructor</span> <span class="p-class">StokBarang</span>(<span class="p-var">awal</span>, <span class="p-var">masuk</span>, <span class="p-var">keluar</span>)<br />
+                &nbsp;&nbsp;<span class="p-keyword">void</span> <span class="p-function">hitungStok</span>() {<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-var">stokAkhir</span> = <span class="p-var">stokAwal</span> + <span class="p-var">barangMasuk</span> - <span class="p-var">barangKeluar</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">if</span> (<span class="p-var">stokAkhir</span> <span class="p-op">==</span> <span class="p-number">0</span>) <span class="p-var">status</span> = <span class="p-string">"Habis"</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">else if</span> (<span class="p-var">stokAkhir</span> <span class="p-op">&lt;</span> <span class="p-number">5</span>) <span class="p-var">status</span> = <span class="p-string">"Menipis"</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">else</span> <span class="p-var">status</span> = <span class="p-string">"Aman"</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-function">print</span>(<span class="p-string">"📊 Stok Akhir: "</span> + <span class="p-var">stokAkhir</span> + <span class="p-string">" ("</span> + <span class="p-var">status</span> + <span class="p-string">")"</span>)<br />
+                &nbsp;&nbsp;}<br />
+                }
+            </div>
+            <button class="btn" onclick="runDart('dart5','https://dartpad.dev/embed-inline.html?id=8d289db6c0b98a3ffd7d7dce34ad6667&split=60&run=true')">▶ Tampilkan DartPad</button>
+            <iframe id="dart5" style="display:none;width:100%;height:280px;"></iframe>
+
+            <!-- 7. Main Program Flow -->
+            <h3 style="color:#34d399; margin-top:16px;">7. Alur Program Utama <span style="color:#94a3b8; font-size:0.7em;">(main)</span></h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// PROGRAM UTAMA (main)</span><br />
+                <span class="p-keyword">void</span> <span class="p-function">main</span>() {<br />
+                &nbsp;&nbsp;<span class="p-comment">// 1. Inisialisasi</span><br />
+                &nbsp;&nbsp;<span class="p-var">barangList</span> = []; <span class="p-var">riwayat</span> = []<br />
+                &nbsp;&nbsp;<span class="p-comment">// 2. Buat objek Barang</span><br />
+                &nbsp;&nbsp;<span class="p-var">b1</span> = <span class="p-keyword">new</span> <span class="p-class">Barang</span>(<span class="p-string">"BRG-001"</span>, <span class="p-string">"Laptop"</span>, <span class="p-string">"Elektronik"</span>, <span class="p-string">"Asus"</span>, <span class="p-number">10</span>, <span class="p-string">"unit"</span>, <span class="p-string">"Baik"</span>)<br />
+                &nbsp;&nbsp;<span class="p-comment">// 3. Tampilkan daftar</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">for</span> (<span class="p-var">barang</span> <span class="p-keyword">in</span> <span class="p-var">barangList</span>) { <span class="p-var">barang</span>.<span class="p-function">tampilkanInfo</span>() }<br />
+                &nbsp;&nbsp;<span class="p-comment">// 4. Simulasi transaksi masuk</span><br />
+                &nbsp;&nbsp;<span class="p-var">transaksiMasuk</span> = <span class="p-keyword">new</span> <span class="p-class">BarangMasuk</span>(<span class="p-string">"TRX-001"</span>, <span class="p-string">"20-06-2026"</span>, <span class="p-string">"BRG-001"</span>, <span class="p-number">3</span>, <span class="p-string">"Laptop"</span>)<br />
+                &nbsp;&nbsp;<span class="p-var">transaksiMasuk</span>.<span class="p-function">prosesTransaksi</span>()<br />
+                &nbsp;&nbsp;<span class="p-comment">// 5. Simulasi transaksi keluar</span><br />
+                &nbsp;&nbsp;<span class="p-var">transaksiKeluar</span> = <span class="p-keyword">new</span> <span class="p-class">BarangKeluar</span>(<span class="p-string">"TRX-002"</span>, <span class="p-string">"21-06-2026"</span>, <span class="p-string">"BRG-002"</span>, <span class="p-number">2</span>, <span class="p-string">"Ruang Admin"</span>)<br />
+                &nbsp;&nbsp;<span class="p-var">transaksiKeluar</span>.<span class="p-function">prosesTransaksi</span>()<br />
+                &nbsp;&nbsp;<span class="p-comment">// 6. Hitung stok akhir</span><br />
+                &nbsp;&nbsp;<span class="p-var">stok</span> = <span class="p-keyword">new</span> <span class="p-class">StokBarang</span>(<span class="p-number">10</span>, <span class="p-number">3</span>, <span class="p-number">2</span>); <span class="p-var">stok</span>.<span class="p-function">hitungStok</span>()<br />
+                &nbsp;&nbsp;<span class="p-comment">// 7. Tampilkan riwayat</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">for</span> (<span class="p-var">r</span> <span class="p-keyword">in</span> <span class="p-var">riwayat</span>) { <span class="p-function">print</span>(<span class="p-var">r</span>) }<br />
+                }
+            </div>
+            <button class="btn" onclick="runDart('dart6','https://dartpad.dev/embed-inline.html?id=8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a&split=60&run=true')">▶ Tampilkan DartPad</button>
+            <iframe id="dart6" style="display:none;width:100%;height:280px;"></iframe>
+
+            <div class="code-box" style="margin-top:14px; border-color:#f472b6;">
+                <h3 style="color:#f472b6;">📌 Keterangan</h3>
+                <ul>
+                    <li><b style="color:#f472b6;">abstract class</b> — template untuk turunan.</li>
+                    <li><b style="color:#c084fc;">@override</b> — implementasi ulang method.</li>
+                    <li><b style="color:#34d399;">super()</b> — panggil constructor induk.</li>
+                    <li><b style="color:#fb923c;">if/else</b> — logika kondisional.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ==================== 4 PILAR OOP ==================== -->
+        <div class="section" style="border:2px solid rgba(244,114,182,0.5);">
+            <h2 style="color:#f472b6 !important; text-shadow:0 0 20px #f472b6;">🧬 4 Pilar OOP yang Diterapkan</h2>
+            <div class="grid-2" style="margin-top:10px;">
+                <div class="card" style="border-color:#f472b6;">
+                    <div class="card-title" style="color:#f472b6;">1. Enkapsulasi</div>
+                    <p style="font-size:0.85em; color:#bae6fd;">Status internal barang (stok, kondisi) hanya diubah lewat metode <b>tambahStok()</b> dan <b>kurangiStok()</b>.</p>
+                </div>
+                <div class="card" style="border-color:#f472b6;">
+                    <div class="card-title" style="color:#f472b6;">2. Pewarisan (Inheritance)</div>
+                    <p style="font-size:0.85em; color:#bae6fd;"><b>Barang</b> extends <b>EntitasGudang</b>. <b>BarangMasuk</b> dan <b>BarangKeluar</b> extends <b>Transaksi</b>.</p>
+                </div>
+                <div class="card" style="border-color:#f472b6;">
+                    <div class="card-title" style="color:#f472b6;">3. Polimorfisme</div>
+                    <p style="font-size:0.85em; color:#bae6fd;"><b>tampilkanInfo()</b> dan <b>prosesTransaksi()</b> di-override pada class turunan.</p>
+                </div>
+                <div class="card" style="border-color:#f472b6;">
+                    <div class="card-title" style="color:#f472b6;">4. Interaksi Objek</div>
+                    <p style="font-size:0.85em; color:#bae6fd;">Objek <b>Barang</b> berinteraksi dengan <b>StokBarang</b> dan <b>Transaksi</b> untuk mengelola stok.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== CLASS DIAGRAM ==================== -->
+        <div class="section" style="border:2px solid rgba(168,85,247,0.5);">
+            <h2>📊 Class Diagram — Sistem Pendataan Barang</h2>
+            <p style="color:#94a3b8; text-align:center; font-size:0.85em;">
+                UML Class Diagram. Class <b style="color:#f472b6;">teks miring &amp; border pink</b> = abstract class.
+                Panah <b style="color:#f472b6;">▷</b> = inheritance.
+            </p>
+
+            <h3 style="text-align:center; color:#f472b6; margin-top:12px;">🧬 Abstract Classes (Base)</h3>
+            <div class="diagram-container">
+                <div class="uml-class" style="border-color:#f472b6; border-style:dashed;">
+                    <div class="class-name abstract">EntitasGudang</div>
+                    <div class="class-attrs">
+                        <span># kode: <span class="attr-type">String</span></span>
+                        <span># nama: <span class="attr-type">String</span></span>
+                    </div>
+                    <div class="class-methods">
+                        <span class="abstract-method">+ tampilkanInfo(): void</span>
+                        <span>+ cetakIdentitas(): void</span>
+                    </div>
+                </div>
+                <div class="uml-class" style="border-color:#f472b6; border-style:dashed;">
+                    <div class="class-name abstract">Transaksi</div>
+                    <div class="class-attrs">
+                        <span># idTransaksi: <span class="attr-type">String</span></span>
+                        <span># tanggal: <span class="attr-type">String</span></span>
+                        <span># kodeBarang: <span class="attr-type">String</span></span>
+                        <span># jumlah: <span class="attr-type">int</span></span>
+                    </div>
+                    <div class="class-methods">
+                        <span class="abstract-method">+ prosesTransaksi(): void</span>
+                        <span>+ cetakHeader(): void</span>
+                    </div>
+                </div>
+                <div class="uml-class" style="border-color:#f472b6; border-style:dashed;">
+                    <div class="class-name abstract">Pengguna</div>
+                    <div class="class-attrs">
+                        <span># username: <span class="attr-type">String</span></span>
+                        <span># password: <span class="attr-type">String</span></span>
+                    </div>
+                    <div class="class-methods">
+                        <span class="abstract-method">+ login(): void</span>
+                        <span>+ tampilkanIdentitas(): void</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align:center; color:#f472b6; font-size:1.4em; padding:4px 0;">▼ extends ▼</div>
+
+            <h3 style="text-align:center; color:#22d3ee;">🔷 Concrete Classes</h3>
+            <div class="diagram-container">
+                <div class="uml-class" style="border-color:#22d3ee;">
+                    <div class="class-name">Barang</div>
+                    <div class="class-attrs">
+                        <span>+ kodeBarang: <span class="attr-type">String</span></span>
+                        <span>+ namaBarang: <span class="attr-type">String</span></span>
+                        <span>+ kategori: <span class="attr-type">String</span></span>
+                        <span>+ merk: <span class="attr-type">String</span></span>
+                        <span>+ jumlahStok: <span class="attr-type">int</span></span>
+                        <span>+ satuan: <span class="attr-type">String</span></span>
+                        <span>+ kondisi: <span class="attr-type">String</span></span>
+                    </div>
+                    <div class="class-methods">
+                        <span style="color:#34d399;">@override</span>
+                        <span>+ tampilkanInfo(): void</span>
+                        <span>+ tambahStok(jml): void</span>
+                        <span>+ kurangiStok(jml): void</span>
+                    </div>
+                </div>
+                <div class="uml-class" style="border-color:#a855f7;">
+                    <div class="class-name">BarangMasuk</div>
+                    <div class="class-attrs">
+                        <span>+ idMasuk: <span class="attr-type">String</span></span>
+                        <span>+ tanggal: <span class="attr-type">String</span></span>
+                        <span>+ kodeBarang: <span class="attr-type">String</span></span>
+                        <span>+ jumlah: <span class="attr-type">int</span></span>
+                    </div>
+                    <div class="class-methods">
+                        <span style="color:#34d399;">@override</span>
+                        <span>+ prosesTransaksi(): void</span>
+                    </div>
+                </div>
+                <div class="uml-class" style="border-color:#fb923c;">
+                    <div class="class-name">BarangKeluar</div>
+                    <div class="class-attrs">
+                        <span>+ idKeluar: <span class="attr-type">String</span></span>
+                        <span>+ tanggal: <span class="attr-type">String</span></span>
+                        <span>+ kodeBarang: <span class="attr-type">String</span></span>
+                        <span>+ jumlah: <span class="attr-type">int</span></span>
+                        <span>+ tujuan: <span class="attr-type">String</span></span>
+                    </div>
+                    <div class="class-methods">
+                        <span style="color:#34d399;">@override</span>
+                        <span>+ prosesTransaksi(): void</span>
+                    </div>
+                </div>
+                <div class="uml-class" style="border-color:#facc15;">
+                    <div class="class-name">StokBarang</div>
+                    <div class="class-attrs">
+                        <span>+ stokAwal: <span class="attr-type">int</span></span>
+                        <span>+ barangMasuk: <span class="attr-type">int</span></span>
+                        <span>+ barangKeluar: <span class="attr-type">int</span></span>
+                    </div>
+                    <div class="class-methods">
+                        <span>+ hitungStok(): void</span>
+                    </div>
+                </div>
+                <div class="uml-class" style="border-color:#22d3ee;">
+                    <div class="class-name">User</div>
+                    <div class="class-attrs">
+                        <span>+ username: <span class="attr-type">String</span></span>
+                        <span>+ password: <span class="attr-type">String</span></span>
+                        <span>+ level: <span class="attr-type">String</span></span>
+                    </div>
+                    <div class="class-methods">
+                        <span style="color:#34d399;">@override</span>
+                        <span>+ login(): void</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="code-box" style="margin-top:14px; border-color:#a855f7;">
+                <h3 style="color:#f472b6;">🔗 Relasi Inheritance</h3>
+                <ul>
+                    <li><b style="color:#f472b6;">⟨abstract⟩ EntitasGudang</b> <span style="color:#94a3b8;">▷</span> <b style="color:#22d3ee;">Barang</b></li>
+                    <li><b style="color:#f472b6;">⟨abstract⟩ Transaksi</b> <span style="color:#94a3b8;">▷</span> <b style="color:#a855f7;">BarangMasuk</b>, <b style="color:#fb923c;">BarangKeluar</b></li>
+                    <li><b style="color:#f472b6;">⟨abstract⟩ Pengguna</b> <span style="color:#94a3b8;">▷</span> <b style="color:#22d3ee;">User</b></li>
+                </ul>
+                <p style="color:#94a3b8; font-size:0.85em; margin-top:4px;">✅ <b>Total:</b> 3 abstract + 6 concrete = <b>9 class</b>.</p>
+            </div>
+        </div>
+
+        <!-- ==================== SOURCE CODE ==================== -->
+        <div class="section" style="border:2px solid rgba(34,211,238,0.3);">
+            <h2>📄 Source Code — Class Barang (Dart)</h2>
+            <div class="code-box">
+                <pre><span class="cmt">// ==========================================</span>
+                    <span class="cmt">// Nama  : Yoza Ulpia Rafila &amp; Rifqi Prayoga</span>
+                    <span class="cmt">// NIM   : 251410004 &amp; 251410005</span>
+                    <span class="cmt">// Kelas : SI2A</span>
+                    <span class="cmt">// Topik : Sistem Pendataan Barang di Gudang (OOP)</span>
+                    <span class="cmt">// ==========================================</span>
+
+                    <span class="kw">abstract</span> <span class="kw">class</span> <span class="cls">EntitasGudang</span> {
+                    <span class="type">String</span> kode;
+                    <span class="type">String</span> nama;
+                    <span class="cls">EntitasGudang</span>(<span class="kw">this</span>.kode, <span class="kw">this</span>.nama);
+                    <span class="kw">void</span> <span class="fn">tampilkanInfo</span>();
+                    <span class="kw">void</span> <span class="fn">cetakIdentitas</span>() {
+                    <span class="fn">print</span>(<span class="str">"🔹 $kode — $nama"</span>);
+                    }
+                    }
+
+                    <span class="kw">class</span> <span class="cls">Barang</span> <span class="kw">extends</span> <span class="cls">EntitasGudang</span> {
+                    <span class="type">String</span> kategori;
+                    <span class="type">String</span> merk;
+                    <span class="type">int</span> jumlahStok;
+                    <span class="type">String</span> satuan;
+                    <span class="type">String</span> kondisi;
+
+                    <span class="cls">Barang</span>(
+                    <span class="type">String</span> kode,
+                    <span class="type">String</span> nama,
+                    <span class="kw">this</span>.kategori,
+                    <span class="kw">this</span>.merk,
+                    <span class="kw">this</span>.jumlahStok,
+                    <span class="kw">this</span>.satuan,
+                    <span class="kw">this</span>.kondisi,
+                    ) : <span class="kw">super</span>(kode, nama);
+
+                    <span class="ovr">@override</span>
+                    <span class="kw">void</span> <span class="fn">tampilkanInfo</span>() {
+                    <span class="fn">print</span>(<span class="str">"📦 $kode | $nama | $kategori | Stok: $jumlahStok $satuan"</span>);
+                    }
+
+                    <span class="kw">void</span> <span class="fn">tambahStok</span>(<span class="type">int</span> jumlah) {
+                    jumlahStok += jumlah;
+                    <span class="fn">print</span>(<span class="str">"✅ Stok bertambah $jumlah. Total: $jumlahStok"</span>);
+                    }
+
+                    <span class="kw">void</span> <span class="fn">kurangiStok</span>(<span class="type">int</span> jumlah) {
+                    <span class="kw">if</span> (jumlahStok >= jumlah) {
+                    jumlahStok -= jumlah;
+                    <span class="fn">print</span>(<span class="str">"✅ Stok berkurang $jumlah. Total: $jumlahStok"</span>);
+                    } <span class="kw">else</span> {
+                    <span class="fn">print</span>(<span class="str">"❌ Stok tidak mencukupi!"</span>);
+                    }
+                    }
+                    }</span></pre>
+            </div>
+        </div>
+
+        <!-- ==================== FOOTER ==================== -->
+        <footer>
+            Sistem Pendataan Barang di Gudang — OOP berbasis Dart<br />
+            Universitas Bina Darma — SI2A — 2026<br />
+            <span style="font-size:0.8em; color:#94a3b8;">Yoza Ulpia Rafila (251410004) &amp; Rifqi Prayoga (251410005)</span>
+        </footer>
+
+    </div><!-- /container -->
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // ============================================================
+        //  DATA & STATE
+        // ============================================================
+        let barangList = [];
+        let riwayat = [];
+        let selectedKode = null;
+
+        const initialData = [
+            { kode: 'BRG-001', nama: 'Laptop Asus', kategori: 'Elektronik', merk: 'Asus', stok: 10, satuan: 'unit',
+            kondisi: 'Baik' },
+            { kode: 'BRG-002', nama: 'Printer Epson', kategori: 'Elektronik', merk: 'Epson', stok: 5, satuan: 'unit',
+                kondisi: 'Baik' },
+            { kode: 'BRG-003', nama: 'Meja Kerja', kategori: 'Furniture', merk: 'IKEA', stok: 8, satuan: 'pcs',
+                kondisi: 'Baik' },
+            { kode: 'BRG-004', nama: 'Kursi Kantor', kategori: 'Furniture', merk: 'IKEA', stok: 12, satuan: 'pcs',
+                kondisi: 'Baik' },
+            { kode: 'BRG-005', nama: 'Kertas A4', kategori: 'ATK', merk: 'PaperOne', stok: 50, satuan: 'rim',
+            kondisi: 'Baik' },
+        ];
+
+        class EntitasGudang {
+            constructor(kode, nama) {
+                this.kode = kode;
+                this.nama = nama;
+            }
+            tampilkanInfo() { throw new Error('Method abstrak harus di-override'); }
+            cetakIdentitas() {
+                log(`🔹 ${this.kode} — ${this.nama}`, 'gray');
+            }
+        }
+
+        class Barang extends EntitasGudang {
+            constructor(kode, nama, kategori, merk, stok, satuan, kondisi) {
+                super(kode, nama);
+                this.kategori = kategori;
+                this.merk = merk;
+                this.jumlahStok = stok;
+                this.satuan = satuan;
+                this.kondisi = kondisi;
+            }
+            tampilkanInfo() {
+                return `📦 ${this.kode} | ${this.nama} | ${this.kategori} | Stok: ${this.jumlahStok} ${this.satuan} | ${this.kondisi}`;
+            }
+            tambahStok(jumlah) {
+                if (jumlah <= 0) { log('❌ Jumlah harus positif!', 'red'); return false; }
+                this.jumlahStok += jumlah;
+                log(`✅ Stok ${this.nama} bertambah ${jumlah}. Total: ${this.jumlahStok} ${this.satuan}`, 'green');
+                return true;
+            }
+            kurangiStok(jumlah) {
+                if (jumlah <= 0) { log('❌ Jumlah harus positif!', 'red'); return false; }
+                if (this.jumlahStok >= jumlah) {
+                    this.jumlahStok -= jumlah;
+                    log(`✅ Stok ${this.nama} berkurang ${jumlah}. Total: ${this.jumlahStok} ${this.satuan}`, 'green');
+                    return true;
+                } else {
+                    log(`❌ Stok ${this.nama} tidak mencukupi! (tersisa ${this.jumlahStok})`, 'red');
+                    return false;
+                }
+            }
+        }
+
+        function log(msg, cls = '') {
+            const term = document.getElementById('terminal');
+            const time = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = 'log-line';
+            div.innerHTML = `<span class="time">[${time}]</span> <span class="${cls}">${msg}</span>`;
+            term.appendChild(div);
+            term.scrollTop = term.scrollHeight;
+        }
+
+        function clearTerminal() {
+            const term = document.getElementById('terminal');
+            term.innerHTML = '';
+            log('🧹 Terminal dibersihkan.', 'gray');
+        }
+
+        function refreshSelect() {
+            const sel = document.getElementById('selectBarang');
+            sel.innerHTML = '';
+            if (barangList.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = '— tidak ada barang —';
+                sel.appendChild(opt);
+                return;
+            }
+            barangList.forEach(b => {
+                const opt = document.createElement('option');
+                opt.value = b.kode;
+                opt.textContent = `${b.kode} — ${b.nama} (${b.jumlahStok} ${b.satuan})`;
+                sel.appendChild(opt);
+            });
+            sel.value = barangList[0].kode;
+            onSelectChange();
+        }
+
+        function onSelectChange() {
+            const sel = document.getElementById('selectBarang');
+            const kode = sel.value;
+            const barang = barangList.find(b => b.kode === kode);
+            const info = document.getElementById('infoBarang');
+            if (barang) {
+                selectedKode = kode;
+                info.textContent = `✅ Terpilih: ${barang.nama} | Stok: ${barang.jumlahStok} ${barang.satuan} | Kategori: ${barang.kategori}`;
+                info.style.color = '#34d399';
+            } else {
+                selectedKode = null;
+                info.textContent = '⚠️ Tidak ada barang dipilih.';
+                info.style.color = '#f87171';
+            }
+        }
+
+        function getSelectedBarang() {
+            const kode = document.getElementById('selectBarang').value;
+            return barangList.find(b => b.kode === kode);
+        }
+
+        function tambahBarang() {
+            const kode = document.getElementById('newKode').value.trim();
+            const nama = document.getElementById('newNama').value.trim();
+            const kategori = document.getElementById('newKategori').value.trim();
+            const stok = parseInt(document.getElementById('newStok').value) || 0;
+
+            if (!kode || !nama || !kategori) {
+                log('❌ Semua field harus diisi!', 'red');
+                return;
+            }
+            if (barangList.some(b => b.kode === kode)) {
+                log(`❌ Kode "${kode}" sudah terdaftar!`, 'red');
+                return;
+            }
+            if (stok < 0) {
+                log('❌ Stok tidak boleh negatif!', 'red');
+                return;
+            }
+
+            const barang = new Barang(kode, nama, kategori, '-', stok, 'unit', 'Baik');
+            barangList.push(barang);
+            log(`✅ Barang "${nama}" (${kode}) berhasil ditambahkan dengan stok ${stok} unit.`, 'green');
+            refreshSelect();
+            renderInventory();
+            document.getElementById('newKode').value = `BRG-${String(barangList.length + 1).padStart(3, '0')}`;
+            document.getElementById('newNama').value = '';
+            document.getElementById('newKategori').value = '';
+            document.getElementById('newStok').value = '0';
+        }
+
+        function tambahStok() {
+            const barang = getSelectedBarang();
+            if (!barang) { log('❌ Pilih barang terlebih dahulu!', 'red'); return; }
+            const jml = parseInt(prompt(`Masukkan jumlah stok yang akan ditambahkan untuk "${barang.nama}":`, '1'));
+            if (isNaN(jml) || jml <= 0) { log('❌ Jumlah tidak valid!', 'red'); return; }
+            if (barang.tambahStok(jml)) {
+                renderInventory();
+                refreshSelect();
+                riwayat.push({ kode: barang.kode, aksi: 'Tambah Stok', jumlah: jml, waktu: new Date().toISOString() });
+            }
+        }
+
+        function kurangiStok() {
+            const barang = getSelectedBarang();
+            if (!barang) { log('❌ Pilih barang terlebih dahulu!', 'red'); return; }
+            const jml = parseInt(prompt(`Masukkan jumlah stok yang akan dikurangi untuk "${barang.nama}":`, '1'));
+            if (isNaN(jml) || jml <= 0) { log('❌ Jumlah tidak valid!', 'red'); return; }
+            if (barang.kurangiStok(jml)) {
+                renderInventory();
+                refreshSelect();
+                riwayat.push({ kode: barang.kode, aksi: 'Kurangi Stok', jumlah: jml, waktu: new Date().toISOString() });
+            }
+        }
+
+        function tampilkanBarang() {
+            const barang = getSelectedBarang();
+            if (!barang) { log('❌ Pilih barang terlebih dahulu!', 'red'); return; }
+            log(`ℹ️ ${barang.tampilkanInfo()}`, 'cyan');
+        }
+
+        function hapusBarang() {
+            const barang = getSelectedBarang();
+            if (!barang) { log('❌ Pilih barang terlebih dahulu!', 'red'); return; }
+            if (!confirm(`Yakin ingin menghapus "${barang.nama}" (${barang.kode})?`)) return;
+            const idx = barangList.indexOf(barang);
+            if (idx > -1) {
+                barangList.splice(idx, 1);
+                log(`🗑️ Barang "${barang.nama}" (${barang.kode}) dihapus.`, 'red');
+                refreshSelect();
+                renderInventory();
+            }
+        }
+
+        function renderInventory() {
+            const grid = document.getElementById('inventoryGrid');
+            grid.innerHTML = '';
+            if (barangList.length === 0) {
+                grid.innerHTML = '<p style="color:#94a3b8; text-align:center; grid-column:1/-1;">Belum ada barang di gudang.</p>';
+                return;
+            }
+            barangList.forEach(b => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                const statusClass = b.jumlahStok > 0 ? 'avail' : 'unavail';
+                const statusText = b.jumlahStok > 0 ? 'Tersedia' : 'Habis';
+                card.innerHTML = `
+                    <div class="card-title">${b.nama}</div>
+                    <div class="card-sub">${b.kode} · ${b.kategori}</div>
+                    <div class="card-sub">Merk: ${b.merk} · ${b.satuan}</div>
+                    <div class="card-status"><span class="${statusClass}">📊 Stok: ${b.jumlahStok} ${b.satuan} (${statusText})</span></div>
+                    <div class="card-status" style="font-size:0.7em; color:#94a3b8;">Kondisi: ${b.kondisi}</div>
+                    <div class="card-actions">
+                        <button class="btn green small" onclick="quickTambah('${b.kode}')">+ Tambah</button>
+                        <button class="btn orange small" onclick="quickKurang('${b.kode}')">− Kurang</button>
+                        <button class="btn small" onclick="quickDetail('${b.kode}')">ℹ️</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function quickTambah(kode) {
+            const barang = barangList.find(b => b.kode === kode);
+            if (!barang) return;
+            const jml = parseInt(prompt(`Tambah stok untuk "${barang.nama}":`, '1'));
+            if (isNaN(jml) || jml <= 0) { log('❌ Jumlah tidak valid!', 'red'); return; }
+            if (barang.tambahStok(jml)) {
+                renderInventory();
+                refreshSelect();
+                riwayat.push({ kode: barang.kode, aksi: 'Tambah Stok', jumlah: jml, waktu: new Date().toISOString() });
+                document.getElementById('selectBarang').value = kode;
+                onSelectChange();
+            }
+        }
+
+        function quickKurang(kode) {
+            const barang = barangList.find(b => b.kode === kode);
+            if (!barang) return;
+            const jml = parseInt(prompt(`Kurangi stok untuk "${barang.nama}":`, '1'));
+            if (isNaN(jml) || jml <= 0) { log('❌ Jumlah tidak valid!', 'red'); return; }
+            if (barang.kurangiStok(jml)) {
+                renderInventory();
+                refreshSelect();
+                riwayat.push({ kode: barang.kode, aksi: 'Kurangi Stok', jumlah: jml, waktu: new Date().toISOString() });
+                document.getElementById('selectBarang').value = kode;
+                onSelectChange();
+            }
+        }
+
+        function quickDetail(kode) {
+            const barang = barangList.find(b => b.kode === kode);
+            if (!barang) return;
+            log(`ℹ️ ${barang.tampilkanInfo()}`, 'cyan');
+        }
+
+        function init() {
+            initialData.forEach(d => {
+                const b = new Barang(d.kode, d.nama, d.kategori, d.merk, d.stok, d.satuan, d.kondisi);
+                barangList.push(b);
+            });
+            log(`📦 ${barangList.length} barang berhasil di-instansiasi.`, 'green');
+            refreshSelect();
+            renderInventory();
+            document.getElementById('selectBarang').addEventListener('change', onSelectChange);
+            if (barangList.length > 0) {
+                document.getElementById('selectBarang').value = barangList[0].kode;
+                onSelectChange();
+            }
+            log('🟢 Sistem siap digunakan. Silakan tambah atau kelola barang.', 'cyan');
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
 
-<h1 style="font-size: clamp(1.8em, 6vw, 2.8em); margin: 5px 0; line-height: 1.3; font-weight: bold;">
-Pendataan Barang
-</h1>
-
-<h1 style="font-size: clamp(1.8em, 6vw, 2.8em); margin: 0; line-height: 1.3; font-weight: bold;">
-di Gudang
-</h1>
-    
-    <!-- GARIS PEMBATAS -->
-    <hr style="width: 60%; max-width: 300px; margin: 20px auto; border: none; height: 2px; background-color: #38bdf8;">
-
-<div class="identitas">
-
-<h3>KELOMPOK</h3>
-
-<p>Yoza Ulpia Rafila</p>
-<p>251410004</p>
-<p>SI2A</p>
-
-<br>
-
-<p>Rifqi Prayoga</p>
-<p>251410005</p>
-<p>SI2A</p>
-
-</div>
-</div>
-
-<!-- 1 -->
-<div class="section">
-
-<h2>1. Class User (Login Sistem)</h2>
-
-<ul>
-
-<li>
-<b>Class User</b> digunakan untuk merepresentasikan data pengguna yang memiliki hak akses terhadap sistem informasi pendataan barang di gudang.
-</li>
-
-<li>
-Class User memiliki atribut berupa <b>username</b>, <b>password</b>, dan <b>levelUser</b> yang digunakan sebagai informasi autentikasi pengguna.
-</li>
-
-<li>
-Constructor <b>User()</b> digunakan untuk melakukan inisialisasi data ketika objek User dibuat.
-</li>
-
-<li>
-Method <b>login()</b> digunakan untuk melakukan proses validasi username dan password pengguna sebelum mengakses sistem.
-</li>
-
-<li>
-Fungsi <b>main()</b> digunakan untuk membuat objek User dan menjalankan proses autentikasi melalui method login().
-</li>
-
-<li>
-Hasil proses autentikasi menampilkan informasi mengenai keberhasilan atau kegagalan pengguna dalam melakukan login.
-</li>
-
-</ul>
-
-<h3>Input:</h3>
-
-<ul>
-<li>Username pengguna</li>
-<li>Password pengguna</li>
-<li>Level akses pengguna</li>
-</ul>
-
-<h3>Proses:</h3>
-
-<ul>
-<li>Membuat objek dari class User menggunakan constructor.</li>
-<li>Menyimpan data pengguna ke dalam atribut class.</li>
-<li>Menjalankan method login() untuk melakukan validasi.</li>
-<li>Melakukan pengecekan kesesuaian data pengguna.</li>
-</ul>
-
-<h3>Output:</h3>
-
-<ul>
-<li>Informasi login berhasil.</li>
-<li>Informasi login gagal.</li>
-<li>Menampilkan data pengguna yang berhasil masuk.</li>
-</ul>
-
-<h3>Kode Dart:</h3>
-
-<div class="code-box">
-
-<pre><code>
-// ==========================================
-// Nama 1 : Yoza Ulpia Rafila
-// NIM    : 251410004
-//
-// Nama 2 : Rifqi Prayoga
-// NIM    : 251410005
-//
-// Kelas  : SI2A
-// Sistem Informasi Pendataan Barang Gudang
-// ==========================================
-
-class User {
-
-  String username;
-  String password;
-  String levelUser;
-
-
-  // Constructor
-  User(
-    this.username,
-    this.password,
-    this.levelUser
-  );
-
-  // Method Login
-  void login(){
-
-    if(username == "admin" && password == "12345"){
-
-      print("Login berhasil");
-      print("User : $username");
-      print("Level : $levelUser");
-
-    }else{
-
-      print("Login gagal");
-
-    }
-
-  }
-
-}
-
-void main(){
-
-  // Input data user
-  var user1 = User(
-    "admin",
-    "12345",
-    "Admin Gudang"
-  );
-
-  // Proses login
-  user1.login();
-
-}
-</code></pre>
-
-</div>
-
-<button class="button"
-onclick="runDart('dart1','https://dartpad.dev/embed-inline.html?id=00afd86673c22e4df79467b1f4be113a&split=60&run=true')">
-Tampilkan DartPad 1
-</button>
-<iframe id="dart1"
-style="display:none; width:100%; height:300px;">
-</iframe>
-</div>
-
-<!-- 2 -->
-<div class="section">
-
-<h2>2. Class Barang (Data Barang)</h2>
-
-<ul>
-
-<li>
-<b>Class Barang</b> digunakan untuk merepresentasikan data barang yang terdapat pada sistem informasi pendataan barang di gudang.
-</li>
-
-<li>
-Class Barang memiliki atribut berupa <b>kodeBarang</b>, <b>namaBarang</b>, <b>kategori</b>, <b>merk</b>, <b>jumlahStok</b>, <b>satuan</b>, dan <b>kondisi</b> sebagai informasi detail barang.
-</li>
-
-<li>
-Constructor <b>Barang()</b> digunakan untuk melakukan inisialisasi data barang ketika objek Barang dibuat.
-</li>
-
-<li>
-Method <b>tampilkanBarang()</b> digunakan untuk menampilkan informasi data barang yang telah tersimpan.
-</li>
-
-<li>
-Method <b>tambahStok()</b> digunakan untuk menambahkan jumlah stok barang ketika terdapat barang masuk.
-</li>
-
-<li>
-Method <b>kurangiStok()</b> digunakan untuk mengurangi jumlah stok barang ketika terdapat barang keluar.
-</li>
-
-<li>
-Hasil proses pengelolaan barang menampilkan informasi data barang dan perubahan jumlah stok.
-</li>
-
-</ul>
-
-<h3>Input:</h3>
-
-<ul>
-<li>Kode Barang</li>
-<li>Nama Barang</li>
-<li>Kategori</li>
-<li>Merk</li>
-<li>Jumlah Stok</li>
-<li>Satuan</li>
-<li>Kondisi</li>
-</ul>
-
-<h3>Proses:</h3>
-
-<ul>
-<li>Membuat objek dari class Barang menggunakan constructor.</li>
-<li>Menyimpan data barang ke dalam atribut class.</li>
-<li>Menampilkan data barang menggunakan method tampilkanBarang().</li>
-<li>Menambahkan stok barang menggunakan method tambahStok().</li>
-<li>Mengurangi stok barang menggunakan method kurangiStok().</li>
-</ul>
-
-<h3>Output:</h3>
-
-<ul>
-<li>Data barang tampil.</li>
-<li>Jumlah stok bertambah.</li>
-<li>Jumlah stok berkurang.</li>
-<li>Informasi kondisi barang.</li>
-</ul>
-
-<h3>Kode Dart:</h3>
-
-<div class="code-box">
-
-<pre><code>
-// ==========================================
-// Nama 1 : Yoza Ulpia Rafila
-// NIM    : 251410004
-//
-// Nama 2 : Rifqi Prayoga
-// NIM    : 251410005
-//
-// Kelas  : SI2A
-// Sistem Informasi Pendataan Barang Gudang
-// ==========================================
-
-class Barang {
-
-  String kodeBarang;
-  String namaBarang;
-  String kategori;
-  String merk;
-  int jumlahStok;
-  String satuan;
-  String kondisi;
-
-  // Constructor
-  Barang(
-    this.kodeBarang,
-    this.namaBarang,
-    this.kategori,
-    this.merk,
-    this.jumlahStok,
-    this.satuan,
-    this.kondisi
-  );
-
-  // Method tampilkan barang
-  void tampilkanBarang(){
-
-    print("Kode Barang : $kodeBarang");
-    print("Nama Barang : $namaBarang");
-    print("Kategori : $kategori");
-    print("Merk : $merk");
-    print("Jumlah Stok : $jumlahStok");
-    print("Satuan : $satuan");
-    print("Kondisi : $kondisi");
-
-  }
-
-  // Method tambah stok
-  void tambahStok(int jumlah){
-
-    jumlahStok += jumlah;
-
-    print("Stok bertambah menjadi $jumlahStok");
-
-  }
-
-
-  // Method kurangi stok
-  void kurangiStok(int jumlah){
-
-    jumlahStok -= jumlah;
-
-    print("Stok berkurang menjadi $jumlahStok");
-
-  }
-
-}
-
-void main(){
-
-  // Input data barang
-  var barang1 = Barang(
-    "BRG001",
-    "Laptop",
-    "Elektronik",
-    "Asus",
-    10,
-    "Unit",
-    "Baik"
-  );
-
-
-  // Output data barang
-  barang1.tampilkanBarang();
-
-
-  // Proses stok
-  barang1.tambahStok(5);
-  barang1.kurangiStok(3);
-
-}
-</code></pre>
-
-</div>
-
-<button class="button"
-onclick="runDart('dart2','https://dartpad.dev/embed-inline.html?id=715ed6aadf60f9d87ba5a111f199b260&split=60&run=true')">
-Tampilkan DartPad 2
-</button>
-<iframe id="dart2"
-style="display:none; width:100%; height:300px;">
-</iframe>
-</div>
-
-<!-- 3 -->
-<div class="section">
-
-<h2>3. Class Kategori (Data Kategori Barang)</h2>
-
-<ul>
-
-<li>
-<b>Class Kategori</b> digunakan untuk mengelompokkan data barang berdasarkan jenis atau kategori tertentu dalam sistem informasi pendataan barang di gudang.
-</li>
-
-<li>
-Class Kategori memiliki atribut berupa <b>idKategori</b> dan <b>namaKategori</b> yang digunakan sebagai informasi pengelompokan barang.
-</li>
-
-<li>
-Constructor <b>Kategori()</b> digunakan untuk melakukan inisialisasi data kategori ketika objek Kategori dibuat.
-</li>
-
-<li>
-Method <b>tampilkanKategori()</b> digunakan untuk menampilkan daftar kategori barang yang telah tersimpan.
-</li>
-
-<li>
-Pengelompokan kategori membantu proses pencarian dan pengelolaan data barang agar lebih terstruktur.
-</li>
-
-</ul>
-
-<h3>Input:</h3>
-
-<ul>
-<li>ID Kategori</li>
-<li>Nama Kategori</li>
-</ul>
-
-<h3>Proses:</h3>
-
-<ul>
-<li>Membuat objek dari class Kategori menggunakan constructor.</li>
-<li>Menyimpan data kategori ke dalam atribut class.</li>
-<li>Menjalankan method tampilkanKategori().</li>
-<li>Menampilkan informasi kategori barang.</li>
-</ul>
-
-<h3>Output:</h3>
-
-<ul>
-<li>Daftar kategori barang.</li>
-<li>Informasi kategori yang tersimpan.</li>
-</ul>
-
-<h3>Kode Dart:</h3>
-
-<div class="code-box">
-
-<pre><code>
-// ==========================================
-// Nama 1 : Yoza Ulpia Rafila
-// NIM    : 251410004
-//
-// Nama 2 : Rifqi Prayoga
-// NIM    : 251410005
-//
-// Kelas  : SI2A
-// Sistem Informasi Pendataan Barang Gudang
-// ==========================================
-
-class Kategori {
-
-  String idKategori;
-  String namaKategori;
-
-
-  // Constructor
-  Kategori(
-    this.idKategori,
-    this.namaKategori
-  );
-
-  // Method tampilkan kategori
-  void tampilkanKategori(){
-
-    print("ID Kategori : $idKategori");
-    print("Nama Kategori : $namaKategori");
-
-  }
-
-}
-
-void main(){
-
-  // Input data kategori
-  var kategori1 = Kategori(
-    "K001",
-    "Elektronik"
-  );
-
-
-  // Output data kategori
-  kategori1.tampilkanKategori();
-
-}
-</code></pre>
-
-</div>
-    
-<button class="button"
-onclick="runDart('dart3','https://dartpad.dev/embed-inline.html?id=1bfaab26e1c7aacc40186fdb3213e7d9&split=60&run=true')">
-Tampilkan DartPad 3
-</button>
-<iframe id="dart3"
-style="display:none; width:100%; height:300px;">
-</iframe>
-
-</div>
-
-<!-- 4 -->
-<div class="section">
-
-<h2>4. Class Supplier (Data Supplier)</h2>
-
-<ul>
-
-<li>
-<b>Class Supplier</b> digunakan untuk merepresentasikan data pemasok barang yang bekerja sama dengan sistem informasi pendataan barang di gudang.
-</li>
-
-<li>
-Class Supplier memiliki atribut berupa <b>kodeSupplier</b>, <b>namaSupplier</b>, <b>alamat</b>, <b>telepon</b>, dan <b>email</b> sebagai informasi data pemasok.
-</li>
-
-<li>
-Constructor <b>Supplier()</b> digunakan untuk melakukan inisialisasi data supplier ketika objek dibuat.
-</li>
-
-<li>
-Method <b>tampilkanSupplier()</b> digunakan untuk menampilkan informasi data supplier yang telah tersimpan.
-</li>
-
-<li>
-Fungsi <b>main()</b> digunakan untuk membuat objek Supplier dan menjalankan proses menampilkan data supplier.
-</li>
-
-<li>
-Hasil proses menampilkan informasi supplier yang digunakan sebagai sumber data barang masuk ke gudang.
-</li>
-
-</ul>
-
-
-<h3>Input:</h3>
-
-<ul>
-<li>Kode Supplier</li>
-<li>Nama Supplier</li>
-<li>Alamat Supplier</li>
-<li>Nomor Telepon</li>
-<li>Email Supplier</li>
-</ul>
-
-
-<h3>Proses:</h3>
-
-<ul>
-<li>Membuat objek dari class Supplier menggunakan constructor.</li>
-<li>Menyimpan data supplier ke dalam atribut class.</li>
-<li>Menjalankan method tampilkanSupplier().</li>
-<li>Menampilkan informasi supplier.</li>
-</ul>
-
-
-<h3>Output:</h3>
-
-<ul>
-<li>Data supplier tampil.</li>
-<li>Informasi pemasok barang.</li>
-</ul>
-
-
-<h3>Kode Dart:</h3>
-
-<div class="code-box">
-
-<pre><code>
-// ==========================================
-// Nama 1 : Yoza Ulpia Rafila
-// NIM    : 251410004
-//
-// Nama 2 : Rifqi Prayoga
-// NIM    : 251410005
-//
-// Kelas  : SI2A
-// Sistem Informasi Pendataan Barang Gudang
-// ==========================================
-
-class Supplier {
-
-  String kodeSupplier;
-  String namaSupplier;
-  String alamat;
-  String telepon;
-  String email;
-
-  // Constructor
-  Supplier(
-    this.kodeSupplier,
-    this.namaSupplier,
-    this.alamat,
-    this.telepon,
-    this.email
-  );
-
-  // Method tampilkan supplier
-  void tampilkanSupplier(){
-
-    print("Data Supplier");
-    print("Kode Supplier : $kodeSupplier");
-    print("Nama Supplier : $namaSupplier");
-    print("Alamat : $alamat");
-    print("Telepon : $telepon");
-    print("Email : $email");
-
-  }
-
-}
-
-void main(){
-
-  // Input data supplier
-  var supplier1 = Supplier(
-    "SUP001",
-    "PT Maju Jaya",
-    "Jakarta",
-    "08123456789",
-    "majujaya@gmail.com"
-  );
-
-
-  // Proses tampilkan data
-  supplier1.tampilkanSupplier();
-
-}
-</code></pre>
-
-</div>
-
-<button class="button"
-onclick="runDart('dart4','https://dartpad.dev/embed-inline.html?id=537155b314fcf5b87b3d7fad7b40482c&split=60&run=true')">
-
-Tampilkan DartPad 4
-
-</button>
-
-<iframe id="dart4"
-style="display:none; width:100%; height:300px;">
-</iframe>
-
-</div>
-
-<!-- 5 -->
-<div class="section">
-
-<h2>5. Class Barang Masuk</h2>
-
-<ul>
-
-<li>
-<b>Class BarangMasuk</b> digunakan untuk merepresentasikan proses pencatatan barang yang masuk ke dalam gudang.
-</li>
-
-<li>
-Class ini berfungsi untuk menambah jumlah stok barang berdasarkan transaksi barang masuk dari supplier.
-</li>
-
-<li>
-Constructor <b>BarangMasuk()</b> digunakan untuk menginisialisasi data transaksi barang masuk.
-</li>
-
-<li>
-Method <b>tambahStok()</b> digunakan untuk menambahkan jumlah stok barang berdasarkan jumlah barang yang diterima.
-</li>
-
-<li>
-Proses transaksi barang masuk akan tersimpan sebagai riwayat pemasukan barang di sistem.
-</li>
-
-</ul>
-
-
-<h3>Input:</h3>
-
-<ul>
-<li>ID Barang Masuk</li>
-<li>Tanggal Masuk</li>
-<li>Kode Barang</li>
-<li>Nama Barang</li>
-<li>Jumlah Masuk</li>
-</ul>
-
-
-<h3>Proses:</h3>
-
-<ul>
-<li>Membuat objek dari class BarangMasuk</li>
-<li>Menyimpan data transaksi barang masuk</li>
-<li>Menjalankan method tambahStok()</li>
-<li>Menambahkan jumlah stok barang</li>
-</ul>
-
-
-<h3>Output:</h3>
-
-<ul>
-<li>Data barang masuk tersimpan</li>
-<li>Stok barang bertambah</li>
-<li>Informasi transaksi barang masuk</li>
-</ul>
-
-
-<h3>Kode Dart:</h3>
-
-<div class="code-box">
-
-<pre><code>
-// ==========================================
-// Nama 1 : Yoza Ulpia Rafila
-// NIM    : 251410004
-//
-// Nama 2 : Rifqi Prayoga
-// NIM    : 251410005
-//
-// Kelas  : SI2A
-// Sistem Informasi Pendataan Barang Gudang
-// ==========================================
-
-class BarangMasuk {
-
-  String idBarangMasuk;
-  String tanggalMasuk;
-  String kodeBarang;
-  String namaBarang;
-  int jumlahMasuk;
-
-  BarangMasuk(
-    this.idBarangMasuk,
-    this.tanggalMasuk,
-    this.kodeBarang,
-    this.namaBarang,
-    this.jumlahMasuk
-  );
-
-  void tambahStok(){
-
-    print("=== TRANSAKSI BARANG MASUK ===");
-    print("ID        : $idBarangMasuk");
-    print("Tanggal   : $tanggalMasuk");
-    print("Kode      : $kodeBarang");
-    print("Barang    : $namaBarang");
-    print("Jumlah    : $jumlahMasuk");
-    print("Status    : Stok berhasil ditambahkan");
-
-  }
-
-}
-
-void main(){
-
-  // Input data barang masuk
-  var bm1 = BarangMasuk(
-    "BM001",
-    "14-06-2026",
-    "BRG001",
-    "Keyboard",
-    10
-  );
-
-  // Proses
-  bm1.tambahStok();
-
-}
-</code></pre>
-
-</div>
-
-<button class="button"
-onclick="runDart('dart5','https://dartpad.dev/embed-inline.html?id=f4bfe7845e8da34250ef925a9447b76c&split=60&run=true')">
-
-Tampilkan DartPad 5
-
-</button>
-
-<iframe id="dart5"
-style="display:none; width:100%; height:300px;">
-</iframe>
-
-</div>
-    
-<!-- 6 -->
-<div class="section">
-
-<h2>6. Class Barang Keluar (Transaksi Barang Keluar)</h2>
-
-<ul>
-
-<li>
-<b>Class BarangKeluar</b> digunakan untuk merepresentasikan proses pengeluaran barang dari gudang ke pihak tujuan tertentu.
-</li>
-
-<li>
-Class ini berfungsi mencatat data barang yang keluar serta mengurangi jumlah stok yang tersedia.
-</li>
-
-<li>
-Constructor <b>BarangKeluar()</b> digunakan untuk menginisialisasi data transaksi barang keluar.
-</li>
-
-<li>
-Method <b>kurangiStok()</b> digunakan untuk mengurangi jumlah stok berdasarkan jumlah barang yang dikeluarkan.
-</li>
-
-<li>
-Proses ini memastikan stok barang selalu diperbarui secara akurat setelah transaksi keluar dilakukan.
-</li>
-
-<li>
-Hasil akhir berupa informasi data barang keluar dan perubahan jumlah stok.
-</li>
-
-</ul>
-
-
-<h3>Input:</h3>
-
-<ul>
-<li>ID Barang Keluar</li>
-<li>Tanggal Keluar</li>
-<li>Kode Barang</li>
-<li>Jumlah Barang Keluar</li>
-<li>Tujuan Pengiriman</li>
-</ul>
-
-
-<h3>Proses:</h3>
-
-<ul>
-<li>Membuat objek dari class BarangKeluar.</li>
-<li>Menyimpan data transaksi barang keluar.</li>
-<li>Melakukan pengurangan stok barang.</li>
-<li>Memperbarui data persediaan barang.</li>
-</ul>
-
-
-<h3>Output:</h3>
-
-<ul>
-<li>Data barang keluar tersimpan</li>
-<li>Stok barang berkurang</li>
-<li>Informasi transaksi barang keluar</li>
-</ul>
-
-
-<h3>Kode Dart:</h3>
-
-<div class="code-box">
-
-<pre><code>
-// ==========================================
-// Nama 1 : Yoza Ulpia Rafila
-// NIM    : 251410004
-//
-// Nama 2 : Rifqi Prayoga
-// NIM    : 251410005
-//
-// Kelas  : SI2A
-// Sistem Informasi Pendataan Barang Gudang
-// ==========================================
-
-class BarangKeluar {
-
-  String kodeBarang;
-  int jumlahKeluar;
-  String tujuan;
-
-
-  // Constructor
-  BarangKeluar(
-    this.kodeBarang,
-    this.jumlahKeluar,
-    this.tujuan
-  );
-
-  // Method kurangi stok
-  void kurangiStok(){
-
-    int stokAwal = 100;
-
-    int stokAkhir = stokAwal - jumlahKeluar;
-
-    print("Barang keluar berhasil dicatat");
-    print("Kode Barang : $kodeBarang");
-    print("Jumlah Keluar : $jumlahKeluar");
-    print("Tujuan : $tujuan");
-    print("Sisa Stok : $stokAkhir");
-
-  }
-
-}
-
-void main(){
-
-  // Input data barang keluar
-  var bk1 = BarangKeluar(
-    "BRG001",
-    10,
-    "Toko A"
-  );
-
-
-  // Proses transaksi
-  bk1.kurangiStok();
-
-}
-</code></pre>
-
-</div>
-
-<button class="button"
-onclick="runDart('dart6','https://dartpad.dev/embed-inline.html?id=bb5aff697e49cdf7722ffe798e5efc0b&split=60&run=true')">
-
-Tampilkan DartPad 6
-
-</button>
-
-<iframe id="dart6"
-style="display:none; width:100%; height:300px;">
-</iframe>
-
-</div>
-
-<!-- 7 -->
-<div class="section">
-
-<h2>7. Class Stok Barang</h2>
-
-<ul>
-
-<li>
-<b>Class StokBarang</b> digunakan untuk mengelola dan menghitung total stok barang dalam sistem informasi gudang.
-</li>
-
-<li>
-Class ini menggabungkan data dari barang masuk dan barang keluar untuk menghasilkan stok akhir.
-</li>
-
-<li>
-Constructor <b>StokBarang()</b> digunakan untuk menginisialisasi nilai stok awal, barang masuk, dan barang keluar.
-</li>
-
-<li>
-Method <b>hitungStok()</b> digunakan untuk melakukan perhitungan stok akhir berdasarkan transaksi yang terjadi.
-</li>
-
-<li>
-Hasil perhitungan digunakan untuk mengetahui kondisi stok barang saat ini.
-</li>
-
-</ul>
-
-
-<h3>Input:</h3>
-
-<ul>
-<li>Stok awal barang</li>
-<li>Jumlah barang masuk</li>
-<li>Jumlah barang keluar</li>
-</ul>
-
-
-<h3>Proses:</h3>
-
-<ul>
-<li>Membuat objek class StokBarang</li>
-<li>Menyimpan data stok awal</li>
-<li>Menambahkan barang masuk</li>
-<li>Mengurangi barang keluar</li>
-<li>Menghitung stok akhir</li>
-</ul>
-
-
-<h3>Output:</h3>
-
-<ul>
-<li>Total stok akhir barang</li>
-<li>Status ketersediaan stok</li>
-</ul>
-
-
-<h3>Kode Dart:</h3>
-
-<div class="code-box">
-
-<pre><code>
-// ==========================================
-// Nama 1 : Yoza Ulpia Rafila
-// NIM    : 251410004
-//
-// Nama 2 : Rifqi Prayoga
-// NIM    : 251410005
-//
-// Kelas  : SI2A
-// Sistem Informasi Pendataan Barang Gudang
-// ==========================================
-
-
-class StokBarang {
-
-  int stokAwal;
-  int barangMasuk;
-  int barangKeluar;
-
-
-  // Constructor
-  StokBarang(
-    this.stokAwal,
-    this.barangMasuk,
-    this.barangKeluar
-  );
-
-
-  // Method hitung stok
-  void hitungStok(){
-
-    int stokAkhir = stokAwal + barangMasuk - barangKeluar;
-
-    print("Stok Awal : $stokAwal");
-    print("Barang Masuk : $barangMasuk");
-    print("Barang Keluar : $barangKeluar");
-    print("Stok Akhir : $stokAkhir");
-
-    if(stokAkhir <= 0){
-      print("Status : Stok Habis");
-    } else if(stokAkhir < 10){
-      print("Status : Stok Menipis");
-    } else {
-      print("Status : Stok Aman");
-    }
-  }
-
-}
-
-
-void main(){
-
-  // Input data stok
-  var stok1 = StokBarang(50, 20, 10);
-
-  // Proses hitung stok
-  stok1.hitungStok();
-
-}
-</code></pre>
-
-</div>
-
-<button class="button"
-onclick="runDart('dart7','https://dartpad.dev/embed-inline.html?id=8d289db6c0b98a3ffd7d7dce34ad6667&split=60&run=true')">
-
-Tampilkan DartPad 7
-
-</button>
-
-<iframe id="dart7"
-style="display:none; width:100%; height:300px;">
-</iframe>
-
-</div>
-    
-<!-- 8 -->
-<div class="section">
-
-<h2>8. Class Laporan</h2>
-
-<ul>
-
-<li>
-<b>Class Laporan</b> digunakan untuk mengelola dan menampilkan seluruh hasil data transaksi pada sistem informasi pendataan barang di gudang.
-</li>
-
-<li>
-Class ini berfungsi sebagai media rekapitulasi data seperti barang masuk, barang keluar, dan stok akhir barang.
-</li>
-
-<li>
-Constructor <b>Laporan()</b> digunakan untuk menginisialisasi data laporan yang akan ditampilkan.
-</li>
-
-<li>
-Method <b>cetakLaporan()</b> digunakan untuk menampilkan hasil laporan berdasarkan data yang telah diproses sebelumnya.
-</li>
-
-<li>
-Laporan bertujuan untuk memberikan informasi keseluruhan aktivitas gudang secara terstruktur.
-</li>
-
-</ul>
-
-
-<h3>Input:</h3>
-
-<ul>
-<li>Jenis laporan</li>
-<li>Periode laporan</li>
-<li>Data barang masuk</li>
-<li>Data barang keluar</li>
-<li>Data stok barang</li>
-</ul>
-
-
-<h3>Proses:</h3>
-
-<ul>
-<li>Membuat objek dari class Laporan</li>
-<li>Mengumpulkan seluruh data transaksi gudang</li>
-<li>Melakukan rekapitulasi data</li>
-<li>Menjalankan method cetakLaporan()</li>
-</ul>
-
-
-<h3>Output:</h3>
-
-<ul>
-<li>Laporan data barang</li>
-<li>Laporan barang masuk</li>
-<li>Laporan barang keluar</li>
-<li>Laporan stok akhir</li>
-</ul>
-
-
-<h3>Kode Dart:</h3>
-
-<div class="code-box">
-
-<pre><code>
-// ==========================================
-// Nama 1 : Yoza Ulpia Rafila
-// NIM    : 251410004
-//
-// Nama 2 : Rifqi Prayoga
-// NIM    : 251410005
-//
-// Kelas  : SI2A
-// Sistem Informasi Pendataan Barang Gudang
-// ==========================================
-
-class Laporan {
-
-  String jenisLaporan;
-  String periodeLaporan;
-
-  Laporan(
-    this.jenisLaporan,
-    this.periodeLaporan
-  );
-
-  void cetakLaporan(){
-
-    print("===== LAPORAN GUDANG =====");
-    print("Jenis   : $jenisLaporan");
-    print("Periode : $periodeLaporan");
-    print("--------------------------");
-    print("Data barang masuk");
-    print("Data barang keluar");
-    print("Data stok barang");
-    print("==========================");
-
-  }
-
-}
-
-void main(){
-
-  var laporan1 = Laporan(
-    "Laporan Bulanan",
-    "Januari 2026"
-  );
-
-  laporan1.cetakLaporan();
-
-}
-</code></pre>
-
-</div>
-
-<button class="button"
-onclick="runDart('dart8','https://dartpad.dev/embed-inline.html?id=71eeb354596b8a19af23ecaf87dae3db&split=60&run=true')">
-
-Tampilkan DartPad 8
-
-</button>
-
-<iframe id="dart8"
-style="display:none; width:100%; height:300px;">
-</iframe>
-    
-</div>
-
-<!-- 9 -->
-<div class="section">
-
-<h2>9. Class Riwayat Barang</h2>
-
-<ul>
-
-<li>
-<b>Class RiwayatBarang</b> digunakan untuk mencatat seluruh aktivitas perubahan data barang pada sistem informasi gudang.
-</li>
-
-<li>
-Class ini berfungsi menyimpan informasi transaksi seperti barang masuk, barang keluar, perubahan stok, dan waktu kejadian.
-</li>
-
-<li>
-Constructor <b>RiwayatBarang()</b> digunakan untuk menginisialisasi data riwayat barang.
-</li>
-
-<li>
-Method <b>tampilkanRiwayat()</b> digunakan untuk menampilkan seluruh aktivitas barang yang telah dilakukan.
-</li>
-
-<li>
-Riwayat barang membantu admin mengetahui perubahan data barang secara terstruktur dan memudahkan proses pengecekan.
-</li>
-
-</ul>
-
-
-<h3>Input:</h3>
-
-<ul>
-<li>ID Riwayat</li>
-<li>Tanggal Transaksi</li>
-<li>Kode Barang</li>
-<li>Nama Barang</li>
-<li>Jenis Aktivitas</li>
-<li>Jumlah Perubahan</li>
-</ul>
-
-
-<h3>Proses:</h3>
-
-<ul>
-<li>Membuat objek dari class RiwayatBarang menggunakan constructor.</li>
-<li>Menyimpan data aktivitas barang.</li>
-<li>Mencatat perubahan jumlah barang.</li>
-<li>Menampilkan riwayat transaksi barang.</li>
-</ul>
-
-
-<h3>Output:</h3>
-
-<ul>
-<li>Data riwayat barang.</li>
-<li>Informasi barang masuk dan keluar.</li>
-<li>Catatan perubahan stok.</li>
-</ul>
-
-
-<h3>Kode Dart:</h3>
-
-<div class="code-box">
-
-<pre><code>
-// ==========================================
-// Nama 1 : Yoza Ulpia Rafila
-// NIM    : 251410004
-//
-// Nama 2 : Rifqi Prayoga
-// NIM    : 251410005
-//
-// Kelas  : SI2A
-// Sistem Informasi Pendataan Barang Gudang
-// ==========================================
-
-
-class RiwayatBarang {
-
-  // Atribut
-  String idRiwayat;
-  String tanggal;
-  String kodeBarang;
-  String namaBarang;
-  String jenisAktivitas;
-  int jumlah;
-
-
-  // Constructor
-  RiwayatBarang(
-    this.idRiwayat,
-    this.tanggal,
-    this.kodeBarang,
-    this.namaBarang,
-    this.jenisAktivitas,
-    this.jumlah
-  );
-
-
-  // Method tampilkan riwayat barang
-  void tampilkanRiwayat(){
-
-    print("============================");
-    print("      RIWAYAT BARANG        ");
-    print("============================");
-
-    print("ID Riwayat       : $idRiwayat");
-    print("Tanggal          : $tanggal");
-    print("Kode Barang      : $kodeBarang");
-    print("Nama Barang      : $namaBarang");
-    print("Jenis Aktivitas  : $jenisAktivitas");
-    print("Jumlah Perubahan : $jumlah");
-
-    print("============================");
-
-  }
-
-}
-
-
-void main(){
-
-  // Membuat objek riwayat barang
-  var riwayat1 = RiwayatBarang(
-
-    "R001",
-    "15-06-2026",
-    "BRG001",
-    "Laptop Asus",
-    "Barang Masuk",
-    10
-
-  );
-
-
-  // Menampilkan data riwayat
-  riwayat1.tampilkanRiwayat();
-
-}
-</code></pre>
-
-</div>
-
-<button class="button"
-onclick="runDart('dart9','https://dartpad.dev/embed-inline.html?id=b408e4f1cca1446b365254b8e7aa3ae6&split=60&run=true')">
-
-Tampilkan DartPad 9
-
-</button>
-
-<iframe id="dart9"
-style="display:none; width:100%; height:300px;">
-</iframe>
-    
-</div>
-
-    
-<!-- 10 -->
-<div class="section">
-
-<h2>10. Kesimpulan</h2>
-
-<div class="code-box">
-
-<p>
-Berdasarkan hasil perancangan Sistem Informasi Pendataan Barang di Gudang berbasis pemrograman Dart dengan konsep Object-Oriented Programming (OOP), dapat disimpulkan bahwa:
-</p>
-
-<ul>
-
-<li>
-Sistem dibangun menggunakan konsep class untuk memisahkan setiap komponen seperti User, Barang, Supplier, dan transaksi barang.
-</li>
-
-<li>
-Penerapan constructor memudahkan proses inisialisasi data pada setiap objek yang dibuat.
-</li>
-
-<li>
-Method pada setiap class digunakan untuk menjalankan fungsi utama seperti login, pengelolaan barang, dan transaksi stok.
-</li>
-
-<li>
-Struktur input, proses, dan output membantu dalam merancang sistem yang lebih terarah dan mudah dipahami.
-</li>
-
-<li>
-Sistem ini mampu mengelola data barang masuk dan keluar sehingga stok dapat terkontrol dengan baik.
-</li>
-
-<li>
-Penggunaan OOP membuat program lebih terstruktur, mudah dikembangkan, dan mudah dipelihara.
-</li>
-
-<li>
-Secara keseluruhan, sistem ini membantu dalam proses pendataan barang di gudang agar lebih efektif dan efisien.
-</li>
-
-</ul>
-
-</div>
-
-</div>
-
-
-<!-- 11 -->
-<div class="section">
-
-<h2>11. Penutup</h2>
-
-<div class="code-box">
-
-<p>
-Demikian laporan mengenai Sistem Informasi Pendataan Barang di Gudang berbasis Dart dan konsep Object-Oriented Programming (OOP).
-</p>
-
-<p>
-Penyusunan sistem ini diharapkan dapat memberikan pemahaman mengenai penerapan class, constructor, dan method dalam pengembangan aplikasi sederhana.
-</p>
-
-<p>
-Penulis menyadari bahwa dalam penyusunan tugas ini masih terdapat kekurangan, baik dari segi penulisan maupun implementasi program.
-</p>
-
-<p>
-Oleh karena itu, kritik dan saran yang membangun sangat diharapkan untuk perbaikan di masa mendatang.
-</p>
-
-<p>
-Semoga laporan ini dapat bermanfaat sebagai bahan pembelajaran dalam memahami pemrograman Dart dan konsep OOP.
-</p>
-
-</div>
-
-</div>
-
-<footer style="
-text-align:center;
-padding:20px;
-color:#38bdf8;
-font-size:14px;
-text-shadow:0 0 10px #38bdf8;
-border-top:1px solid rgba(56,189,248,0.3);
-margin-top:20px;
-">
-Sistem Informasi Pendataan Barang di Gudang<br>
-Universitas Bina Darma
-</footer>
 </body>
-</html>
+    </html>
