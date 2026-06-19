@@ -555,6 +555,65 @@
         <iframe id="dart1" style="display:none; width:100%; height:300px;"></iframe>
     </div>
 
-    <!-- ==================== 2. CLASS BARANG ==================== -->
+<!-- ==================== 2. CLASS BARANG ==================== -->
     <div class="section">
-        <h2>2. Class Barang (Data B
+        <h2>2. Class Barang (Data Barang)</h2>
+        <ul>
+            <li><b>Class Barang</b> merepresentasikan data barang dalam sistem informasi gudang.</li>
+            <li>Atribut: <b>kodeBarang</b>, <b>namaBarang</b>, <b>kategori</b>, <b>merk</b>, <b>jumlahStok</b>,
+                <b>satuan</b>, <b>kondisi</b>.</li>
+            <li><b>Constructor Barang()</b> — inisialisasi data barang.</li>
+            <li><b>Method tampilkanBarang()</b> — menampilkan detail barang.</li>
+            <li><b>Method tambahStok()</b> — menambah stok (barang masuk).</li>
+            <li><b>Method kurangiStok()</b> — mengurangi stok (barang keluar).</li>
+        </ul>
+        <h3>Kode Dart:</h3>
+        <div class="code-box">
+            <pre><code><span class="comment">// Class Barang: Merepresentasikan setiap item di gudang</span>
+                <span class="keyword">class</span> <span class="type">Barang</span> {
+                <span class="comment">// --- Properti ---</span>
+                <span class="type">String</span> kodeBarang;  <span class="comment">// Kode unik identifikasi barang</span>
+                <span class="type">String</span> namaBarang;  <span class="comment">// Nama lengkap barang</span>
+                <span class="type">String</span> kategori;    <span class="comment">// Kategori / jenis barang</span>
+                <span class="type">String</span> merk;        <span class="comment">// Merek barang</span>
+                <span class="type">int</span> jumlahStok;      <span class="comment">// Jumlah stok tersedia</span>
+                <span class="type">String</span> satuan;      <span class="comment">// Satuan: Unit, Box, Pcs, dll.</span>
+                <span class="type">String</span> kondisi;     <span class="comment">// Kondisi: Baik, Rusak, Expired</span>
+
+                <span class="comment">// --- Constructor ---</span>
+                <span class="type">Barang</span>(<span class="keyword">this</span>.kodeBarang, <span class="keyword">this</span>.namaBarang, <span class="keyword">this</span>.kategori,
+                <span class="keyword">this</span>.merk, <span class="keyword">this</span>.jumlahStok, <span class="keyword">this</span>.satuan, <span class="keyword">this</span>.kondisi);
+
+                <span class="comment">// --- Method: Menampilkan detail barang ---</span>
+                <span class="keyword">void</span> <span class="type">tampilkanBarang</span>() { <span class="comment">/* ... */</span> }
+                <span class="comment">// --- Method: Menambah stok ---</span>
+                <span class="keyword">void</span> <span class="type">tambahStok</span>(<span class="type">int</span> jumlah) { jumlahStok += jumlah; }
+                <span class="comment">// --- Method: Mengurangi stok ---</span>
+                <span class="keyword">void</span> <span class="type">kurangiStok</span>(<span class="type">int</span> jumlah) { jumlahStok -= jumlah; }
+            }</code></pre>
+        </div>
+        <button class="button" onclick="runDart('dart2','https://dartpad.dev/embed-inline.html?id=715ed6aadf60f9d87ba5a111f199b260&split=60&run=true')">▶ Tampilkan DartPad 2</button>
+        <iframe id="dart2" style="display:none; width:100%; height:300px;"></iframe>
+    </div>
+
+    <!-- ==================== 3. CLASS KATEGORI ==================== -->
+    <div class="section">
+        <h2>3. Class Kategori (Data Kategori Barang)</h2>
+        <ul>
+            <li><b>Class Kategori</b> mengelompokkan barang berdasarkan jenis/kategori.</li>
+            <li>Atribut: <b>idKategori</b>, <b>namaKategori</b>.</li>
+            <li><b>Method tampilkanKategori()</b> — menampilkan daftar kategori.</li>
+        </ul>
+        <div class="code-box">
+            <pre><code><span class="comment">// Class Kategori: Pengelompokan barang agar lebih terstruktur</span>
+                <span class="keyword">class</span> <span class="type">Kategori</span> {
+                <span class="type">String</span> idKategori;   <span class="comment">// ID unik kategori</span>
+                <span class="type">String</span> namaKategori; <span class="comment">// Nama: Elektronik, ATK, dll.</span>
+                <span class="type">Kategori</span>(<span class="keyword">this</span>.idKategori, <span class="keyword">this</span>.namaKategori);
+                <span class="keyword">void</span> <span class="type">tampilkanKategori</span>() { <span class="comment">/* menampilkan data kategori */</span> }
+            }</code></pre>
+        </div>
+        <button class="button" onclick="runDart('dart3','https://dartpad.dev/embed-inline.html?id=1bfaab26e1c7aacc40186fdb3213e7d9&split=60&run=true')">▶ Tampilkan DartPad 3</button>
+        <iframe id="dart3" style="display:none; width:100%; height:300px;"></iframe>
+    </div>
+
