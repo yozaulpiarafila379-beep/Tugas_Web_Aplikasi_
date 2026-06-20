@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistem Pendataan Barang — OOP + Diagram</title>
+    <!-- Mermaid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js">
+    </script>
+    <style>
+        /* ─── RESET & GLOBAL ─── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', 'Consolas', monospace;
+            background:
+                radial-gradient(circle at top left, #1e1b4b, transparent 45%),
+                radial-gradient(circle at bottom right, #0f766e, transparent 45%),
+                radial-gradient(circle at 50% 50%, #0a0a1a, transparent 70%),
+                #020617;
+            color: #e0f2fe;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 16px;
+        }
+
+        /* ─── HEADER ─── */
+        .header {
+            background: rgba(2, 6, 23, 0.8);
+            backdrop-filter: blur(15px);
+            border-bottom: 1px solid rgba(34, 211, 238, 0.5);
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            background: linear-gradient(90deg, #22d3ee, #a855f7, #22d3ee);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 15px rgba(34, 211, 238, 0.7);
+            animation: titleShine 4s ease-in-out infinite;
+            font-size: clamp(1.6em, 5vw, 2.6em);
+            line-height: 1.3;
+        }
+
+        @keyframes titleShine {
+            0%,
+            100% {
+                background-position: 0% center;
+            }
+            50% {
+                background-position: 200% center;
+            }
+        }
+
+        .header .subtitle {
+            font-size: clamp(0.9em, 2vw, 1.2em);
+            color: #67e8f9;
+            text-shadow: 0 0 10px #22d3ee;
+            margin-top: 4px;
+        }
+
+        .header .identitas {
+            margin-top: 12px;
+        }
+
+        .header .identitas h3 {
+            color: #a855f7;
+            text-shadow: 0 0 10px #a855f7;
+            letter-spacing: 2px;
+        }
+
+        .header .identitas p {
+            color: #67e8f9;
+            text-shadow: 0 0 10px #22d3ee;
+            margin: 2px 0;
+        }
+
+        .header hr {
+            width: 60%;
+            max-width: 300px;
+            margin: 16px auto;
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, #22d3ee, #a855f7);
+        }
+
+        /* ─── SECTIONS ─── */
+        .section {
+            margin: 20px 0;
+            padding: 22px 24px;
+            border-radius: 18px;
+            background: rgba(15, 23, 42, 0.70);
+            border: 1px solid rgba(34, 211, 238, 0.4);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 0 20px rgba(34, 211, 238, 0.15);
+            transition: all 0.4s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-4px);
+            border-color: #a855f7;
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.4);
+        }
+
+        .section h2 {
+            color: #22d3ee !important;
+            text-shadow: 0 0 12px #22d3ee;
+            font-size: 1.4em;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .section h2::after {
+            content: "";
+            display: block;
+            width: 100%;
+            height: 2px;
+            margin-top: 8px;
+            background: linear-gradient(90deg, #22d3ee, #a855f7);
+            border-radius: 2px;
+        }
+
+        .section p,
+        .section li {
+            color: #bae6fd;
+            text-shadow: 0 0 6px rgba(34, 211, 238, 0.3);
+        }
+
+        .section b {
+            color: #facc15;
+            text-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
+        }
+
+        /* ─── CARDS ─── */
+        .card {
+            background: rgba(2, 6, 23, 0.7);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 12px;
+            padding: 14px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: #a855f7;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .card .card-title {
+            font-weight: bold;
+            color: #facc15;
+            font-size: 0.95em;
+            margin-bottom: 4px;
+            text-shadow: 0 0 8px rgba(250, 204, 21, 0.3);
+        }
+
+        .card .card-sub {
+            color: #94a3b8;
+            font-size: 0.8em;
+        }
+
+        .card .card-actions {
+            margin-top: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /* ─── FORM ROW ─── */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 14px;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .form-row label {
+            color: #94a3b8;
+            font-size: 0.8em;
+            min-width: 80px;
+        }
+
+        .form-row input,
+        .form-row select {
+            background: rgba(2, 6, 23, 0.8);
+            border: 1px solid rgba(34, 211, 238, 0.4);
+            border-radius: 8px;
+            padding: 6px 12px;
+            color: #e0f2fe;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .form-row input:focus,
+        .form-row select:focus {
+            outline: none;
+            border-color: #a855f7;
+        }
+
+        /* ─── BUTTONS ─── */
+        .btn {
+            padding: 6px 14px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #fff;
+            background: linear-gradient(90deg, #22d3ee, #a855f7);
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.3);
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px #22d3ee, 0 0 30px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn.small {
+            padding: 4px 10px;
+            font-size: 0.65em;
+        }
+        .btn.green {
+            background: linear-gradient(90deg, #34d399, #22d3ee);
+        }
+        .btn.orange {
+            background: linear-gradient(90deg, #fb923c, #facc15);
+        }
+        .btn.red {
+            background: linear-gradient(90deg, #f87171, #fb923c);
+        }
+        .btn.purple {
+            background: linear-gradient(90deg, #a855f7, #c084fc);
+        }
+        .btn.cyan {
+            background: linear-gradient(90deg, #22d3ee, #67e8f9);
+            color: #020617;
+        }
+
+        /* ─── TERMINAL ─── */
+        .terminal {
+            background: #020617;
+            border: 1px solid #22d3ee;
+            border-radius: 12px;
+            padding: 14px 18px;
+            max-height: 280px;
+            overflow-y: auto;
+            font-size: 0.82em;
+            line-height: 1.7;
+            color: #bae6fd;
+            margin-top: 10px;
+        }
+
+        .terminal .log-line {
+            padding: 1px 0;
+            border-bottom: 1px solid rgba(34, 211, 238, 0.05);
+        }
+
+        .terminal .log-line .time {
+            color: #475569;
+            margin-right: 10px;
+        }
+        .terminal .log-line .green {
+            color: #34d399;
+        }
+        .terminal .log-line .red {
+            color: #f87171;
+        }
+        .terminal .log-line .cyan {
+            color: #22d3ee;
+        }
+        .terminal .log-line .gray {
+            color: #94a3b8;
+        }
+
+        /* ─── CODE BOX ─── */
+        .code-box {
+            background: #020617;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid #22d3ee;
+            box-shadow: inset 0 0 20px rgba(34, 211, 238, 0.08);
+            overflow: auto;
+            margin-top: 10px;
+            font-size: 0.82em;
+            line-height: 1.6;
+            color: #e0f2fe;
+        }
+
+        .code-box .kw {
+            color: #c084fc;
+            font-weight: bold;
+        }
+        .code-box .type {
+            color: #22d3ee;
+        }
+        .code-box .str {
+            color: #facc15;
+        }
+        .code-box .cmt {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        .code-box .num {
+            color: #fb923c;
+        }
+        .code-box .fn {
+            color: #34d399;
+        }
+        .code-box .cls {
+            color: #f472b6;
+        }
+        .code-box .ovr {
+            color: #34d399;
+            font-weight: bold;
+        }
+
+        /* ─── PSEUDO BLOCK ─── */
+        .pseudo-block {
+            background: #0a0a1a;
+            border-left: 3px solid #f472b6;
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.85em;
+            line-height: 1.8;
+            color: #e0f2fe;
+            overflow-x: auto;
+        }
+
+        .pseudo-block .p-comment {
+            color: #94a3b8;
+            font-style: italic;
+        }
+        .pseudo-block .p-keyword {
+            color: #c084fc;
+            font-weight: bold;
+        }
+        .pseudo-block .p-type {
+            color: #22d3ee;
+        }
+        .pseudo-block .p-string {
+            color: #facc15;
+        }
+        .pseudo-block .p-number {
+            color: #fb923c;
+        }
+        .pseudo-block .p-function {
+            color: #34d399;
+        }
+        .pseudo-block .p-class {
+            color: #f472b6;
+            font-weight: bold;
+        }
+        .pseudo-block .p-var {
+            color: #facc15;
+        }
+        .pseudo-block .p-cond {
+            color: #fb923c;
+        }
+        .pseudo-block .p-op {
+            color: #22d3ee;
+        }
+
+        /* ─── IFRAME ─── */
+        iframe {
+            margin-top: 10px;
+            max-width: 100%;
+            height: 320px;
+            display: none;
+            border-radius: 10px;
+            border: 1px solid rgba(34, 211, 238, 0.5);
+            background: #020617;
+            width: 100%;
+        }
+
+        /* ─── GRID ─── */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .section {
+                padding: 16px;
+            }
+            .section h2 {
+                font-size: 1.15em;
+            }
+        }
+
+        /* ─── MERMAID WRAPPER ─── */
+        .mermaid-wrapper {
+            background: rgba(2, 6, 23, 0.6);
+            border-radius: 12px;
+            padding: 16px;
+            overflow: auto;
+            border: 1px solid rgba(34, 211, 238, 0.15);
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .mermaid-wrapper .mermaid {
+            display: flex;
+            justify-content: center;
+            min-width: 100%;
+            width: 100%;
+        }
+
+        .mermaid-wrapper .mermaid svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* ─── COPY SECTION ─── */
+        .copy-section {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .copy-btn {
+            background: rgba(168, 85, 247, 0.2);
+            border: 1px solid #a855f7;
+            color: #c084fc;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(168, 85, 247, 0.4);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+            transform: scale(1.02);
+        }
+
+        .copy-btn.active {
+            background: rgba(52, 211, 153, 0.3);
+            border-color: #34d399;
+            color: #34d399;
+        }
+
+        .code-block {
+            background: #0a0a1a;
+            border-left: 3px solid #a855f7;
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.82em;
+            white-space: pre-wrap;
+            word-break: break-word;
+            color: #bae6fd;
+            margin-top: 12px;
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .code-block.show {
+            display: block;
+        }
+
+        .code-block .label {
+            color: #f472b6;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        .code-block code {
+            color: #e0f2fe;
+        }
+
+        /* ─── DIAGRAM WRAPPER ─── */
+        .diagram-wrapper {
+            margin-top: 10px;
+        }
+
+        .diagram-wrapper h3 {
+            margin-top: 16px;
+            margin-bottom: 4px;
+        }
+
+        .diagram-wrapper>p {
+            color: #94a3b8;
+            font-size: 0.85em;
+            margin-bottom: 6px;
+        }
+
+        /* ─── DARTPAD ROW ─── */
+        .dartpad-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .dartpad-row .btn {
+            flex-shrink: 0;
+        }
+
+        /* ─── FOOTER ─── */
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #38bdf8;
+            font-size: 13px;
+            text-shadow: 0 0 10px #38bdf8;
+            border-top: 1px solid rgba(56, 189, 248, 0.2);
+            margin-top: 30px;
+        }
+    </style>
+
+    <script>
+        let activeIframe = null;
+
+        function runDart(id, url) {
+            const frame = document.getElementById(id);
+            if (!frame) return;
+            if (activeIframe === frame) {
+                frame.style.display = "none";
+                frame.src = "";
+                activeIframe = null;
+                return;
+            }
+            if (activeIframe) {
+                activeIframe.style.display = "none";
+                activeIframe.src = "";
+            }
+            frame.src = url;
+            frame.style.display = "block";
+            activeIframe = frame;
+        }
+
+        // ─── MERMAID FUNCTIONS ───
+        function toggleCode(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.toggle('show');
+                const btn = el.parentElement.querySelector('.copy-btn:first-child');
+                if (btn) {
+                    btn.textContent = el.classList.contains('show') ? '📋 Sembunyikan Kode' : '📋 Tampilkan Kode Mermaid';
+                }
+            }
+        }
+
+        function copyMermaid(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            const code = el.querySelector('code');
+            if (!code) return;
+            const text = code.textContent;
+            if (!el.classList.contains('show')) {
+                el.classList.add('show');
+                const btn = el.parentElement.querySelector('.copy-btn:first-child');
+                if (btn) btn.textContent = '📋 Sembunyikan Kode';
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                const btns = el.parentElement.querySelectorAll('.copy-btn');
+                btns.forEach(btn => {
+                    if (btn.textContent.includes('Salin')) {
+                        const orig = btn.textContent;
+                        btn.textContent = '✅ Disalin!';
+                        btn.classList.add('active');
+                        setTimeout(() => {
+                            btn.textContent = orig;
+                            btn.classList.remove('active');
+                        }, 2000);
+                    }
+                });
+            }).catch(err => {
+                alert('Gagal menyalin: ' + err);
+                const range = document.createRange();
+                range.selectNode(code);
+                window.getSelection().removeAllRanges();
+                window.getSelection().addRange(range);
+                document.execCommand('copy');
+            });
+        }
+    </script>
+</head>
+
+<body>
+
+    <!-- ════════════════════ HEADER ════════════════════ -->
+    <header class="header">
+        <h1>Sistem Pendataan Barang di Gudang</h1>
+        <div class="subtitle">— Tugas Kelompok —</div>
+        <hr />
+        <div class="identitas">
+            <h3>✨ KELOMPOK ✨</h3>
+            <p>Yoza Ulpia Rafila — 251410004 — SI2A</p>
+            <p>Rifqi Prayoga — 251410005 — SI2A</p>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- ════════════════════ DASHBOARD ════════════════════ -->
+        <div class="section">
+            <h2>📋 Dashboard &amp; Kontrol</h2>
+
+            <div class="card" style="border-color:#a855f7;">
+                <div class="card-title">➕ Tambah Barang Baru</div>
+                <div class="form-row">
+                    <label>Kode</label>
+                    <input type="text" id="newKode" value="BRG-001" />
+                    <label>Nama</label>
+                    <input type="text" id="newNama" value="Laptop Asus" />
+                    <label>Kategori</label>
+                    <input type="text" id="newKategori" value="Elektronik" />
+                    <label>Stok</label>
+                    <input type="number" id="newStok" value="10" />
+                    <button class="btn green" onclick="tambahBarang()">➕ Tambah</button>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:12px;">
+                <div class="card-title">🎯 Pilih Barang &amp; Aksi</div>
+                <div class="form-row">
+                    <label>Pilih Barang</label>
+                    <select id="selectBarang"></select>
+                    <button class="btn cyan small" onclick="refreshSelect()">↻ Refresh</button>
+                </div>
+                <div class="form-row" style="margin-top:6px;">
+                    <button class="btn green small" onclick="tambahStok()">📥 Tambah Stok</button>
+                    <button class="btn orange small" onclick="kurangiStok()">📤 Kurangi Stok</button>
+                    <button class="btn purple small" onclick="tampilkanBarang()">ℹ️ Detail</button>
+                    <button class="btn red small" onclick="hapusBarang()">🗑️ Hapus</button>
+                </div>
+                <div style="margin-top:6px; font-size:0.8em; color:#94a3b8;">
+                    <span id="infoBarang">Belum ada barang dipilih.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════ INVENTORY ════════════════════ -->
+        <div class="section">
+            <h2>📦 Daftar Barang di Gudang</h2>
+            <div id="inventoryGrid" class="grid-3"></div>
+        </div>
+
+        <!-- ════════════════════ TERMINAL ════════════════════ -->
+        <div class="section" style="border-color:#a855f7;">
+            <h2 style="color:#a855f7 !important;">🖥️ Terminal Console</h2>
+            <div class="terminal" id="terminal">
+                <div class="log-line"><span class="time">[INIT]</span> <span class="cyan">Sistem Pendataan Barang di Gudang</span> — <span class="gray">siap digunakan.</span></div>
+                <div class="log-line"><span class="time">[INIT]</span> <span class="green">✅ 5 barang contoh berhasil di-instansiasi.</span></div>
+            </div>
+            <button class="btn small" onclick="clearTerminal()" style="margin-top:8px;">🧹 Clear Log</button>
+        </div>
+
+        <!-- ════════════════════ MERMAID DIAGRAMS ════════════════════ -->
+        <div class="section" style="border:2px solid rgba(168,85,247,0.3);">
+            <h2 style="color:#a855f7 !important;">📊 Mermaid Diagram</h2>
+            <p style="color:#94a3b8; font-size:0.9em; margin-bottom:6px;">
+                Diagram interaktif yang dapat dilihat kode sumbernya dan disalin.
+            </p>
+
+            <!-- ─── FLOWCHART ─── -->
+            <div class="diagram-wrapper">
+                <h3 style="color:#34d399 !important; text-shadow:0 0 12px #34d399;">🔄 Flowchart Sistem — Interaksi Pengguna</h3>
+                <p style="color:#94a3b8; font-size:0.85em;">Alur interaksi pengguna: mulai, inisialisasi, tambah/pilih barang, validasi, selesai.</p>
+                <div class="mermaid-wrapper">
+                    <div class="mermaid">
+                        %%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#22d3ee', 'primaryTextColor': '#fff', 'primaryBorderColor': '#a855f7', 'lineColor': '#94a3b8', 'secondaryColor': '#1e293b', 'tertiaryColor': '#0f172a', 'background': '#020617' }}}%%
+                        graph TD
+                            A(🚀 MULAI) --> B[⚙️ Inisialisasi Sistem]
+                            B --> C[🖥️ Tampilkan Dashboard]
+                            C --> D{❓ Pilih Aksi}
+
+                            D -->|Tambah Barang| E[📝 Input Data]
+                            E --> F{❓ Kode unik?}
+                            F -->|✅ Ya| G[✅ Simpan &amp; Tampilkan]
+                            F -->|❌ Tidak| H[⚠️ Error: Duplikat]
+                            G --> I[↻ Kembali ke Dashboard]
+                            H --> I
+
+                            D -->|Pilih Barang| J[🎯 Pilih Barang]
+                            J --> K[📋 Detail Barang]
+                            K --> L{❓ Aksi}
+
+                            L -->|📥 Tambah Stok| M[📥 Input Jumlah]
+                            M --> N[🔄 Update Stok]
+                            N --> I
+
+                            L -->|📤 Kurangi Stok| O[📤 Input Jumlah]
+                            O --> P{❓ Stok cukup?}
+                            P -->|✅ Ya| Q[🔄 Update Stok]
+                            P -->|❌ Tidak| R[⚠️ Stok habis]
+                            Q --> I
+                            R --> I
+
+                            L -->|🗑️ Hapus| S{❓ Konfirmasi?}
+                            S -->|✅ Ya| T[🗑️ Hapus]
+                            S -->|❌ Batal| I
+                            T --> I
+
+                            I --> C
+                            C -.->|loop| D
+                            C --> U(🏁 SELESAI)
+                    </div>
+                </div>
+                <div class="copy-section">
+                    <button class="copy-btn" onclick="toggleCode('flowchart-code')">📋 Tampilkan Kode Mermaid</button>
+                    <button class="copy-btn" onclick="copyMermaid('flowchart-code')">📋 Salin Kode</button>
+                </div>
+                <div id="flowchart-code" class="code-block">
+                    <span class="label">📌 Kode Mermaid — Flowchart Sistem</span>
+                    <code>%%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#22d3ee', 'primaryTextColor': '#fff', 'primaryBorderColor': '#a855f7', 'lineColor': '#94a3b8', 'secondaryColor': '#1e293b', 'tertiaryColor': '#0f172a', 'background': '#020617' }}}%%
+                    graph TD
+                        A( MULAI) --> B[ Inisialisasi Sistem]
+                        B --> C[ Tampilkan Dashboard]
+                        C --> D{ Pilih Aksi}
+
+                        D -->|Tambah Barang| E[ Input Data]
+                        E --> F{ Kode unik?}
+                        F -->| Ya| G[ Simpan &amp; Tampilkan]
+                        F -->| Tidak| H[ Error: Duplikat]
+                        G --> I[↻ Kembali ke Dashboard]
+                        H --> I
+
+                        D -->|Pilih Barang| J[ Pilih Barang]
+                        J --> K[ Detail Barang]
+                        K --> L{ Aksi}
+
+                        L -->| Tambah Stok| M[ Input Jumlah]
+                        M --> N[ Update Stok]
+                        N --> I
+
+                        L -->| Kurangi Stok| O[ Input Jumlah]
+                        O --> P{ Stok cukup?}
+                        P -->| Ya| Q[ Update Stok]
+                        P -->| Tidak| R[ Stok habis]
+                        Q --> I
+                        R --> I
+
+                        L -->| Hapus| S{ Konfirmasi?}
+                        S -->| Ya| T[ Hapus]
+                        S -->| Batal| I
+                        T --> I
+
+                        I --> C
+                        C -.->|loop| D
+                        C --> U( SELESAI)</code>
+                </div>
+            </div>
+
+            <!-- ─── PSEUDOCODE ─── -->
+            <div class="diagram-wrapper">
+                <h3 style="color:#f472b6 !important; text-shadow:0 0 12px #f472b6;">📊 Diagram Alur Pseudocode — Jalur Eksekusi</h3>
+                <p style="color:#94a3b8; font-size:0.85em;">Alur logika program: inisialisasi, transaksi masuk/keluar, perhitungan stok akhir.</p>
+                <div class="mermaid-wrapper">
+                    <div class="mermaid">
+                        %%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#f472b6', 'primaryTextColor': '#fff', 'primaryBorderColor': '#a855f7', 'lineColor': '#94a3b8', 'secondaryColor': '#1e293b', 'tertiaryColor': '#0f172a', 'background': '#020617' }}}%%
+                        graph TD
+                            A(🚀 MULAI) --> B[📂 Inisialisasi Data]
+                            B --> C[🏭 Buat Objek Barang x5]
+                            C --> D[📋 Tampilkan Daftar Barang]
+                            D --> E[📥 Transaksi Barang Masuk]
+                            E --> F{❓ Barang ditemukan?}
+                            F -->|✅ Ya| G[➕ tambahStok()]
+                            F -->|❌ Tidak| H[⚠️ Error: Tidak ditemukan]
+                            G --> I[📝 Catat Riwayat]
+                            I --> J[📤 Transaksi Barang Keluar]
+                            H --> J
+                            J --> K{❓ Stok mencukupi?}
+                            K -->|✅ Ya| L[➖ kurangiStok()]
+                            K -->|❌ Tidak| M[⚠️ Error: Stok tidak cukup]
+                            L --> N[📝 Catat Riwayat]
+                            N --> O[📊 Hitung Stok Akhir]
+                            M --> O
+                            O --> P[🖥️ Tampilkan Output]
+                            P --> Q(🏁 SELESAI)
+                    </div>
+                </div>
+                <div class="copy-section">
+                    <button class="copy-btn" onclick="toggleCode('pseudocode-code')">📋 Tampilkan Kode Mermaid</button>
+                    <button class="copy-btn" onclick="copyMermaid('pseudocode-code')">📋 Salin Kode</button>
+                </div>
+                <div id="pseudocode-code" class="code-block">
+                    <span class="label">📌 Kode Mermaid — Diagram Pseudocode</span>
+                    <code>%%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#f472b6', 'primaryTextColor': '#fff', 'primaryBorderColor': '#a855f7', 'lineColor': '#94a3b8', 'secondaryColor': '#1e293b', 'tertiaryColor': '#0f172a', 'background': '#020617' }}}%
+                    graph TD
+                        A(🚀 MULAI) --> B[📂 Inisialisasi Data]
+                        B --> C[🏭 Buat Objek Barang x5]
+                        C --> D[📋 Tampilkan Daftar Barang]
+                        D --> E[📥 Transaksi Barang Masuk]
+                        E --> F{❓ Barang ditemukan?}
+                        F -->|✅ Ya| G[➕ tambahStok()]
+                        F -->|❌ Tidak| H[⚠️ Error: Tidak ditemukan]
+                        G --> I[📝 Catat Riwayat]
+                        I --> J[📤 Transaksi Barang Keluar]
+                        H --> J
+                        J --> K{❓ Stok mencukupi?}
+                        K -->|✅ Ya| L[➖ kurangiStok()]
+                        K -->|❌ Tidak| M[⚠️ Error: Stok tidak cukup]
+                        L --> N[📝 Catat Riwayat]
+                        N --> O[📊 Hitung Stok Akhir]
+                        M --> O
+                        O --> P[🖥️ Tampilkan Output]
+                        P --> Q(🏁 SELESAI)</code>
+                </div>
+            </div>
+
+            <!-- ─── CLASS DIAGRAM ─── -->
+            <div class="diagram-wrapper">
+                <h3 style="color:#a855f7 !important; text-shadow:0 0 12px #a855f7;">📦 Class Diagram — UML (Vertical)</h3>
+                <p style="color:#94a3b8; font-size:0.85em;">Relasi inheritance antar class. <span style="color:#f472b6;">⟨abstract⟩</span> = abstract class, panah <span style="color:#f472b6;">▷</span> = extends.</p>
+                <div class="mermaid-wrapper">
+                    <div class="mermaid">
+                        %%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#22d3ee', 'primaryTextColor': '#fff', 'primaryBorderColor': '#a855f7', 'lineColor': '#94a3b8', 'secondaryColor': '#1e293b', 'tertiaryColor': '#0f172a', 'background': '#020617' }}}%%
+                        classDiagram
+                            class EntitasGudang {
+                                <<abstract>>
+                                #String kode
+                                #String nama
+                                +tampilkanInfo() void*
+                                +cetakIdentitas() void
+                            }
+                            class Barang {
+                                +String kodeBarang
+                                +String namaBarang
+                                +String kategori
+                                +String merk
+                                +int jumlahStok
+                                +String satuan
+                                +String kondisi
+                                +tampilkanInfo() void
+                                +tambahStok(int jml) void
+                                +kurangiStok(int jml) void
+                            }
+                            EntitasGudang <|-- Barang
+
+                            class Transaksi {
+                                <<abstract>>
+                                #String idTransaksi
+                                #String tanggal
+                                #String kodeBarang
+                                #int jumlah
+                                +prosesTransaksi() void*
+                                +cetakHeader() void
+                            }
+                            class BarangMasuk {
+                                +String idMasuk
+                                +String tanggal
+                                +String kodeBarang
+                                +int jumlah
+                                +String namaBarang
+                                +prosesTransaksi() void
+                                +tambahStok() void
+                            }
+                            class BarangKeluar {
+                                +String idKeluar
+                                +String tanggal
+                                +String kodeBarang
+                                +int jumlah
+                                +String tujuan
+                                +prosesTransaksi() void
+                            }
+                            Transaksi <|-- BarangMasuk
+                            Transaksi <|-- BarangKeluar
+
+                            class Pengguna {
+                                <<abstract>>
+                                #String username
+                                #String password
+                                +login() void*
+                                +tampilkanIdentitas() void
+                            }
+                            class User {
+                                +String username
+                                +String password
+                                +String level
+                                +login() void
+                            }
+                            Pengguna <|-- User
+
+                            class StokBarang {
+                                +int stokAwal
+                                +int barangMasuk
+                                +int barangKeluar
+                                +hitungStok() void
+                            }
+                    </div>
+                </div>
+                <div class="copy-section">
+                    <button class="copy-btn" onclick="toggleCode('classdiagram-code')">📋 Tampilkan Kode Mermaid</button>
+                    <button class="copy-btn" onclick="copyMermaid('classdiagram-code')">📋 Salin Kode</button>
+                </div>
+                <div id="classdiagram-code" class="code-block">
+                    <span class="label">📌 Kode Mermaid — Class Diagram</span>
+                    <code>%%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#22d3ee', 'primaryTextColor': '#fff', 'primaryBorderColor': '#a855f7', 'lineColor': '#94a3b8', 'secondaryColor': '#1e293b', 'tertiaryColor': '#0f172a', 'background': '#020617' }}}%
+                    classDiagram
+                        class EntitasGudang {
+                            <<abstract>>
+                            #String kode
+                            #String nama
+                            +tampilkanInfo() void*
+                            +cetakIdentitas() void
+                        }
+                        class Barang {
+                            +String kodeBarang
+                            +String namaBarang
+                            +String kategori
+                            +String merk
+                            +int jumlahStok
+                            +String satuan
+                            +String kondisi
+                            +tampilkanInfo() void
+                            +tambahStok(int jml) void
+                            +kurangiStok(int jml) void
+                        }
+                        EntitasGudang <|-- Barang
+
+                        class Transaksi {
+                            <<abstract>>
+                            #String idTransaksi
+                            #String tanggal
+                            #String kodeBarang
+                            #int jumlah
+                            +prosesTransaksi() void*
+                            +cetakHeader() void
+                        }
+                        class BarangMasuk {
+                            +String idMasuk
+                            +String tanggal
+                            +String kodeBarang
+                            +int jumlah
+                            +String namaBarang
+                            +prosesTransaksi() void
+                            +tambahStok() void
+                        }
+                        class BarangKeluar {
+                            +String idKeluar
+                            +String tanggal
+                            +String kodeBarang
+                            +int jumlah
+                            +String tujuan
+                            +prosesTransaksi() void
+                        }
+                        Transaksi <|-- BarangMasuk
+                        Transaksi <|-- BarangKeluar
+
+                        class Pengguna {
+                            <<abstract>>
+                            #String username
+                            #String password
+                            +login() void*
+                            +tampilkanIdentitas() void
+                        }
+                        class User {
+                            +String username
+                            +String password
+                            +String level
+                            +login() void
+                        }
+                        Pengguna <|-- User
+
+                        class StokBarang {
+                            +int stokAwal
+                            +int barangMasuk
+                            +int barangKeluar
+                            +hitungStok() void
+                        }</code>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════ PSEUDOCODE + DARTPAD ════════════════════ -->
+        <div class="section" style="border:2px solid rgba(244,114,182,0.5);">
+            <h2 style="color:#f472b6 !important;">📝 Pseudocode + DartPad</h2>
+            <p style="color:#94a3b8; font-size:0.85em;">Klik tombol untuk melihat implementasi Dart.</p>
+
+            <!-- 1. Abstract Class EntitasGudang -->
+            <h3 style="color:#f472b6; margin-top:16px;">1. Abstract Class EntitasGudang</h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// ABSTRACT CLASS: EntitasGudang</span><br />
+                <span class="p-keyword">abstract class</span> <span class="p-class">EntitasGudang</span> {<br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">kode</span>, <span class="p-var">nama</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">abstract</span> <span class="p-keyword">void</span> <span class="p-function">tampilkanInfo</span>()<br />
+                &nbsp;&nbsp;<span class="p-keyword">void</span> <span class="p-function">cetakIdentitas</span>()<br />
+                }
+            </div>
+            <div class="dartpad-row">
+                <button class="btn" onclick="runDart('d0','https://dartpad.dev/embed-inline.html?id=00afd86673c22e4df79467b1f4be113a&split=60&run=true')">▶ Tampilkan DartPad</button>
+            </div>
+            <iframe id="d0"></iframe>
+
+            <!-- 2. Class Barang -->
+            <h3 style="color:#22d3ee; margin-top:16px;">2. Class Barang</h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// CLASS: Barang extends EntitasGudang</span><br />
+                <span class="p-keyword">class</span> <span class="p-class">Barang</span> <span class="p-keyword">extends</span> <span class="p-class">EntitasGudang</span> {<br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">kategori</span>, <span class="p-var">merk</span>, <span class="p-var">satuan</span>, <span class="p-var">kondisi</span><br />
+                &nbsp;&nbsp;<span class="p-type">int</span> <span class="p-var">jumlahStok</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">@override</span> <span class="p-keyword">void</span> <span class="p-function">tampilkanInfo</span>()<br />
+                &nbsp;&nbsp;<span class="p-keyword">void</span> <span class="p-function">tambahStok</span>(<span class="p-type">int</span> <span class="p-var">jml</span>)<br />
+                &nbsp;&nbsp;<span class="p-keyword">void</span> <span class="p-function">kurangiStok</span>(<span class="p-type">int</span> <span class="p-var">jml</span>)<br />
+                }
+            </div>
+            <div class="dartpad-row">
+                <button class="btn" onclick="runDart('d1','https://dartpad.dev/embed-inline.html?id=715ed6aadf60f9d87ba5a111f199b260&split=60&run=true')">▶ Tampilkan DartPad</button>
+            </div>
+            <iframe id="d1"></iframe>
+
+            <!-- 3. Abstract Class Transaksi -->
+            <h3 style="color:#f472b6; margin-top:16px;">3. Abstract Class Transaksi</h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// ABSTRACT CLASS: Transaksi</span><br />
+                <span class="p-keyword">abstract class</span> <span class="p-class">Transaksi</span> {<br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">idTransaksi</span>, <span class="p-var">tanggal</span>, <span class="p-var">kodeBarang</span><br />
+                &nbsp;&nbsp;<span class="p-type">int</span> <span class="p-var">jumlah</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">abstract</span> <span class="p-keyword">void</span> <span class="p-function">prosesTransaksi</span>()<br />
+                &nbsp;&nbsp;<span class="p-keyword">void</span> <span class="p-function">cetakHeader</span>()<br />
+                }
+            </div>
+            <div class="dartpad-row">
+                <button class="btn" onclick="runDart('d2','https://dartpad.dev/embed-inline.html?id=1bfaab26e1c7aacc40186fdb3213e7d9&split=60&run=true')">▶ Tampilkan DartPad</button>
+            </div>
+            <iframe id="d2"></iframe>
+
+            <!-- 4. Class BarangMasuk -->
+            <h3 style="color:#a855f7; margin-top:16px;">4. Class BarangMasuk</h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// CLASS: BarangMasuk extends Transaksi</span><br />
+                <span class="p-keyword">class</span> <span class="p-class">BarangMasuk</span> <span class="p-keyword">extends</span> <span class="p-class">Transaksi</span> {<br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">namaBarang</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">@override</span> <span class="p-keyword">void</span> <span class="p-function">prosesTransaksi</span>() {<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-var">barang</span> = <span class="p-function">cariBarang</span>(<span class="p-var">kodeBarang</span>)<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">if</span> (<span class="p-var">barang</span> <span class="p-op">!=</span> <span class="p-keyword">null</span>) <span class="p-var">barang</span>.<span class="p-function">tambahStok</span>(<span class="p-var">jumlah</span>)<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">else</span> <span class="p-function">print</span>(<span class="p-string">"❌ Barang tidak ditemukan!"</span>)<br />
+                &nbsp;&nbsp;}<br />
+                }
+            </div>
+            <div class="dartpad-row">
+                <button class="btn" onclick="runDart('d3','https://dartpad.dev/embed-inline.html?id=f4bfe7845e8da34250ef925a9447b76c&split=60&run=true')">▶ Tampilkan DartPad</button>
+            </div>
+            <iframe id="d3"></iframe>
+
+            <!-- 5. Class BarangKeluar -->
+            <h3 style="color:#fb923c; margin-top:16px;">5. Class BarangKeluar</h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// CLASS: BarangKeluar extends Transaksi</span><br />
+                <span class="p-keyword">class</span> <span class="p-class">BarangKeluar</span> <span class="p-keyword">extends</span> <span class="p-class">Transaksi</span> {<br />
+                &nbsp;&nbsp;<span class="p-type">String</span> <span class="p-var">tujuan</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">@override</span> <span class="p-keyword">void</span> <span class="p-function">prosesTransaksi</span>() {<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-var">barang</span> = <span class="p-function">cariBarang</span>(<span class="p-var">kodeBarang</span>)<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">if</span> (<span class="p-var">barang</span> <span class="p-op">!=</span> <span class="p-keyword">null</span>) <span class="p-var">barang</span>.<span class="p-function">kurangiStok</span>(<span class="p-var">jumlah</span>)<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">else</span> <span class="p-function">print</span>(<span class="p-string">"❌ Barang tidak ditemukan!"</span>)<br />
+                &nbsp;&nbsp;}<br />
+                }
+            </div>
+            <div class="dartpad-row">
+                <button class="btn" onclick="runDart('d4','https://dartpad.dev/embed-inline.html?id=bb5aff697e49cdf7722ffe798e5efc0b&split=60&run=true')">▶ Tampilkan DartPad</button>
+            </div>
+            <iframe id="d4"></iframe>
+
+            <!-- 6. Class StokBarang -->
+            <h3 style="color:#facc15; margin-top:16px;">6. Class StokBarang</h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// CLASS: StokBarang</span><br />
+                <span class="p-keyword">class</span> <span class="p-class">StokBarang</span> {<br />
+                &nbsp;&nbsp;<span class="p-type">int</span> <span class="p-var">stokAwal</span>, <span class="p-var">barangMasuk</span>, <span class="p-var">barangKeluar</span><br />
+                &nbsp;&nbsp;<span class="p-keyword">void</span> <span class="p-function">hitungStok</span>() {<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-var">stokAkhir</span> = <span class="p-var">stokAwal</span> + <span class="p-var">barangMasuk</span> - <span class="p-var">barangKeluar</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">if</span> (<span class="p-var">stokAkhir</span> <span class="p-op">==</span> 0) <span class="p-var">status</span> = <span class="p-string">"Habis"</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">else if</span> (<span class="p-var">stokAkhir</span> <span class="p-op">&lt;</span> 5) <span class="p-var">status</span> = <span class="p-string">"Menipis"</span><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;<span class="p-cond">else</span> <span class="p-var">status</span> = <span class="p-string">"Aman"</span><br />
+                &nbsp;&nbsp;}<br />
+                }
+            </div>
+            <div class="dartpad-row">
+                <button class="btn" onclick="runDart('d5','https://dartpad.dev/embed-inline.html?id=8d289db6c0b98a3ffd7d7dce34ad6667&split=60&run=true')">▶ Tampilkan DartPad</button>
+            </div>
+            <iframe id="d5"></iframe>
+
+            <!-- 7. Program Utama -->
+            <h3 style="color:#34d399; margin-top:16px;">7. Program Utama (main)</h3>
+            <div class="pseudo-block">
+                <span class="p-comment">// PROGRAM UTAMA</span><br />
+                <span class="p-keyword">void</span> <span class="p-function">main</span>() {<br />
+                &nbsp;&nbsp;<span class="p-var">barangList</span> = []; <span class="p-var">riwayat</span> = []<br />
+                &nbsp;&nbsp;<span class="p-var">b1</span> = <span class="p-keyword">new</span> <span class="p-class">Barang</span>(<span class="p-string">"BRG-001"</span>, <span class="p-string">"Laptop"</span>, ...)<br />
+                &nbsp;&nbsp;<span class="p-keyword">for</span> (<span class="p-var">barang</span> <span class="p-keyword">in</span> <span class="p-var">barangList</span>) <span class="p-var">barang</span>.<span class="p-function">tampilkanInfo</span>()<br />
+                &nbsp;&nbsp;<span class="p-var">transaksiMasuk</span> = <span class="p-keyword">new</span> <span class="p-class">BarangMasuk</span>(...)<br />
+                &nbsp;&nbsp;<span class="p-var">transaksiMasuk</span>.<span class="p-function">prosesTransaksi</span>()<br />
+                &nbsp;&nbsp;<span class="p-var">stok</span> = <span class="p-keyword">new</span> <span class="p-class">StokBarang</span>(<span class="p-number">10</span>, <span class="p-number">3</span>, <span class="p-number">2</span>); <span class="p-var">stok</span>.<span class="p-function">hitungStok</span>()<br />
+                }
+            </div>
+            <div class="dartpad-row">
+                <button class="btn" onclick="runDart('d6','https://dartpad.dev/embed-inline.html?id=8d9e0f1a2b3c4d5e6f7a8b9c0d1e2f3a&split=60&run=true')">▶ Tampilkan DartPad</button>
+            </div>
+            <iframe id="d6"></iframe>
+        </div>
+
+        <!-- ════════════════════ 4 PILAR OOP ════════════════════ -->
+        <div class="section" style="border:2px solid rgba(244,114,182,0.5);">
+            <h2 style="color:#f472b6 !important;">🧬 4 Pilar OOP</h2>
+            <div class="grid-2">
+                <div class="card" style="border-color:#f472b6;">
+                    <div class="card-title" style="color:#f472b6;">1. Enkapsulasi</div>
+                    <p style="font-size:0.85em; color:#bae6fd;">Stok dan kondisi barang hanya diubah lewat metode <b>tambahStok()</b> dan <b>kurangiStok()</b>.</p>
+                </div>
+                <div class="card" style="border-color:#f472b6;">
+                    <div class="card-title" style="color:#f472b6;">2. Pewarisan (Inheritance)</div>
+                    <p style="font-size:0.85em; color:#bae6fd;"><b>Barang</b> extends <b>EntitasGudang</b>. <b>BarangMasuk</b> &amp; <b>BarangKeluar</b> extends <b>Transaksi</b>.</p>
+                </div>
+                <div class="card" style="border-color:#f472b6;">
+                    <div class="card-title" style="color:#f472b6;">3. Polimorfisme</div>
+                    <p style="font-size:0.85em; color:#bae6fd;"><b>tampilkanInfo()</b> dan <b>prosesTransaksi()</b> di-override pada turunan.</p>
+                </div>
+                <div class="card" style="border-color:#f472b6;">
+                    <div class="card-title" style="color:#f472b6;">4. Interaksi Objek</div>
+                    <p style="font-size:0.85em; color:#bae6fd;">Objek <b>Barang</b> berinteraksi dengan <b>StokBarang</b> dan <b>Transaksi</b>.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════ SOURCE CODE ════════════════════ -->
+        <div class="section">
+            <h2>📄 Source Code — Class Barang (Dart)</h2>
+            <div class="code-box">
+                <pre><span class="cmt">// ==========================================</span>
+                    <span class="cmt">// Nama  : Yoza Ulpia Rafila &amp; Rifqi Prayoga</span>
+                    <span class="cmt">// NIM   : 251410004 &amp; 251410005</span>
+                    <span class="cmt">// Kelas : SI2A</span>
+                    <span class="cmt">// Topik : Sistem Pendataan Barang di Gudang (OOP)</span>
+                    <span class="cmt">// ==========================================</span>
+
+                    <span class="kw">abstract</span> <span class="kw">class</span> <span class="cls">EntitasGudang</span> {
+                    <span class="type">String</span> kode, nama;
+                    <span class="cls">EntitasGudang</span>(<span class="kw">this</span>.kode, <span class="kw">this</span>.nama);
+                    <span class="kw">void</span> <span class="fn">tampilkanInfo</span>();
+                    <span class="kw">void</span> <span class="fn">cetakIdentitas</span>() {
+                    <span class="fn">print</span>(<span class="str">"🔹 $kode — $nama"</span>);
+                    }
+                    }
+
+                    <span class="kw">class</span> <span class="cls">Barang</span> <span class="kw">extends</span> <span class="cls">EntitasGudang</span> {
+                    <span class="type">String</span> kategori, merk, satuan, kondisi;
+                    <span class="type">int</span> jumlahStok;
+                    <span class="cls">Barang</span>(<span class="type">String</span> kode, <span class="type">String</span> nama, <span class="kw">this</span>.kategori, <span class="kw">this</span>.merk,
+                    <span class="kw">this</span>.jumlahStok, <span class="kw">this</span>.satuan, <span class="kw">this</span>.kondisi) : <span class="kw">super</span>(kode, nama);
+                    <span class="ovr">@override</span> <span class="kw">void</span> <span class="fn">tampilkanInfo</span>() {
+                    <span class="fn">print</span>(<span class="str">"📦 $kode | $nama | $kategori | Stok: $jumlahStok $satuan"</span>);
+                    }
+                    <span class="kw">void</span> <span class="fn">tambahStok</span>(<span class="type">int</span> jumlah) { jumlahStok += jumlah; }
+                    <span class="kw">void</span> <span class="fn">kurangiStok</span>(<span class="type">int</span> jumlah) {
+                    <span class="kw">if</span> (jumlahStok >= jumlah) jumlahStok -= jumlah;
+                    <span class="kw">else</span> <span class="fn">print</span>(<span class="str">"❌ Stok tidak mencukupi!"</span>);
+                    }
+                    }</span></pre>
+            </div>
+        </div>
+
+        <!-- ════════════════════ FOOTER ════════════════════ -->
+        <footer>
+            Sistem Pendataan Barang di Gudang — OOP berbasis Dart<br />
+            Universitas Bina Darma — SI2A — 2026<br />
+            <span style="font-size:0.8em; color:#94a3b8;">Yoza Ulpia Rafila (251410004) &amp; Rifqi Prayoga (251410005)</span>
+        </footer>
+
+    </div>
+    <!-- /container -->
+
+
+    <!-- ════════════════════ JAVASCRIPT ════════════════════ -->
+    <script>
+        // ─── DATA ───
+        let barangList = [];
+        let riwayat = [];
+
+        const initialData = [
+            { kode: 'BRG-001', nama: 'Laptop Asus', kategori: 'Elektronik', merk: 'Asus', stok: 10, satuan: 'unit',
+                kondisi: 'Baik' },
+            { kode: 'BRG-002', nama: 'Printer Epson', kategori: 'Elektronik', merk: 'Epson', stok: 5, satuan: 'unit',
+                kondisi: 'Baik' },
+            { kode: 'BRG-003', nama: 'Meja Kerja', kategori: 'Furniture', merk: 'IKEA', stok: 8, satuan: 'pcs',
+                kondisi: 'Baik' },
+            { kode: 'BRG-004', nama: 'Kursi Kantor', kategori: 'Furniture', merk: 'IKEA', stok: 12, satuan: 'pcs',
+                kondisi: 'Baik' },
+            { kode: 'BRG-005', nama: 'Kertas A4', kategori: 'ATK', merk: 'PaperOne', stok: 50, satuan: 'rim',
+                kondisi: 'Baik' },
+        ];
+
+        // ─── CLASSES ───
+        class EntitasGudang {
+            constructor(kode, nama) {
+                this.kode = kode;
+                this.nama = nama;
+            }
+            tampilkanInfo() { throw new Error('abstract method'); }
+            cetakIdentitas() { log(`🔹 ${this.kode} — ${this.nama}`, 'gray'); }
+        }
+
+        class Barang extends EntitasGudang {
+            constructor(kode, nama, kategori, merk, stok, satuan, kondisi) {
+                super(kode, nama);
+                this.kategori = kategori;
+                this.merk = merk;
+                this.jumlahStok = stok;
+                this.satuan = satuan;
+                this.kondisi = kondisi;
+            }
+            tampilkanInfo() {
+                return `📦 ${this.kode} | ${this.nama} | ${this.kategori} | Stok: ${this.jumlahStok} ${this.satuan} | ${this.kondisi}`;
+            }
+            tambahStok(j) {
+                if (j > 0) {
+                    this.jumlahStok += j;
+                    log(`✅ Stok ${this.nama} +${j}. Total: ${this.jumlahStok}`, 'green');
+                    return true;
+                }
+                return false;
+            }
+            kurangiStok(j) {
+                if (j <= 0) return false;
+                if (this.jumlahStok >= j) {
+                    this.jumlahStok -= j;
+                    log(`✅ Stok ${this.nama} -${j}. Total: ${this.jumlahStok}`, 'green');
+                    return true;
+                }
+                log(`❌ Stok ${this.nama} tidak cukup!`, 'red');
+                return false;
+            }
+        }
+
+        // ─── TERMINAL ───
+        function log(msg, cls = '') {
+            const t = document.getElementById('terminal');
+            if (!t) return;
+            const d = document.createElement('div');
+            d.className = 'log-line';
+            d.innerHTML = `<span class="time">[${new Date().toLocaleTimeString()}]</span> <span class="${cls}">${msg}</span>`;
+            t.appendChild(d);
+            t.scrollTop = t.scrollHeight;
+        }
+
+        function clearTerminal() {
+            const t = document.getElementById('terminal');
+            if (t) t.innerHTML = '';
+            log('🧹 Terminal dibersihkan.', 'gray');
+        }
+
+        // ─── SELECT / UI ───
+        function refreshSelect() {
+            const sel = document.getElementById('selectBarang');
+            if (!sel) return;
+            sel.innerHTML = '';
+            if (!barangList.length) {
+                sel.innerHTML = '<option value="">— tidak ada —</option>';
+                return;
+            }
+            barangList.forEach(b => {
+                const o = document.createElement('option');
+                o.value = b.kode;
+                o.text = `${b.kode} — ${b.nama} (${b.jumlahStok})`;
+                sel.appendChild(o);
+            });
+            sel.value = barangList[0].kode;
+            onSelectChange();
+        }
+
+        function onSelectChange() {
+            const sel = document.getElementById('selectBarang');
+            const info = document.getElementById('infoBarang');
+            if (!sel || !info) return;
+            const b = barangList.find(x => x.kode === sel.value);
+            info.textContent = b ? `✅ ${b.nama} | Stok: ${b.jumlahStok} ${b.satuan}` : '⚠️ Tidak ada barang';
+        }
+
+        function getSelected() {
+            const sel = document.getElementById('selectBarang');
+            if (!sel) return null;
+            return barangList.find(x => x.kode === sel.value) || null;
+        }
+
+        // ─── CRUD ───
+        function tambahBarang() {
+            const kode = document.getElementById('newKode').value.trim();
+            const nama = document.getElementById('newNama').value.trim();
+            const kategori = document.getElementById('newKategori').value.trim();
+            const stok = parseInt(document.getElementById('newStok').value) || 0;
+            if (!kode || !nama || !kategori) {
+                log('❌ Semua field harus diisi!', 'red');
+                return;
+            }
+            if (barangList.some(b => b.kode === kode)) {
+                log(`❌ Kode "${kode}" sudah ada!`, 'red');
+                return;
+            }
+            const b = new Barang(kode, nama, kategori, '-', stok, 'unit', 'Baik');
+            barangList.push(b);
+            log(`✅ "${nama}" (${kode}) ditambahkan.`, 'green');
+            refreshSelect();
+            renderInventory();
+            const nextNum = String(barangList.length + 1).padStart(3, '0');
+            document.getElementById('newKode').value = `BRG-${nextNum}`;
+            document.getElementById('newNama').value = '';
+            document.getElementById('newKategori').value = '';
+            document.getElementById('newStok').value = '0';
+        }
+
+        function tambahStok() {
+            const b = getSelected();
+            if (!b) return;
+            const j = parseInt(prompt('Jumlah tambah:', '1'));
+            if (b.tambahStok(j)) { renderInventory();
+                refreshSelect(); }
+        }
+
+        function kurangiStok() {
+            const b = getSelected();
+            if (!b) return;
+            const j = parseInt(prompt('Jumlah kurangi:', '1'));
+            if (b.kurangiStok(j)) { renderInventory();
+                refreshSelect(); }
+        }
+
+        function tampilkanBarang() {
+            const b = getSelected();
+            if (b) log(`ℹ️ ${b.tampilkanInfo()}`, 'cyan');
+        }
+
+        function hapusBarang() {
+            const b = getSelected();
+            if (!b) return;
+            if (!confirm(`Hapus "${b.nama}"?`)) return;
+            barangList = barangList.filter(x => x.kode !== b.kode);
+            log(`🗑️ "${b.nama}" dihapus.`, 'red');
+            refreshSelect();
+            renderInventory();
+        }
+
+        // ─── RENDER INVENTORY GRID ───
+        function renderInventory() {
+            const g = document.getElementById('inventoryGrid');
+            if (!g) return;
+            g.innerHTML = '';
+            if (!barangList.length) {
+                g.innerHTML = '<p style="color:#94a3b8;text-align:center;">Belum ada barang.</p>';
+                return;
+            }
+            barangList.forEach(b => {
+                const c = document.createElement('div');
+                c.className = 'card';
+                c.innerHTML = `
+                    <div class="card-title">${b.nama}</div>
+                    <div class="card-sub">${b.kode} · ${b.kategori}</div>
+                    <div class="card-sub">Stok: ${b.jumlahStok} ${b.satuan}</div>
+                    <div class="card-actions">
+                        <button class="btn green small" onclick="quickAdd('${b.kode}')">+ Tambah</button>
+                        <button class="btn orange small" onclick="quickSub('${b.kode}')">− Kurang</button>
+                        <button class="btn small" onclick="quickDetail('${b.kode}')">ℹ️</button>
+                    </div>
+                `;
+                g.appendChild(c);
+            });
+        }
+
+        function quickAdd(k) {
+            const b = barangList.find(x => x.kode === k);
+            if (!b) return;
+            const j = parseInt(prompt('Tambah:', '1'));
+            if (b.tambahStok(j)) { renderInventory();
+                refreshSelect(); }
+        }
+
+        function quickSub(k) {
+            const b = barangList.find(x => x.kode === k);
+            if (!b) return;
+            const j = parseInt(prompt('Kurangi:', '1'));
+            if (b.kurangiStok(j)) { renderInventory();
+                refreshSelect(); }
+        }
+
+        function quickDetail(k) {
+            const b = barangList.find(x => x.kode === k);
+            if (b) log(`ℹ️ ${b.tampilkanInfo()}`, 'cyan');
+        }
+
+        // ─── MERMAID INIT ───
+        mermaid.initialize({
+            theme: 'dark',
+            themeVariables: {
+                primaryColor: '#22d3ee',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#a855f7',
+                lineColor: '#94a3b8',
+                secondaryColor: '#1e293b',
+                tertiaryColor: '#0f172a',
+                background: '#020617',
+                fontFamily: 'Courier New, monospace',
+                fontSize: '14px',
+            },
+            flowchart: {
+                htmlLabels: true,
+                curve: 'basis',
+                useMaxWidth: true,
+            },
+            classDiagram: {
+                useMaxWidth: true,
+            }
+        });
+
+        // ─── INIT ───
+        function init() {
+            initialData.forEach(d =>
+                barangList.push(new Barang(d.kode, d.nama, d.kategori, d.merk, d.stok, d.satuan, d.kondisi))
+            );
+            log(`📦 ${barangList.length} barang siap.`, 'green');
+            refreshSelect();
+            renderInventory();
+            const sel = document.getElementById('selectBarang');
+            if (sel) sel.addEventListener('change', onSelectChange);
+            log('🟢 Sistem siap.', 'cyan');
+
+            // Render Mermaid
+            mermaid.run({
+                querySelector: '.mermaid',
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+
+</body>
+</html>
