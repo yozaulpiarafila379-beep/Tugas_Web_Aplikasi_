@@ -1606,85 +1606,73 @@
             </div>
         </div>
 
-<!-- ==================== SOURCE CODE ==================== -->
-<div class="section" style="border:2px solid rgba(34,211,238,0.3);">
-    <h2>📄 Source Code — Class Barang (Dart)</h2>
+        <!-- ==================== SOURCE CODE ==================== -->
+        <div class="section" style="border:2px solid rgba(34,211,238,0.3);">
+            <h2>📄 Source Code — Class Barang (Dart)</h2>
+            <div class="code-box">
+                <pre><span class="cmt">// ==========================================</span>
+                    <span class="cmt">// Nama  : Yoza Ulpia Rafila &amp; Rifqi Prayoga</span>
+                    <span class="cmt">// NIM   : 251410004 &amp; 251410005</span>
+                    <span class="cmt">// Kelas : SI2A</span>
+                    <span class="cmt">// Topik : Sistem Pendataan Barang di Gudang (OOP)</span>
+                    <span class="cmt">// ==========================================</span>
 
-    <div class="code-box">
-        <pre><span class="cmt">// ==========================================</span>
-<span class="cmt">// Nama  : Yoza Ulpia Rafila &amp; Rifqi Prayoga</span>
-<span class="cmt">// NIM   : 251410004 &amp; 251410005</span>
-<span class="cmt">// Kelas : SI2A</span>
-<span class="cmt">// Topik : Sistem Pendataan Barang di Gudang (OOP)</span>
-<span class="cmt">// ==========================================</span>
+                    <span class="kw">abstract</span> <span class="kw">class</span> <span class="cls">EntitasGudang</span> {
+                    <span class="type">String</span> kode;
+                    <span class="type">String</span> nama;
+                    <span class="cls">EntitasGudang</span>(<span class="kw">this</span>.kode, <span class="kw">this</span>.nama);
+                    <span class="kw">void</span> <span class="fn">tampilkanInfo</span>();
+                    <span class="kw">void</span> <span class="fn">cetakIdentitas</span>() {
+                    <span class="fn">print</span>(<span class="str">"🔹 $kode — $nama"</span>);
+                    }
+                    }
 
-<span class="kw">abstract</span> <span class="kw">class</span> <span class="cls">EntitasGudang</span> {
-<span class="type">String</span> kode;
-<span class="type">String</span> nama;
+                    <span class="kw">class</span> <span class="cls">Barang</span> <span class="kw">extends</span> <span class="cls">EntitasGudang</span> {
+                    <span class="type">String</span> kategori;
+                    <span class="type">String</span> merk;
+                    <span class="type">int</span> jumlahStok;
+                    <span class="type">String</span> satuan;
+                    <span class="type">String</span> kondisi;
 
-<span class="cls">EntitasGudang</span>(<span class="kw">this</span>.kode, <span class="kw">this</span>.nama);
+                    <span class="cls">Barang</span>(
+                    <span class="type">String</span> kode,
+                    <span class="type">String</span> nama,
+                    <span class="kw">this</span>.kategori,
+                    <span class="kw">this</span>.merk,
+                    <span class="kw">this</span>.jumlahStok,
+                    <span class="kw">this</span>.satuan,
+                    <span class="kw">this</span>.kondisi,
+                    ) : <span class="kw">super</span>(kode, nama);
 
-<span class="kw">void</span> <span class="fn">tampilkanInfo</span>();
+                    <span class="ovr">@override</span>
+                    <span class="kw">void</span> <span class="fn">tampilkanInfo</span>() {
+                    <span class="fn">print</span>(<span class="str">"📦 $kode | $nama | $kategori | Stok: $jumlahStok $satuan"</span>);
+                    }
 
-<span class="kw">void</span> <span class="fn">cetakIdentitas</span>() {
-<span class="fn">print</span>(<span class="str">"🔹 $kode — $nama"</span>);
-}
-}
+                    <span class="kw">void</span> <span class="fn">tambahStok</span>(<span class="type">int</span> jumlah) {
+                    jumlahStok += jumlah;
+                    <span class="fn">print</span>(<span class="str">"✅ Stok bertambah $jumlah. Total: $jumlahStok"</span>);
+                    }
 
-<span class="kw">class</span> <span class="cls">Barang</span> <span class="kw">extends</span> <span class="cls">EntitasGudang</span> {
-<span class="type">String</span> kategori;
-<span class="type">String</span> merk;
-<span class="type">int</span> jumlahStok;
-<span class="type">String</span> satuan;
-<span class="type">String</span> kondisi;
+                    <span class="kw">void</span> <span class="fn">kurangiStok</span>(<span class="type">int</span> jumlah) {
+                    <span class="kw">if</span> (jumlahStok >= jumlah) {
+                    jumlahStok -= jumlah;
+                    <span class="fn">print</span>(<span class="str">"✅ Stok berkurang $jumlah. Total: $jumlahStok"</span>);
+                    } <span class="kw">else</span> {
+                    <span class="fn">print</span>(<span class="str">"❌ Stok tidak mencukupi!"</span>);
+                    }
+                    }
+                    }</span></pre>
+            </div>
+        </div>
 
-<span class="cls">Barang</span>(
-<span class="type">String</span> kode,
-<span class="type">String</span> nama,
-<span class="kw">this</span>.kategori,
-<span class="kw">this</span>.merk,
-<span class="kw">this</span>.jumlahStok,
-<span class="kw">this</span>.satuan,
-<span class="kw">this</span>.kondisi,
-) : <span class="kw">super</span>(kode, nama);
+        <!-- ==================== FOOTER ==================== -->
+        <footer>
+            Sistem Pendataan Barang di Gudang — OOP berbasis Dart<br />
+            Universitas Bina Darma — SI2A — 2026<br />
+            <span style="font-size:0.8em; color:#94a3b8;">Yoza Ulpia Rafila (251410004) &amp; Rifqi Prayoga (251410005)</span>
+        </footer>
 
-<span class="ovr">@override</span>
-<span class="kw">void</span> <span class="fn">tampilkanInfo</span>() {
-<span class="fn">print</span>(<span class="str">"📦 $kode | $nama | $kategori | Stok: $jumlahStok $satuan"</span>);
-}
-
-<span class="kw">void</span> <span class="fn">tambahStok</span>(<span class="type">int</span> jumlah) {
-jumlahStok += jumlah;
-<span class="fn">print</span>(<span class="str">"✅ Stok bertambah $jumlah. Total: $jumlahStok"</span>);
-}
-
-<span class="kw">void</span> <span class="fn">kurangiStok</span>(<span class="type">int</span> jumlah) {
-if (jumlahStok >= jumlah) {
-jumlahStok -= jumlah;
-<span class="fn">print</span>(<span class="str">"✅ Stok berkurang $jumlah. Total: $jumlahStok"</span>);
-} <span class="kw">else</span> {
-<span class="fn">print</span>(<span class="str">"❌ Stok tidak mencukupi!"</span>);
-}
-}
-}</pre>
-    </div>
-
-    <br>
-
-    <button class="button"
-        onclick="window.open('https://dartpad.dev/', '_blank')">
-        ▶ Tampilkan Dart
-    </button>
-</div>
-
-<!-- ==================== FOOTER ==================== -->
-<footer>
-    Sistem Pendataan Barang di Gudang — OOP berbasis Dart<br>
-    Universitas Bina Darma — SI2A — 2026<br>
-    <span style="font-size:0.8em; color:#94a3b8;">
-        Yoza Ulpia Rafila (251410004) &amp; Rifqi Prayoga (251410005)
-    </span>
-</footer>
     </div><!-- /container -->
 
     <!-- ==================== JAVASCRIPT ==================== -->
@@ -1963,4 +1951,4 @@ jumlahStok -= jumlah;
     </script>
 
 </body>
-    </html>
+</html>
