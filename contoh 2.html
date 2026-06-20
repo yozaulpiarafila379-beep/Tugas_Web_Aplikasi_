@@ -1961,8 +1961,10 @@
     </script>
 
 <script>
-function runDart(frameId, url) {
-    const frame = document.getElementById(frameId);
+function runDart(id, url) {
+    alert("runDart berjalan");
+
+    const frame = document.getElementById(id);
     frame.style.display = "block";
     frame.src = url;
 }
