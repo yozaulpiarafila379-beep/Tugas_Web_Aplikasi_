@@ -1518,9 +1518,6 @@
                         <span class="abstract-method">+ login(): void</span>
                         <span>+ tampilkanIdentitas(): void</span>
                     </div>
-                  <button class="btn" onclick="runDart('dart7','https://dartpad.dev/embed-inline.html?id=35c2e67bd0973fdd81f7700977ec2563&split=60&run=true')">▶ Tampilkan DartPad</button>
-            <iframe id="dart7" style="display:none;width:100%;height:280px;"></iframe>
-  
                 </div>
             </div>
 
@@ -1667,6 +1664,16 @@
                     }
                     }</span></pre>
             </div>
+
+            <button class="btn"
+            onclick="runDart('dart7','https://dartpad.dev/embed-inline.html?id=35c2e67bd0973fdd81f7700977ec2563&split=60&run=true')">
+            ▶ Tampilkan DartPad
+            </button>
+
+            <iframe id="dart7"
+            style="display:none;width:100%;height:280px;">
+            </iframe>
+
         </div>
 
         <!-- ==================== FOOTER ==================== -->
@@ -1953,5 +1960,15 @@
         document.addEventListener('DOMContentLoaded', init);
     </script>
 
+<script>
+function runDart(id, url) {
+    alert("runDart berjalan");
+
+    const frame = document.getElementById(id);
+    frame.style.display = "block";
+    frame.src = url;
+}
+</script>
+    
 </body>
-</html>
+                                                                                                          </html>
