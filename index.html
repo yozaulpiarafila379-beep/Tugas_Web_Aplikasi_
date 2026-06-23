@@ -249,24 +249,10 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 18px;
         }
-        .grid-4 {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-        }
-
-        @media (max-width: 1024px) {
-            .grid-4 {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
 
         @media (max-width: 768px) {
             .grid-2,
             .grid-3 {
-                grid-template-columns: 1fr;
-            }
-            .grid-4 {
                 grid-template-columns: 1fr;
             }
             .section {
@@ -464,11 +450,6 @@
             color: #f87171;
             border: 1px solid #f87171;
         }
-        .badge.maintenance {
-            background: rgba(251, 191, 36, 0.2);
-            color: #fbbf24;
-            border: 1px solid #fbbf24;
-        }
     </style>
 
     <script>
@@ -611,11 +592,17 @@
             <button class="btn small outline" onclick="simulasiTransaksi()" style="margin-top:8px; margin-left:8px;">▶ Jalankan Simulasi 10 Transaksi</button>
         </div>
 
-        <!-- ════════════════════ CLASS DIAGRAM ════════════════════ -->
-        <div class="section" style="border:2px solid rgba(129,140,248,0.3);">
-            <h2 style="color:#818cf8 !important;">📊 Class Diagram UML — Sistem Gudang</h2>
+        <!-- ════════════════════ LOGIKA & DIAGRAM SISTEM ════════════════════ -->
+        <div class="section" style="border:2px solid rgba(56,189,248,0.3);">
+            <h2 style="color:#38bdf8 !important;">📊 LOGIKA &amp; DIAGRAM SISTEM</h2>
             <p style="color:#94a3b8; font-size:0.9em; margin-bottom:6px;">
-                Diagram class yang menunjukkan struktur dan relasi antar class dalam sistem pendataan barang.
+                Visualisasi logika OOP &amp; alur kerja sistem pendataan barang di gudang.
+            </p>
+
+            <!-- ─── DIAGRAM 1: CLASS DIAGRAM (UML) ─── -->
+            <h3 style="color:#818cf8; margin-top:16px;">📐 DIAGRAM KELAS (UML)</h3>
+            <p style="color:#94a3b8; font-size:0.85em; margin-bottom:6px;">
+                Menunjukkan arsitektur kelas OOP (Inheritance, Association, dan Dependency) beserta atribut dan metode masing-masing kelas.
             </p>
 
             <div class="mermaid-wrapper">
@@ -648,6 +635,7 @@
                     class Gudang {
                         -List~Barang~ daftarBarang
                         -List~Transaksi~ riwayatTransaksi
+                        -Map~StringStokBarang~ stokBarang
                         +Gudang()
                         +tambahBarang(barang) void
                         +cariBarang(kode) Barang
@@ -655,6 +643,8 @@
                         +kurangiStok(kode jumlah) bool
                         +tampilkanSemuaBarang() void
                         +getTotalBarang() int
+                        +init() void
+                        +simulasiTransaksi() void
                     }
 
                     class Transaksi {
@@ -698,6 +688,7 @@
                     Transaksi &lt;|-- BarangKeluar
                     Gudang *-- Barang : memiliki
                     Gudang *-- Transaksi : mencatat
+                    Gudang *-- StokBarang : memantau
                     StokBarang --&gt; Barang : memantau
                     BarangMasuk --&gt; Barang : mengelola
                     BarangKeluar --&gt; Barang : mengelola
@@ -709,7 +700,7 @@
                 <button class="copy-btn" onclick="copyMermaid('classdiagram-code')">📋 Salin Kode</button>
             </div>
             <div id="classdiagram-code" class="code-block">
-                <span class="label">📌 Kode Mermaid — Class Diagram UML</span>
+                <span class="label">📌 Kode Mermaid — Class Diagram</span>
                 <code>classDiagram
                 direction TB
 
@@ -738,6 +729,7 @@
                 class Gudang {
                     -List~Barang~ daftarBarang
                     -List~Transaksi~ riwayatTransaksi
+                    -Map~StringStokBarang~ stokBarang
                     +Gudang()
                     +tambahBarang(barang) void
                     +cariBarang(kode) Barang
@@ -745,6 +737,8 @@
                     +kurangiStok(kode jumlah) bool
                     +tampilkanSemuaBarang() void
                     +getTotalBarang() int
+                    +init() void
+                    +simulasiTransaksi() void
                 }
 
                 class Transaksi {
@@ -788,122 +782,167 @@
                 Transaksi &lt;|-- BarangKeluar
                 Gudang *-- Barang : memiliki
                 Gudang *-- Transaksi : mencatat
+                Gudang *-- StokBarang : memantau
                 StokBarang --&gt; Barang : memantau
                 BarangMasuk --&gt; Barang : mengelola
                 BarangKeluar --&gt; Barang : mengelola</code>
             </div>
-        </div>
 
-        <!-- ════════════════════ PSEUDOCODE ════════════════════ -->
-        <div class="section" style="border:2px solid rgba(251,191,36,0.3);">
-            <h2 style="color:#fbbf24 !important;">📊 Pseudocode — Alur Program</h2>
-            <p style="color:#94a3b8; font-size:0.9em; margin-bottom:6px;">
-                Pseudocode yang menggambarkan alur logika program sistem pendataan barang.
+            <!-- ─── DIAGRAM 2: FLOWCHART ALUR TAMBAH STOK ─── -->
+            <h3 style="color:#34d399; margin-top:24px;">📥 FLOWCHART ALUR TAMBAH STOK (BARANG MASUK)</h3>
+            <p style="color:#94a3b8; font-size:0.85em; margin-bottom:6px;">
+                Menunjukkan alur validasi saat melakukan penambahan stok barang (barang masuk ke gudang).
             </p>
 
             <div class="mermaid-wrapper">
                 <div class="mermaid">
                     graph TD
-                    A["START"] --> B["Inisialisasi Sistem"]
-                    B --> C["Buat Objek Barang 5 data"]
-                    C --> D["Tampilkan Dashboard dan Daftar Barang"]
+                    A["START"] --> B["Input: kodeBarang, jumlah"]
+                    B --> C["Cari Barang di Daftar"]
+                    C --> D{"Barang ditemukan?"}
+                    D -->|"Tidak"| E["Output: Error - Barang tidak ditemukan"]
+                    E --> F["END - GAGAL"]
 
-                    D --> E{"Pilih Aksi"}
+                    D -->|"Ya"| G{"Jumlah > 0?"}
+                    G -->|"Tidak"| H["Output: Error - Jumlah harus lebih dari 0"]
+                    H --> F
 
-                    E -->|"Tambah Barang"| F["Input Data Barang"]
-                    F --> G{"Kode unik?"}
-                    G -->|"Ya"| H["Simpan ke Daftar"]
-                    G -->|"Tidak"| I["Tampilkan Error"]
-                    H --> J["Update UI"]
-                    I --> J
-                    J --> D
-
-                    E -->|"Pilih Barang"| K["Pilih Barang dari Daftar"]
-                    K --> L{"Aksi yang Dipilih"}
-
-                    L -->|"Tambah Stok"| M["Input Jumlah"]
-                    M --> N["Validasi Jumlah lebih dari 0"]
-                    N --> O["Update Stok Barang"]
-                    O --> P["Catat Riwayat Transaksi"]
-                    P --> D
-
-                    L -->|"Kurangi Stok"| Q["Input Jumlah"]
-                    Q --> R{"Stok mencukupi?"}
-                    R -->|"Ya"| S["Update Stok Barang"]
-                    R -->|"Tidak"| T["Tampilkan Error Stok Tidak Cukup"]
-                    S --> U["Catat Riwayat Transaksi"]
-                    T --> U
-                    U --> D
-
-                    L -->|"Hapus Barang"| V{"Konfirmasi?"}
-                    V -->|"Ya"| W["Hapus dari Daftar"]
-                    V -->|"Tidak"| X["Batal"]
-                    W --> Y["Update UI"]
-                    X --> Y
-                    Y --> D
-
-                    E -->|"Lihat Detail"| Z["Tampilkan Info Barang"]
-                    Z --> D
-
-                    E -->|"Simulasi"| AA["Jalankan Skenario Transaksi"]
-                    AA --> D
-
-                    E -->|"Keluar"| AB["END"]
+                    G -->|"Ya"| I["barang.tambahStok(jumlah)"]
+                    I --> J["Update stokBarang"]
+                    J --> K["Catat Riwayat Transaksi"]
+                    K --> L["Output: Sukses - Stok bertambah"]
+                    L --> M["END - SUKSES"]
                 </div>
             </div>
 
             <div class="copy-section">
-                <button class="copy-btn" onclick="toggleCode('pseudocode-code')">📋 Tampilkan Kode Mermaid</button>
-                <button class="copy-btn" onclick="copyMermaid('pseudocode-code')">📋 Salin Kode</button>
+                <button class="copy-btn" onclick="toggleCode('tambahstok-code')">📋 Tampilkan Kode Mermaid</button>
+                <button class="copy-btn" onclick="copyMermaid('tambahstok-code')">📋 Salin Kode</button>
             </div>
-            <div id="pseudocode-code" class="code-block">
-                <span class="label">📌 Kode Mermaid — Pseudocode Alur Program</span>
+            <div id="tambahstok-code" class="code-block">
+                <span class="label">📌 Kode Mermaid — Alur Tambah Stok</span>
                 <code>graph TD
-                A["START"] --> B["Inisialisasi Sistem"]
-                B --> C["Buat Objek Barang 5 data"]
-                C --> D["Tampilkan Dashboard dan Daftar Barang"]
+                A["START"] --> B["Input: kodeBarang, jumlah"]
+                B --> C["Cari Barang di Daftar"]
+                C --> D{"Barang ditemukan?"}
+                D -->|"Tidak"| E["Output: Error - Barang tidak ditemukan"]
+                E --> F["END - GAGAL"]
 
-                D --> E{"Pilih Aksi"}
+                D -->|"Ya"| G{"Jumlah > 0?"}
+                G -->|"Tidak"| H["Output: Error - Jumlah harus lebih dari 0"]
+                H --> F
 
-                E -->|"Tambah Barang"| F["Input Data Barang"]
-                F --> G{"Kode unik?"}
-                G -->|"Ya"| H["Simpan ke Daftar"]
-                G -->|"Tidak"| I["Tampilkan Error"]
-                H --> J["Update UI"]
-                I --> J
-                J --> D
+                G -->|"Ya"| I["barang.tambahStok(jumlah)"]
+                I --> J["Update stokBarang"]
+                J --> K["Catat Riwayat Transaksi"]
+                K --> L["Output: Sukses - Stok bertambah"]
+                L --> M["END - SUKSES"]</code>
+            </div>
 
-                E -->|"Pilih Barang"| K["Pilih Barang dari Daftar"]
-                K --> L{"Aksi yang Dipilih"}
+            <!-- ─── DIAGRAM 3: FLOWCHART ALUR KURANGI STOK ─── -->
+            <h3 style="color:#f87171; margin-top:24px;">📤 FLOWCHART ALUR KURANGI STOK (BARANG KELUAR)</h3>
+            <p style="color:#94a3b8; font-size:0.85em; margin-bottom:6px;">
+                Menunjukkan alur validasi saat melakukan pengurangan stok barang (barang keluar dari gudang).
+            </p>
 
-                L -->|"Tambah Stok"| M["Input Jumlah"]
-                M --> N["Validasi Jumlah lebih dari 0"]
-                N --> O["Update Stok Barang"]
-                O --> P["Catat Riwayat Transaksi"]
-                P --> D
+            <div class="mermaid-wrapper">
+                <div class="mermaid">
+                    graph TD
+                    A["START"] --> B["Input: kodeBarang, jumlah"]
+                    B --> C["Cari Barang di Daftar"]
+                    C --> D{"Barang ditemukan?"}
+                    D -->|"Tidak"| E["Output: Error - Barang tidak ditemukan"]
+                    E --> F["END - GAGAL"]
 
-                L -->|"Kurangi Stok"| Q["Input Jumlah"]
-                Q --> R{"Stok mencukupi?"}
-                R -->|"Ya"| S["Update Stok Barang"]
-                R -->|"Tidak"| T["Tampilkan Error Stok Tidak Cukup"]
-                S --> U["Catat Riwayat Transaksi"]
-                T --> U
-                U --> D
+                    D -->|"Ya"| G{"Jumlah > 0?"}
+                    G -->|"Tidak"| H["Output: Error - Jumlah harus lebih dari 0"]
+                    H --> F
 
-                L -->|"Hapus Barang"| V{"Konfirmasi?"}
-                V -->|"Ya"| W["Hapus dari Daftar"]
-                V -->|"Tidak"| X["Batal"]
-                W --> Y["Update UI"]
-                X --> Y
-                Y --> D
+                    G -->|"Ya"| I{"Stok >= jumlah?"}
+                    I -->|"Tidak"| J["Output: Error - Stok tidak cukup"]
+                    J --> F
 
-                E -->|"Lihat Detail"| Z["Tampilkan Info Barang"]
-                Z --> D
+                    I -->|"Ya"| K["barang.kurangiStok(jumlah)"]
+                    K --> L["Update stokBarang"]
+                    L --> M["Catat Riwayat Transaksi"]
+                    M --> N["Output: Sukses - Stok berkurang"]
+                    N --> O["END - SUKSES"]
+                </div>
+            </div>
 
-                E -->|"Simulasi"| AA["Jalankan Skenario Transaksi"]
-                AA --> D
+            <div class="copy-section">
+                <button class="copy-btn" onclick="toggleCode('kurangistok-code')">📋 Tampilkan Kode Mermaid</button>
+                <button class="copy-btn" onclick="copyMermaid('kurangistok-code')">📋 Salin Kode</button>
+            </div>
+            <div id="kurangistok-code" class="code-block">
+                <span class="label">📌 Kode Mermaid — Alur Kurangi Stok</span>
+                <code>graph TD
+                A["START"] --> B["Input: kodeBarang, jumlah"]
+                B --> C["Cari Barang di Daftar"]
+                C --> D{"Barang ditemukan?"}
+                D -->|"Tidak"| E["Output: Error - Barang tidak ditemukan"]
+                E --> F["END - GAGAL"]
 
-                E -->|"Keluar"| AB["END"]</code>
+                D -->|"Ya"| G{"Jumlah > 0?"}
+                G -->|"Tidak"| H["Output: Error - Jumlah harus lebih dari 0"]
+                H --> F
+
+                G -->|"Ya"| I{"Stok >= jumlah?"}
+                I -->|"Tidak"| J["Output: Error - Stok tidak cukup"]
+                J --> F
+
+                I -->|"Ya"| K["barang.kurangiStok(jumlah)"]
+                K --> L["Update stokBarang"]
+                L --> M["Catat Riwayat Transaksi"]
+                M --> N["Output: Sukses - Stok berkurang"]
+                N --> O["END - SUKSES"]</code>
+            </div>
+
+            <!-- ─── PSEUDOCODE UNTUK KEDUA ALUR ─── -->
+            <div style="margin-top:20px; background:rgba(2,6,23,0.6); border-radius:8px; padding:16px; border-left:3px solid #fbbf24;">
+                <h4 style="color:#fbbf24; font-size:0.9em;">📝 PSEUDOCODE LENGKAP</h4>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:8px;">
+                    <div>
+                        <h5 style="color:#34d399;">Tambah Stok</h5>
+                        <pre style="color:#cbd5e1; font-family:'Courier New',monospace; font-size:0.7em; white-space:pre-wrap; word-break:break-word;">
+<span style="color:#fbbf24;">ALGORITMA TambahStok</span>
+<span style="color:#818cf8;">INPUT:</span> kode, jumlah
+<span style="color:#fbbf24;">IF</span> barang tidak ditemukan <span style="color:#fbbf24;">THEN</span>
+    OUTPUT "Error"
+    RETURN false
+<span style="color:#fbbf24;">END IF</span>
+<span style="color:#fbbf24;">IF</span> jumlah <= 0 <span style="color:#fbbf24;">THEN</span>
+    OUTPUT "Error"
+    RETURN false
+<span style="color:#fbbf24;">END IF</span>
+barang.jumlahStok += jumlah
+catat riwayat
+OUTPUT "Sukses"
+RETURN true</pre>
+                    </div>
+                    <div>
+                        <h5 style="color:#f87171;">Kurangi Stok</h5>
+                        <pre style="color:#cbd5e1; font-family:'Courier New',monospace; font-size:0.7em; white-space:pre-wrap; word-break:break-word;">
+<span style="color:#fbbf24;">ALGORITMA KurangiStok</span>
+<span style="color:#818cf8;">INPUT:</span> kode, jumlah
+<span style="color:#fbbf24;">IF</span> barang tidak ditemukan <span style="color:#fbbf24;">THEN</span>
+    OUTPUT "Error"
+    RETURN false
+<span style="color:#fbbf24;">END IF</span>
+<span style="color:#fbbf24;">IF</span> jumlah <= 0 <span style="color:#fbbf24;">THEN</span>
+    OUTPUT "Error"
+    RETURN false
+<span style="color:#fbbf24;">END IF</span>
+<span style="color:#fbbf24;">IF</span> stok < jumlah <span style="color:#fbbf24;">THEN</span>
+    OUTPUT "Stok tidak cukup"
+    RETURN false
+<span style="color:#fbbf24;">END IF</span>
+barang.jumlahStok -= jumlah
+catat riwayat
+OUTPUT "Sukses"
+RETURN true</pre>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -913,19 +952,19 @@
             <div class="grid-2">
                 <div class="pillar-card">
                     <h4>1. Enkapsulasi (Encapsulation)</h4>
-                    <p>Data stok (<b>jumlahStok</b>) dan kondisi barang disembunyikan dan hanya dapat diubah melalui metode <b>tambahStok()</b> dan <b>kurangiStok()</b>. Properti diberi akses private (-) dan method public (+).</p>
+                    <p>Data stok (<b>jumlahStok</b>) disembunyikan dan hanya diubah melalui metode <b>tambahStok()</b> dan <b>kurangiStok()</b>. Properti private (-), method public (+).</p>
                 </div>
                 <div class="pillar-card">
                     <h4>2. Pewarisan (Inheritance)</h4>
-                    <p><b>Barang</b> mewarisi <b>EntitasGudang</b> (abstract class). <b>BarangMasuk</b> dan <b>BarangKeluar</b> mewarisi <b>Transaksi</b> (abstract class). Memungkinkan penggunaan ulang kode.</p>
+                    <p><b>Barang</b> mewarisi <b>EntitasGudang</b>. <b>BarangMasuk</b> dan <b>BarangKeluar</b> mewarisi <b>Transaksi</b>. Menggunakan ulang kode.</p>
                 </div>
                 <div class="pillar-card">
                     <h4>3. Polimorfisme (Polymorphism)</h4>
-                    <p>Metode <b>tampilkanInfo()</b> di-override di class <b>Barang</b>. Metode <b>prosesTransaksi()</b> di-override di <b>BarangMasuk</b> dan <b>BarangKeluar</b>. Satu interface, banyak implementasi.</p>
+                    <p>Metode <b>tampilkanInfo()</b> di-override di <b>Barang</b>. Metode <b>prosesTransaksi()</b> di-override di turunan <b>Transaksi</b>.</p>
                 </div>
                 <div class="pillar-card">
                     <h4>4. Interaksi Objek (Object Interaction)</h4>
-                    <p>Objek <b>Gudang</b> memiliki relasi komposisi dengan <b>Barang</b> dan <b>Transaksi</b>. <b>StokBarang</b> berinteraksi dengan <b>Barang</b> untuk memantau stok. Objek saling berkomunikasi melalui method.</p>
+                    <p><b>Gudang</b> berkomposisi dengan <b>Barang</b> dan <b>Transaksi</b>. <b>StokBarang</b> berinteraksi dengan <b>Barang</b> untuk memantau stok.</p>
                 </div>
             </div>
         </div>
@@ -934,8 +973,8 @@
         <div class="section">
             <h2>📄 Source Code — Sistem Pendataan Barang (Dart)</h2>
             <div class="code-block" style="display:block; max-height:600px; background:#0a0a1a; border-left-color:#38bdf8;">
-                <span class="label">📌 Kode Lengkap — Sistem Pendataan Barang di Gudang</span>
-                <pre style="color:#cbd5e1; font-family:'Courier New',monospace; font-size:0.8em; white-space:pre-wrap; word-break:break-word;">// ==========================================
+                <span class="label">📌 Kode Lengkap</span>
+                <pre style="color:#cbd5e1; font-family:'Courier New',monospace; font-size:0.75em; white-space:pre-wrap; word-break:break-word;">// ==========================================
 // Nama  : Yoza Ulpia Rafila dan Rifqi Prayoga
 // NIM   : 251410004 dan 251410005
 // Kelas : SI2A
@@ -944,7 +983,6 @@
 
 import 'dart:io';
 
-/// ABSTRACT CLASS: EntitasGudang (Base Entity)
 abstract class EntitasGudang {
     String kode, nama;
     EntitasGudang(this.kode, this.nama);
@@ -954,20 +992,12 @@ abstract class EntitasGudang {
     }
 }
 
-/// CLASS: Barang (extends EntitasGudang)
 class Barang extends EntitasGudang {
     String kategori, merk, satuan, kondisi;
     int jumlahStok;
 
-    Barang(
-        String kode,
-        String nama,
-        this.kategori,
-        this.merk,
-        this.jumlahStok,
-        this.satuan,
-        this.kondisi
-    ) : super(kode, nama);
+    Barang(String kode, String nama, this.kategori, this.merk,
+        this.jumlahStok, this.satuan, this.kondisi) : super(kode, nama);
 
     @override
     void tampilkanInfo() {
@@ -980,13 +1010,13 @@ class Barang extends EntitasGudang {
             print("✅ Stok $nama +$jumlah. Total: $jumlahStok $satuan");
             return true;
         }
-        print("❌ Jumlah harus lebih dari 0!");
+        print("❌ Jumlah harus > 0!");
         return false;
     }
 
     bool kurangiStok(int jumlah) {
         if (jumlah <= 0) {
-            print("❌ Jumlah harus lebih dari 0!");
+            print("❌ Jumlah harus > 0!");
             return false;
         }
         if (jumlahStok >= jumlah) {
@@ -1001,81 +1031,53 @@ class Barang extends EntitasGudang {
     int getStok() => jumlahStok;
 }
 
-/// ABSTRACT CLASS: Transaksi
 abstract class Transaksi {
     String idTransaksi, tanggal, kodeBarang;
     int jumlah;
-
     Transaksi(this.idTransaksi, this.tanggal, this.kodeBarang, this.jumlah);
-
     void prosesTransaksi();
     void cetakHeader() {
         print("ID: $idTransaksi | Tanggal: $tanggal | Kode: $kodeBarang");
     }
 }
 
-/// CLASS: BarangMasuk (extends Transaksi)
 class BarangMasuk extends Transaksi {
     String namaSupplier;
-
     BarangMasuk(String id, String tanggal, String kode, int jumlah, this.namaSupplier)
         : super(id, tanggal, kode, jumlah);
-
     @override
     void prosesTransaksi() {
         print("📥 Barang masuk dari $namaSupplier sebanyak $jumlah");
     }
 }
 
-/// CLASS: BarangKeluar (extends Transaksi)
 class BarangKeluar extends Transaksi {
     String tujuan;
-
     BarangKeluar(String id, String tanggal, String kode, int jumlah, this.tujuan)
         : super(id, tanggal, kode, jumlah);
-
     @override
     void prosesTransaksi() {
         print("📤 Barang keluar ke $tujuan sebanyak $jumlah");
     }
 }
 
-/// CLASS: StokBarang (Monitoring Stok)
 class StokBarang {
     int stokAwal, barangMasuk, barangKeluar, stokAkhir;
     String status;
-
     StokBarang(this.stokAwal)
-        : barangMasuk = 0,
-          barangKeluar = 0,
-          stokAkhir = stokAwal,
-          status = "Stabil";
+        : barangMasuk = 0, barangKeluar = 0, stokAkhir = stokAwal, status = "Stabil";
 
-    void tambahMasuk(int jumlah) {
-        barangMasuk += jumlah;
-        hitungStokAkhir();
-    }
-
-    void tambahKeluar(int jumlah) {
-        barangKeluar += jumlah;
-        hitungStokAkhir();
-    }
-
+    void tambahMasuk(int jumlah) { barangMasuk += jumlah; hitungStokAkhir(); }
+    void tambahKeluar(int jumlah) { barangKeluar += jumlah; hitungStokAkhir(); }
     void hitungStokAkhir() {
         stokAkhir = stokAwal + barangMasuk - barangKeluar;
-        if (stokAkhir < 5) {
-            status = "⚠️ Stok Menipis!";
-        } else if (stokAkhir > 50) {
-            status = "📈 Stok Berlebih";
-        } else {
-            status = "✅ Stabil";
-        }
+        if (stokAkhir < 5) status = "⚠️ Stok Menipis!";
+        else if (stokAkhir > 50) status = "📈 Stok Berlebih";
+        else status = "✅ Stabil";
     }
-
     int getStokAkhir() => stokAkhir;
 }
 
-/// CLASS: Gudang (Main System)
 class Gudang {
     List&lt;Barang&gt; daftarBarang = [];
     List&lt;Transaksi&gt; riwayatTransaksi = [];
@@ -1101,78 +1103,43 @@ class Gudang {
 
     bool tambahStok(String kode, int jumlah) {
         Barang? b = cariBarang(kode);
-        if (b == null) {
-            print("❌ Barang tidak ditemukan!");
-            return false;
-        }
-
+        if (b == null) { print("❌ Barang tidak ditemukan!"); return false; }
         bool hasil = b.tambahStok(jumlah);
         if (hasil && stokBarang.containsKey(kode)) {
             stokBarang[kode]!.tambahMasuk(jumlah);
-            riwayatTransaksi.add(
-                BarangMasuk(
-                    "TRX-${DateTime.now().millisecondsSinceEpoch}",
-                    DateTime.now().toString(),
-                    kode,
-                    jumlah,
-                    "Sistem"
-                )
-            );
+            riwayatTransaksi.add(BarangMasuk(
+                "TRX-${DateTime.now().millisecondsSinceEpoch}",
+                DateTime.now().toString(), kode, jumlah, "Sistem"
+            ));
         }
         return hasil;
     }
 
     bool kurangiStok(String kode, int jumlah) {
         Barang? b = cariBarang(kode);
-        if (b == null) {
-            print("❌ Barang tidak ditemukan!");
-            return false;
-        }
-
+        if (b == null) { print("❌ Barang tidak ditemukan!"); return false; }
         bool hasil = b.kurangiStok(jumlah);
         if (hasil && stokBarang.containsKey(kode)) {
             stokBarang[kode]!.tambahKeluar(jumlah);
-            riwayatTransaksi.add(
-                BarangKeluar(
-                    "TRX-${DateTime.now().millisecondsSinceEpoch}",
-                    DateTime.now().toString(),
-                    kode,
-                    jumlah,
-                    "Pelanggan"
-                )
-            );
+            riwayatTransaksi.add(BarangKeluar(
+                "TRX-${DateTime.now().millisecondsSinceEpoch}",
+                DateTime.now().toString(), kode, jumlah, "Pelanggan"
+            ));
         }
         return hasil;
     }
 
     void tampilkanSemuaBarang() {
-        print("\n📦 ===== DAFTAR BARANG ===== 📦");
-        if (daftarBarang.isEmpty) {
-            print("Belum ada barang di gudang.");
-            return;
-        }
+        print("\n📦 DAFTAR BARANG");
+        if (daftarBarang.isEmpty) { print("Belum ada barang."); return; }
         for (var b in daftarBarang) {
             b.tampilkanInfo();
             if (stokBarang.containsKey(b.kode)) {
-                print("   Status Stok: ${stokBarang[b.kode]!.status}");
+                print("   Status: ${stokBarang[b.kode]!.status}");
             }
         }
         print("Total: ${daftarBarang.length} barang\n");
     }
-
-    void tampilkanRiwayat() {
-        print("\n📋 ===== RIWAYAT TRANSAKSI ===== 📋");
-        if (riwayatTransaksi.isEmpty) {
-            print("Belum ada transaksi.");
-            return;
-        }
-        for (var t in riwayatTransaksi) {
-            t.prosesTransaksi();
-        }
-        print("Total: ${riwayatTransaksi.length} transaksi\n");
-    }
-
-    int getTotalBarang() => daftarBarang.length;
 
     void init() {
         tambahBarang(Barang("BRG001", "Beras Premium", "Makanan", "A", 50, "Karung", "Baik"));
@@ -1180,144 +1147,55 @@ class Gudang {
         tambahBarang(Barang("BRG003", "Minyak Goreng", "Pokok", "C", 35, "Liter", "Baik"));
         tambahBarang(Barang("BRG004", "Telur Ayam", "Makanan", "D", 30, "Kg", "Baik"));
         tambahBarang(Barang("BRG005", "Tepung Terigu", "Pokok", "E", 45, "Kg", "Baik"));
-
-        print("\n✅ Data siap! ${daftarBarang.length} barang, ${riwayatTransaksi.length} transaksi\n");
+        print("\n✅ Data siap! ${daftarBarang.length} barang.\n");
     }
 
     void simulasiTransaksi() {
-        print("\n==========================================================");
-        print("   SIMULASI SISTEM PENYEWAAN KENDARAAN (HERLY & MARTA)    ");
-        print("      EKSPANSI SIMULASI: SKENARIO 15 TRANSAKSI OOP        ");
-        print("==========================================================\n");
-
-        print(">>> MEMULAI SIMULASI TRANSAKSI BARANG <<<\n");
-
-        // Transaksi 1: Barang Masuk
-        print(">>> TRANSAKSI 1: Barang Masuk - Beras Premium +20 <<<");
+        print("\n>>> SIMULASI TRANSAKSI <<<");
         tambahStok("BRG001", 20);
-        print("");
-
-        // Transaksi 2: Barang Keluar
-        print(">>> TRANSAKSI 2: Barang Keluar - Gula Pasir -10 <<<");
         kurangiStok("BRG002", 10);
-        print("");
-
-        // Transaksi 3: Barang Masuk
-        print(">>> TRANSAKSI 3: Barang Masuk - Minyak Goreng +15 <<<");
         tambahStok("BRG003", 15);
-        print("");
-
-        // Transaksi 4: Barang Keluar (Gagal, stok tidak cukup)
-        print(">>> TRANSAKSI 4: Barang Keluar - Telur Ayam -40 (Seharusnya Gagal) <<<");
-        kurangiStok("BRG004", 40);
-        print("");
-
-        // Transaksi 5: Barang Masuk
-        print(">>> TRANSAKSI 5: Barang Masuk - Tepung Terigu +10 <<<");
+        kurangiStok("BRG004", 40); // Gagal
         tambahStok("BRG005", 10);
-        print("");
-
-        // Transaksi 6: Barang Keluar
-        print(">>> TRANSAKSI 6: Barang Keluar - Beras Premium -15 <<<");
         kurangiStok("BRG001", 15);
-        print("");
-
-        // Transaksi 7: Barang Masuk (Barang baru)
-        print(">>> TRANSAKSI 7: Barang Masuk - Mie Instan +50 <<<");
         tambahBarang(Barang("BRG006", "Mie Instan", "Instan", "F", 50, "Kg", "Baik"));
-        print("");
-
-        // Transaksi 8: Barang Keluar
-        print(">>> TRANSAKSI 8: Barang Keluar - Minyak Goreng -5 <<<");
         kurangiStok("BRG003", 5);
-        print("");
-
-        // Transaksi 9: Barang Keluar (Gagal, barang tidak ditemukan)
-        print(">>> TRANSAKSI 9: Barang Keluar - BRG999 -10 (Seharusnya Gagal) <<<");
-        kurangiStok("BRG999", 10);
-        print("");
-
-        // Transaksi 10: Barang Masuk
-        print(">>> TRANSAKSI 10: Barang Masuk - Telur Ayam +20 <<<");
+        kurangiStok("BRG999", 10); // Gagal
         tambahStok("BRG004", 20);
-        print("");
-
         print(">>> SIMULASI SELESAI <<<\n");
-
         tampilkanSemuaBarang();
-        tampilkanRiwayat();
     }
 
     void menu() {
         bool run = true;
-
         while (run) {
-            print('\n===== MENU SISTEM GUDANG =====');
+            print('\n===== MENU =====');
             print('1. Tampilkan Semua Barang');
-            print('2. Tambah Stok Barang');
-            print('3. Kurangi Stok Barang');
-            print('4. Cari Barang');
-            print('5. Tampilkan Riwayat Transaksi');
-            print('6. Simulasi Transaksi');
+            print('2. Tambah Stok');
+            print('3. Kurangi Stok');
+            print('4. Simulasi Transaksi');
             print('0. Keluar');
             stdout.write('Pilih: ');
-
             String? input = stdin.readLineSync();
             if (input == null) break;
-
             switch (input.trim()) {
-                case '1':
-                    tampilkanSemuaBarang();
-                    break;
-
+                case '1': tampilkanSemuaBarang(); break;
                 case '2':
-                    stdout.write('Masukkan Kode Barang: ');
-                    String kode = stdin.readLineSync() ?? '';
-                    stdout.write('Masukkan Jumlah: ');
-                    int jumlah = int.tryParse(stdin.readLineSync() ?? '0') ?? 0;
-                    tambahStok(kode, jumlah);
-                    break;
-
+                    stdout.write('Kode: '); String k = stdin.readLineSync() ?? '';
+                    stdout.write('Jumlah: '); int j = int.tryParse(stdin.readLineSync() ?? '0') ?? 0;
+                    tambahStok(k, j); break;
                 case '3':
-                    stdout.write('Masukkan Kode Barang: ');
-                    String kode = stdin.readLineSync() ?? '';
-                    stdout.write('Masukkan Jumlah: ');
-                    int jumlah = int.tryParse(stdin.readLineSync() ?? '0') ?? 0;
-                    kurangiStok(kode, jumlah);
-                    break;
-
-                case '4':
-                    stdout.write('Masukkan Kode Barang: ');
-                    String kode = stdin.readLineSync() ?? '';
-                    Barang? b = cariBarang(kode);
-                    if (b != null) {
-                        b.tampilkanInfo();
-                    } else {
-                        print("❌ Barang tidak ditemukan!");
-                    }
-                    break;
-
-                case '5':
-                    tampilkanRiwayat();
-                    break;
-
-                case '6':
-                    simulasiTransaksi();
-                    break;
-
-                case '0':
-                    run = false;
-                    print('👋 Selesai!');
-                    break;
-
-                default:
-                    print('❌ Pilihan tidak valid!');
+                    stdout.write('Kode: '); String k = stdin.readLineSync() ?? '';
+                    stdout.write('Jumlah: '); int j = int.tryParse(stdin.readLineSync() ?? '0') ?? 0;
+                    kurangiStok(k, j); break;
+                case '4': simulasiTransaksi(); break;
+                case '0': run = false; print('👋 Selesai!'); break;
+                default: print('❌ Pilihan tidak valid!');
             }
         }
     }
 }
 
-/// MAIN PROGRAM
 void main() {
     var gudang = Gudang();
     gudang.init();
@@ -1349,8 +1227,6 @@ void main() {
     <script>
         // ─── DATA ───
         let barangList = [];
-        let riwayat = [];
-
         const initialData = [
             { kode: 'BRG-001', nama: 'Laptop Asus', kategori: 'Elektronik', merk: 'Asus', stok: 10, satuan: 'unit',
                 kondisi: 'Baik' },
@@ -1364,14 +1240,11 @@ void main() {
                 kondisi: 'Baik' },
         ];
 
-        // ─── CLASSES (JavaScript OOP) ───
+        // ─── CLASSES (JS) ───
         class EntitasGudang {
-            constructor(kode, nama) {
-                this.kode = kode;
-                this.nama = nama;
-            }
-            tampilkanInfo() { throw new Error('abstract method'); }
-            cetakIdentitas() { log(`🔹 ${this.kode} — ${this.nama}`, 'gray'); }
+            constructor(kode, nama) { this.kode = kode;
+                this.nama = nama; }
+            tampilkanInfo() { throw new Error('abstract'); }
         }
 
         class Barang extends EntitasGudang {
@@ -1387,24 +1260,17 @@ void main() {
                 return `📦 ${this.kode} | ${this.nama} | ${this.kategori} | Stok: ${this.jumlahStok} ${this.satuan} | ${this.kondisi}`;
             }
             tambahStok(j) {
-                if (j > 0) {
-                    this.jumlahStok += j;
-                    log(`✅ Stok ${this.nama} +${j}. Total: ${this.jumlahStok}`, 'green');
-                    return true;
-                }
+                if (j > 0) { this.jumlahStok += j;
+                    log(`✅ Stok ${this.nama} +${j}. Total: ${this.jumlahStok}`, 'green'); return true; }
                 return false;
             }
             kurangiStok(j) {
                 if (j <= 0) return false;
-                if (this.jumlahStok >= j) {
-                    this.jumlahStok -= j;
-                    log(`✅ Stok ${this.nama} -${j}. Total: ${this.jumlahStok}`, 'green');
-                    return true;
-                }
+                if (this.jumlahStok >= j) { this.jumlahStok -= j;
+                    log(`✅ Stok ${this.nama} -${j}. Total: ${this.jumlahStok}`, 'green'); return true; }
                 log(`❌ Stok ${this.nama} tidak cukup!`, 'red');
                 return false;
             }
-            getStok() { return this.jumlahStok; }
         }
 
         // ─── TERMINAL ───
@@ -1422,7 +1288,6 @@ void main() {
             const t = document.getElementById('terminal');
             if (t) t.innerHTML = '';
             log('🧹 Terminal dibersihkan.', 'gray');
-            log('🔄 Sistem siap digunakan kembali.', 'cyan');
         }
 
         // ─── SELECT / UI ───
@@ -1430,10 +1295,7 @@ void main() {
             const sel = document.getElementById('selectBarang');
             if (!sel) return;
             sel.innerHTML = '';
-            if (!barangList.length) {
-                sel.innerHTML = '<option value="">— tidak ada —</option>';
-                return;
-            }
+            if (!barangList.length) { sel.innerHTML = '<option value="">— tidak ada —</option>'; return; }
             barangList.forEach(b => {
                 const o = document.createElement('option');
                 o.value = b.kode;
@@ -1464,21 +1326,14 @@ void main() {
             const nama = document.getElementById('newNama').value.trim();
             const kategori = document.getElementById('newKategori').value.trim();
             const stok = parseInt(document.getElementById('newStok').value) || 0;
-            if (!kode || !nama || !kategori) {
-                log('❌ Semua field harus diisi!', 'red');
-                return;
-            }
-            if (barangList.some(b => b.kode === kode)) {
-                log(`❌ Kode "${kode}" sudah ada!`, 'red');
-                return;
-            }
+            if (!kode || !nama || !kategori) { log('❌ Semua field harus diisi!', 'red'); return; }
+            if (barangList.some(b => b.kode === kode)) { log(`❌ Kode "${kode}" sudah ada!`, 'red'); return; }
             const b = new Barang(kode, nama, kategori, '-', stok, 'unit', 'Baik');
             barangList.push(b);
-            log(`✅ "${nama}" (${kode}) ditambahkan ke gudang.`, 'green');
+            log(`✅ "${nama}" (${kode}) ditambahkan.`, 'green');
             refreshSelect();
             renderInventory();
-            const nextNum = String(barangList.length + 1).padStart(3, '0');
-            document.getElementById('newKode').value = `BRG-${nextNum}`;
+            document.getElementById('newKode').value = `BRG-${String(barangList.length+1).padStart(3,'0')}`;
             document.getElementById('newNama').value = '';
             document.getElementById('newKategori').value = '';
             document.getElementById('newStok').value = '0';
@@ -1508,131 +1363,99 @@ void main() {
         function hapusBarang() {
             const b = getSelected();
             if (!b) return;
-            if (!confirm(`Hapus "${b.nama}" dari gudang?`)) return;
+            if (!confirm(`Hapus "${b.nama}"?`)) return;
             barangList = barangList.filter(x => x.kode !== b.kode);
-            log(`🗑️ "${b.nama}" dihapus dari gudang.`, 'red');
+            log(`🗑️ "${b.nama}" dihapus.`, 'red');
             refreshSelect();
             renderInventory();
         }
 
-        // ─── SIMULASI TRANSAKSI ───
+        // ─── SIMULASI ───
         function simulasiTransaksi() {
             log('🔄 Memulai simulasi 10 transaksi...', 'purple');
             log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'gray');
-
-            // Simulasi transaksi
             setTimeout(() => {
                 const b1 = barangList.find(b => b.kode === 'BRG-001');
-                if (b1) {
-                    log(`📥 Transaksi 1: Barang Masuk - ${b1.nama} +20`, 'cyan');
+                if (b1) { log(`📥 Transaksi 1: ${b1.nama} +20`, 'cyan');
                     b1.tambahStok(20);
                     renderInventory();
-                    refreshSelect();
-                }
+                    refreshSelect(); }
             }, 300);
-
             setTimeout(() => {
                 const b2 = barangList.find(b => b.kode === 'BRG-002');
-                if (b2) {
-                    log(`📤 Transaksi 2: Barang Keluar - ${b2.nama} -10`, 'cyan');
+                if (b2) { log(`📤 Transaksi 2: ${b2.nama} -10`, 'cyan');
                     b2.kurangiStok(10);
                     renderInventory();
-                    refreshSelect();
-                }
+                    refreshSelect(); }
             }, 800);
-
             setTimeout(() => {
                 const b3 = barangList.find(b => b.kode === 'BRG-003');
-                if (b3) {
-                    log(`📥 Transaksi 3: Barang Masuk - ${b3.nama} +15`, 'cyan');
+                if (b3) { log(`📥 Transaksi 3: ${b3.nama} +15`, 'cyan');
                     b3.tambahStok(15);
                     renderInventory();
-                    refreshSelect();
-                }
+                    refreshSelect(); }
             }, 1300);
-
             setTimeout(() => {
                 const b4 = barangList.find(b => b.kode === 'BRG-004');
-                if (b4) {
-                    log(`📤 Transaksi 4: Barang Keluar - ${b4.nama} -40 (Seharusnya Gagal)`, 'yellow');
+                if (b4) { log(`📤 Transaksi 4: ${b4.nama} -40 (Gagal)`, 'yellow');
                     b4.kurangiStok(40);
                     renderInventory();
-                    refreshSelect();
-                }
+                    refreshSelect(); }
             }, 1800);
-
             setTimeout(() => {
                 const b5 = barangList.find(b => b.kode === 'BRG-005');
-                if (b5) {
-                    log(`📥 Transaksi 5: Barang Masuk - ${b5.nama} +10`, 'cyan');
+                if (b5) { log(`📥 Transaksi 5: ${b5.nama} +10`, 'cyan');
                     b5.tambahStok(10);
                     renderInventory();
-                    refreshSelect();
-                }
+                    refreshSelect(); }
             }, 2300);
-
             setTimeout(() => {
                 const b1 = barangList.find(b => b.kode === 'BRG-001');
-                if (b1) {
-                    log(`📤 Transaksi 6: Barang Keluar - ${b1.nama} -15`, 'cyan');
+                if (b1) { log(`📤 Transaksi 6: ${b1.nama} -15`, 'cyan');
                     b1.kurangiStok(15);
                     renderInventory();
-                    refreshSelect();
-                }
+                    refreshSelect(); }
             }, 2800);
-
             setTimeout(() => {
-                log(`📥 Transaksi 7: Barang Masuk - Mie Instan +50 (Barang Baru)`, 'cyan');
+                log(`📥 Transaksi 7: Mie Instan +50 (Barang Baru)`, 'cyan');
                 const b = new Barang('BRG-006', 'Mie Instan', 'Instan', '-', 50, 'Kg', 'Baik');
                 barangList.push(b);
-                log(`✅ "Mie Instan" (BRG-006) ditambahkan ke gudang.`, 'green');
+                log(`✅ "Mie Instan" ditambahkan.`, 'green');
                 renderInventory();
                 refreshSelect();
             }, 3300);
-
             setTimeout(() => {
                 const b3 = barangList.find(b => b.kode === 'BRG-003');
-                if (b3) {
-                    log(`📤 Transaksi 8: Barang Keluar - ${b3.nama} -5`, 'cyan');
+                if (b3) { log(`📤 Transaksi 8: ${b3.nama} -5`, 'cyan');
                     b3.kurangiStok(5);
                     renderInventory();
-                    refreshSelect();
-                }
+                    refreshSelect(); }
             }, 3800);
-
             setTimeout(() => {
-                log(`📤 Transaksi 9: Barang Keluar - BRG999 -10 (Seharusnya Gagal)`, 'yellow');
+                log(`📤 Transaksi 9: BRG999 -10 (Gagal)`, 'yellow');
                 const b = barangList.find(b => b.kode === 'BRG999');
-                if (!b) log(`❌ Barang dengan kode BRG999 tidak ditemukan!`, 'red');
+                if (!b) log(`❌ Barang tidak ditemukan!`, 'red');
             }, 4300);
-
             setTimeout(() => {
                 const b4 = barangList.find(b => b.kode === 'BRG-004');
-                if (b4) {
-                    log(`📥 Transaksi 10: Barang Masuk - ${b4.nama} +20`, 'cyan');
+                if (b4) { log(`📥 Transaksi 10: ${b4.nama} +20`, 'cyan');
                     b4.tambahStok(20);
                     renderInventory();
-                    refreshSelect();
-                }
+                    refreshSelect(); }
             }, 4800);
-
             setTimeout(() => {
                 log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'gray');
                 log(`📊 Simulasi selesai! Total barang: ${barangList.length}`, 'purple');
-                log('📋 Riwayat transaksi telah dicatat.', 'gray');
             }, 5300);
         }
 
-        // ─── RENDER INVENTORY GRID ───
+        // ─── RENDER ───
         function renderInventory() {
             const g = document.getElementById('inventoryGrid');
             if (!g) return;
             g.innerHTML = '';
-            if (!barangList.length) {
-                g.innerHTML =
-                '<p style="color:#94a3b8;text-align:center;grid-column:1/-1;">Belum ada barang di gudang.</p>';
-                return;
-            }
+            if (!barangList.length) { g.innerHTML =
+                    '<p style="color:#94a3b8;text-align:center;grid-column:1/-1;">Belum ada barang.</p>'; return; }
             barangList.forEach(b => {
                 const c = document.createElement('div');
                 c.className = 'card';
@@ -1642,10 +1465,8 @@ void main() {
                             <div class="card-title">${b.nama}</div>
                             <div class="card-sub">${b.kode} · ${b.kategori}</div>
                             <div class="card-sub">Stok: <b>${b.jumlahStok}</b> ${b.satuan}</div>
-                            <div style="margin-top:6px;">
-                                <span class="badge ${statusClass}">${statusText}</span>
-                            </div>
-                            <div class="card-actions" style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
+                            <div style="margin-top:6px;"><span class="badge ${statusClass}">${statusText}</span></div>
+                            <div style="margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;">
                                 <button class="btn green small" onclick="quickAdd('${b.kode}')">+ Tambah</button>
                                 <button class="btn orange small" onclick="quickSub('${b.kode}')">− Kurang</button>
                                 <button class="btn purple small" onclick="quickDetail('${b.kode}')">ℹ️</button>
@@ -1655,26 +1476,15 @@ void main() {
             });
         }
 
-        function quickAdd(k) {
-            const b = barangList.find(x => x.kode === k);
-            if (!b) return;
-            const j = parseInt(prompt('Tambah stok:', '1'));
-            if (j > 0 && b.tambahStok(j)) { renderInventory();
-                refreshSelect(); }
-        }
+        function quickAdd(k) { const b = barangList.find(x => x.kode === k); if (!b) return; const j = parseInt(prompt(
+                'Tambah:', '1')); if (j > 0 && b.tambahStok(j)) { renderInventory();
+                refreshSelect(); } }
 
-        function quickSub(k) {
-            const b = barangList.find(x => x.kode === k);
-            if (!b) return;
-            const j = parseInt(prompt('Kurangi stok:', '1'));
-            if (j > 0 && b.kurangiStok(j)) { renderInventory();
-                refreshSelect(); }
-        }
+        function quickSub(k) { const b = barangList.find(x => x.kode === k); if (!b) return; const j = parseInt(prompt(
+                'Kurangi:', '1')); if (j > 0 && b.kurangiStok(j)) { renderInventory();
+                refreshSelect(); } }
 
-        function quickDetail(k) {
-            const b = barangList.find(x => x.kode === k);
-            if (b) log(`ℹ️ ${b.tampilkanInfo()}`, 'cyan');
-        }
+        function quickDetail(k) { const b = barangList.find(x => x.kode === k); if (b) log(`ℹ️ ${b.tampilkanInfo()}`, 'cyan'); }
 
         // ─── MERMAID INIT ───
         mermaid.initialize({
@@ -1692,43 +1502,21 @@ void main() {
                 fontFamily: 'Segoe UI, sans-serif',
                 fontSize: '14px'
             },
-            flowchart: {
-                htmlLabels: true,
-                curve: 'basis',
-                useMaxWidth: true
-            }
+            flowchart: { htmlLabels: true, curve: 'basis', useMaxWidth: true }
         });
 
         // ─── INIT ───
         function init() {
             initialData.forEach(d =>
-                barangList.push(
-                    new Barang(
-                        d.kode,
-                        d.nama,
-                        d.kategori,
-                        d.merk,
-                        d.stok,
-                        d.satuan,
-                        d.kondisi
-                    )
-                )
+                barangList.push(new Barang(d.kode, d.nama, d.kategori, d.merk, d.stok, d.satuan, d.kondisi))
             );
-
-            log(`📦 ${barangList.length} barang siap di gudang.`, 'green');
-            log('📋 Gunakan dashboard untuk mengelola stok.', 'gray');
-
+            log(`📦 ${barangList.length} barang siap.`, 'green');
             refreshSelect();
             renderInventory();
-
             const sel = document.getElementById('selectBarang');
-            if (sel) {
-                sel.addEventListener('change', onSelectChange);
-            }
-
-            log('🟢 Sistem siap digunakan.', 'cyan');
+            if (sel) sel.addEventListener('change', onSelectChange);
+            log('🟢 Sistem siap.', 'cyan');
         }
-
         document.addEventListener('DOMContentLoaded', init);
     </script>
 
