@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sistem Pendataan Barang di Gudang (OOP)</title>
     <!-- Mermaid.js -->
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js">
@@ -624,10 +624,10 @@
                     direction TB
 
                     class EntitasGudang {
-                        <<abstract>>
+                        &lt;&lt;abstract&gt;&gt;
                         -String kode
                         -String nama
-                        +EntitasGudang(kode, nama)
+                        +EntitasGudang(kode nama)
                         +tampilkanInfo() void
                         +cetakIdentitas() void
                     }
@@ -638,7 +638,7 @@
                         -int jumlahStok
                         -String satuan
                         -String kondisi
-                        +Barang(kode, nama, kategori, merk, stok, satuan, kondisi)
+                        +Barang(kode nama kategori merk stok satuan kondisi)
                         +tampilkanInfo() void
                         +tambahStok(jumlah) bool
                         +kurangiStok(jumlah) bool
@@ -651,32 +651,32 @@
                         +Gudang()
                         +tambahBarang(barang) void
                         +cariBarang(kode) Barang
-                        +tambahStok(kode, jumlah) bool
-                        +kurangiStok(kode, jumlah) bool
+                        +tambahStok(kode jumlah) bool
+                        +kurangiStok(kode jumlah) bool
                         +tampilkanSemuaBarang() void
                         +getTotalBarang() int
                     }
 
                     class Transaksi {
-                        <<abstract>>
+                        &lt;&lt;abstract&gt;&gt;
                         -String idTransaksi
                         -String tanggal
                         -String kodeBarang
                         -int jumlah
-                        +Transaksi(id, tanggal, kode, jumlah)
+                        +Transaksi(id tanggal kode jumlah)
                         +prosesTransaksi() void
                         +cetakHeader() void
                     }
 
                     class BarangMasuk {
                         -String namaSupplier
-                        +BarangMasuk(id, tanggal, kode, jumlah, supplier)
+                        +BarangMasuk(id tanggal kode jumlah supplier)
                         +prosesTransaksi() void
                     }
 
                     class BarangKeluar {
                         -String tujuan
-                        +BarangKeluar(id, tanggal, kode, jumlah, tujuan)
+                        +BarangKeluar(id tanggal kode jumlah tujuan)
                         +prosesTransaksi() void
                     }
 
@@ -693,14 +693,14 @@
                         +getStokAkhir() int
                     }
 
-                    EntitasGudang <|-- Barang
-                    Transaksi <|-- BarangMasuk
-                    Transaksi <|-- BarangKeluar
+                    EntitasGudang &lt;|-- Barang
+                    Transaksi &lt;|-- BarangMasuk
+                    Transaksi &lt;|-- BarangKeluar
                     Gudang *-- Barang : memiliki
                     Gudang *-- Transaksi : mencatat
-                    StokBarang --> Barang : memantau
-                    BarangMasuk --> Barang : mengelola
-                    BarangKeluar --> Barang : mengelola
+                    StokBarang --&gt; Barang : memantau
+                    BarangMasuk --&gt; Barang : mengelola
+                    BarangKeluar --&gt; Barang : mengelola
                 </div>
             </div>
 
@@ -714,10 +714,10 @@
                 direction TB
 
                 class EntitasGudang {
-                    <<abstract>>
+                    &lt;&lt;abstract&gt;&gt;
                     -String kode
                     -String nama
-                    +EntitasGudang(kode, nama)
+                    +EntitasGudang(kode nama)
                     +tampilkanInfo() void
                     +cetakIdentitas() void
                 }
@@ -728,7 +728,7 @@
                     -int jumlahStok
                     -String satuan
                     -String kondisi
-                    +Barang(kode, nama, kategori, merk, stok, satuan, kondisi)
+                    +Barang(kode nama kategori merk stok satuan kondisi)
                     +tampilkanInfo() void
                     +tambahStok(jumlah) bool
                     +kurangiStok(jumlah) bool
@@ -741,32 +741,32 @@
                     +Gudang()
                     +tambahBarang(barang) void
                     +cariBarang(kode) Barang
-                    +tambahStok(kode, jumlah) bool
-                    +kurangiStok(kode, jumlah) bool
+                    +tambahStok(kode jumlah) bool
+                    +kurangiStok(kode jumlah) bool
                     +tampilkanSemuaBarang() void
                     +getTotalBarang() int
                 }
 
                 class Transaksi {
-                    <<abstract>>
+                    &lt;&lt;abstract&gt;&gt;
                     -String idTransaksi
                     -String tanggal
                     -String kodeBarang
                     -int jumlah
-                    +Transaksi(id, tanggal, kode, jumlah)
+                    +Transaksi(id tanggal kode jumlah)
                     +prosesTransaksi() void
                     +cetakHeader() void
                 }
 
                 class BarangMasuk {
                     -String namaSupplier
-                    +BarangMasuk(id, tanggal, kode, jumlah, supplier)
+                    +BarangMasuk(id tanggal kode jumlah supplier)
                     +prosesTransaksi() void
                 }
 
                 class BarangKeluar {
                     -String tujuan
-                    +BarangKeluar(id, tanggal, kode, jumlah, tujuan)
+                    +BarangKeluar(id tanggal kode jumlah tujuan)
                     +prosesTransaksi() void
                 }
 
@@ -783,14 +783,14 @@
                     +getStokAkhir() int
                 }
 
-                EntitasGudang <|-- Barang
-                Transaksi <|-- BarangMasuk
-                Transaksi <|-- BarangKeluar
+                EntitasGudang &lt;|-- Barang
+                Transaksi &lt;|-- BarangMasuk
+                Transaksi &lt;|-- BarangKeluar
                 Gudang *-- Barang : memiliki
                 Gudang *-- Transaksi : mencatat
-                StokBarang --> Barang : memantau
-                BarangMasuk --> Barang : mengelola
-                BarangKeluar --> Barang : mengelola</code>
+                StokBarang --&gt; Barang : memantau
+                BarangMasuk --&gt; Barang : mengelola
+                BarangKeluar --&gt; Barang : mengelola</code>
             </div>
         </div>
 
@@ -803,20 +803,10 @@
 
             <div class="mermaid-wrapper">
                 <div class="mermaid">
-                    %%{init: {'theme':'dark','themeVariables':{
-                    'primaryColor':'#fbbf24',
-                    'primaryTextColor':'#fff',
-                    'primaryBorderColor':'#818cf8',
-                    'lineColor':'#94a3b8',
-                    'secondaryColor':'#1e293b',
-                    'tertiaryColor':'#0f172a',
-                    'background':'#020617'
-                    }}}%%
-
                     graph TD
                     A["START"] --> B["Inisialisasi Sistem"]
-                    B --> C["Buat Objek Barang (5 data)"]
-                    C --> D["Tampilkan Dashboard & Daftar Barang"]
+                    B --> C["Buat Objek Barang 5 data"]
+                    C --> D["Tampilkan Dashboard dan Daftar Barang"]
 
                     D --> E{"Pilih Aksi"}
 
@@ -832,7 +822,7 @@
                     K --> L{"Aksi yang Dipilih"}
 
                     L -->|"Tambah Stok"| M["Input Jumlah"]
-                    M --> N["Validasi Jumlah > 0"]
+                    M --> N["Validasi Jumlah lebih dari 0"]
                     N --> O["Update Stok Barang"]
                     O --> P["Catat Riwayat Transaksi"]
                     P --> D
@@ -840,7 +830,7 @@
                     L -->|"Kurangi Stok"| Q["Input Jumlah"]
                     Q --> R{"Stok mencukupi?"}
                     R -->|"Ya"| S["Update Stok Barang"]
-                    R -->|"Tidak"| T["Tampilkan Error: Stok Tidak Cukup"]
+                    R -->|"Tidak"| T["Tampilkan Error Stok Tidak Cukup"]
                     S --> U["Catat Riwayat Transaksi"]
                     T --> U
                     U --> D
@@ -868,20 +858,10 @@
             </div>
             <div id="pseudocode-code" class="code-block">
                 <span class="label">📌 Kode Mermaid — Pseudocode Alur Program</span>
-                <code>%%{init: {'theme':'dark','themeVariables':{
-                'primaryColor':'#fbbf24',
-                'primaryTextColor':'#fff',
-                'primaryBorderColor':'#818cf8',
-                'lineColor':'#94a3b8',
-                'secondaryColor':'#1e293b',
-                'tertiaryColor':'#0f172a',
-                'background':'#020617'
-                }}}%%
-
-                graph TD
+                <code>graph TD
                 A["START"] --> B["Inisialisasi Sistem"]
-                B --> C["Buat Objek Barang (5 data)"]
-                C --> D["Tampilkan Dashboard & Daftar Barang"]
+                B --> C["Buat Objek Barang 5 data"]
+                C --> D["Tampilkan Dashboard dan Daftar Barang"]
 
                 D --> E{"Pilih Aksi"}
 
@@ -897,7 +877,7 @@
                 K --> L{"Aksi yang Dipilih"}
 
                 L -->|"Tambah Stok"| M["Input Jumlah"]
-                M --> N["Validasi Jumlah > 0"]
+                M --> N["Validasi Jumlah lebih dari 0"]
                 N --> O["Update Stok Barang"]
                 O --> P["Catat Riwayat Transaksi"]
                 P --> D
@@ -905,7 +885,7 @@
                 L -->|"Kurangi Stok"| Q["Input Jumlah"]
                 Q --> R{"Stok mencukupi?"}
                 R -->|"Ya"| S["Update Stok Barang"]
-                R -->|"Tidak"| T["Tampilkan Error: Stok Tidak Cukup"]
+                R -->|"Tidak"| T["Tampilkan Error Stok Tidak Cukup"]
                 S --> U["Catat Riwayat Transaksi"]
                 T --> U
                 U --> D
@@ -1761,4 +1741,4 @@ void main() {
     </script>
 
 </body>
-    </html>
+        </html>
