@@ -726,40 +726,40 @@
                     <div class="mermaid">
                         %%{init: {'theme': 'dark', 'themeVariables': { 'primaryColor': '#22d3ee', 'primaryTextColor': '#fff', 'primaryBorderColor': '#a855f7', 'lineColor': '#94a3b8', 'secondaryColor': '#1e293b', 'tertiaryColor': '#0f172a', 'background': '#020617' }}}%%
                         graph TD
-                            A(🚀 MULAI) --> B[⚙️ Inisialisasi Sistem]
-                            B --> C[🖥️ Tampilkan Dashboard]
-                            C --> D{❓ Pilih Aksi}
+                        A( MULAI) --> B[ Inisialisasi Sistem]
+                        B --> C[ Tampilkan Dashboard]
+                        C --> D{ Pilih Aksi}
 
-                            D -->|Tambah Barang| E[📝 Input Data]
-                            E --> F{❓ Kode unik?}
-                            F -->|✅ Ya| G[✅ Simpan &amp; Tampilkan]
-                            F -->|❌ Tidak| H[⚠️ Error: Duplikat]
-                            G --> I[↻ Kembali ke Dashboard]
-                            H --> I
+                        D -->|Tambah Barang| E[ Input Data]
+                        E --> F{ Kode unik?}
+                        F -->| Ya| G[ Simpan &amp; Tampilkan]
+                        F -->| Tidak| H[ Error: Duplikat]
+                        G --> I[↻ Kembali ke Dashboard]
+                        H --> I
 
-                            D -->|Pilih Barang| J[🎯 Pilih Barang]
-                            J --> K[📋 Detail Barang]
-                            K --> L{❓ Aksi}
+                        D -->|Pilih Barang| J[ Pilih Barang]
+                        J --> K[ Detail Barang]
+                        K --> L{ Aksi}
 
-                            L -->|📥 Tambah Stok| M[📥 Input Jumlah]
-                            M --> N[🔄 Update Stok]
-                            N --> I
+                        L -->| Tambah Stok| M[ Input Jumlah]
+                        M --> N[ Update Stok]
+                        N --> I
 
-                            L -->|📤 Kurangi Stok| O[📤 Input Jumlah]
-                            O --> P{❓ Stok cukup?}
-                            P -->|✅ Ya| Q[🔄 Update Stok]
-                            P -->|❌ Tidak| R[⚠️ Stok habis]
-                            Q --> I
-                            R --> I
+                        L -->| Kurangi Stok| O[ Input Jumlah]
+                        O --> P{ Stok cukup?}
+                        P -->| Ya| Q[ Update Stok]
+                        P -->| Tidak| R[ Stok habis]
+                        Q --> I
+                        R --> I
 
-                            L -->|🗑️ Hapus| S{❓ Konfirmasi?}
-                            S -->|✅ Ya| T[🗑️ Hapus]
-                            S -->|❌ Batal| I
-                            T --> I
+                        L -->| Hapus| S{ Konfirmasi?}
+                        S -->| Ya| T[ Hapus]
+                        S -->| Batal| I
+                        T --> I
 
-                            I --> C
-                            C -.->|loop| D
-                            C --> U(🏁 SELESAI)
+                        I --> C
+                        C -.->|loop| D
+                        C --> U( SELESAI)
                     </div>
                 </div>
                 <div class="copy-section">
@@ -824,33 +824,31 @@
                         }}}%%
 
                         graph TD
-                            A["🚀 MULAI"] --> B["📂 Inisialisasi Data"]
-                            B --> C["🏭 Buat Objek Barang x5"]
-                            C --> D["📋 Tampilkan Daftar Barang"]
-                            D --> E["📥 Transaksi Barang Masuk"]
+                        A["MULAI"] --> B["Inisialisasi Data"]
+                        B --> C["Buat Objek Barang x5"]
+                        C --> D["Tampilkan Daftar Barang"]
+                        D --> E["Transaksi Barang Masuk"]
 
-                            E --> F{"❓ Barang ditemukan?"}
+                        E --> F{"Barang ditemukan?"}
 
-                            F -->|✅ Ya| G["➕ tambahStok()"]
-                            F -->|❌ Tidak| H["⚠️ Error: Tidak ditemukan"]
+                        F -->|Ya| G["tambahStok()"]
+                        F -->|Tidak| H["Error: Tidak ditemukan"]
 
-                            G --> I["📝 Catat Riwayat"]
-                            H --> J["📤 Transaksi Barang Keluar"]
+                        G --> I["Catat Riwayat"]
+                        I --> J["Transaksi Barang Keluar"]
+                        H --> J
 
-                            I --> J
+                        J --> K{"Stok mencukupi?"}
 
-                            J --> K{"❓ Stok mencukupi?"}
+                        K -->|Ya| L["kurangiStok()"]
+                        K -->|Tidak| M["Error: Stok tidak cukup"]
 
-                            K -->|✅ Ya| L["➖ kurangiStok()"]
-                            K -->|❌ Tidak| M["⚠️ Error: Stok tidak cukup"]
+                        L --> N["Catat Riwayat"]
+                        N --> O["Hitung Stok Akhir"]
+                        M --> O
 
-                            L --> N["📝 Catat Riwayat"]
-                            M --> O["📊 Hitung Stok Akhir"]
-
-                            N --> O
-
-                            O --> P["🖥️ Tampilkan Output"]
-                            P --> Q["🏁 SELESAI"]
+                        O --> P["Tampilkan Output"]
+                        P --> Q["SELESAI"]</code>
                     </div>
                 </div>
                 <div class="copy-section">
@@ -1078,27 +1076,30 @@
             </div>
         </div>
 
-        <!-- ════════════════════ SOURCE CODE ════════════════════ -->
-        <div class="section">
-            <h2>📄 Source Code — Sistem Pendataan Barang (Dart)</h2>
-            <div class="code-box">
-                <pre><span class="cmt">// ==========================================</span>
-<span class="cmt">// Nama  : Yoza Ulpia Rafila &amp; Rifqi Prayoga</span>
-<span class="cmt">// NIM   : 251410004 &amp; 251410005</span>
+
+
+
+<!-- ════════════════════ SOURCE CODE ════════════════════ -->
+<div class="section">
+    <h2>📄 Source Code — Sistem Pendataan Barang (Dart)</h2>
+    <div class="code-box">
+        <pre><span class="cmt">// ==========================================</span>
+<span class="cmt">// Nama  : Yoza Ulpia Rafila dan Rifqi Prayoga</span>
+<span class="cmt">// NIM   : 251410004 dan 251410005</span>
 <span class="cmt">// Kelas : SI2A</span>
 <span class="cmt">// Topik : Sistem Pendataan Barang di Gudang (OOP)</span>
 <span class="cmt">// ==========================================</span>
 
-<span class="kw">abstract</span> <span class="kw">class</span> <span class="cls">EntitasGudang</span> {
+<span class="kw">abstract</span> <span class="kw">class</span> <span class="cls">Entitas</span> {
     <span class="type">String</span> kode, nama;
-    <span class="cls">EntitasGudang</span>(<span class="kw">this</span>.kode, <span class="kw">this</span>.nama);
+    <span class="cls">Entitas</span>(<span class="kw">this</span>.kode, <span class="kw">this</span>.nama);
     <span class="kw">void</span> <span class="fn">tampilkanInfo</span>();
     <span class="kw">void</span> <span class="fn">cetakIdentitas</span>() {
-        <span class="fn">print</span>(<span class="str">"🔹 $kode — $nama"</span>);
+        <span class="fn">print</span>(<span class="str">"$kode -- $nama"</span>);
     }
 }
 
-<span class="kw">class</span> <span class="cls">Barang</span> <span class="kw">extends</span> <span class="cls">EntitasGudang</span> {
+<span class="kw">class</span> <span class="cls">Barang</span> <span class="kw">extends</span> <span class="cls">Entitas</span> {
     <span class="type">String</span> kategori, merk, satuan, kondisi;
     <span class="type">int</span> stok;
     <span class="type">double</span> hargaBeli, hargaJual;
@@ -1108,22 +1109,22 @@
         <span class="kw">this</span>.hargaBeli, <span class="kw">this</span>.hargaJual) : <span class="kw">super</span>(kode, nama);
 
     <span class="ovr">@override</span> <span class="kw">void</span> <span class="fn">tampilkanInfo</span>() {
-        <span class="fn">print</span>(<span class="str">"📦 $kode | $nama | Stok: $stok $satuan"</span>);
+        <span class="fn">print</span>(<span class="str">"$kode | $nama | Stok: $stok $satuan"</span>);
     }
 
-    <span class="kw">void</span> <span class="fn">tambahStok</span>(<span class="type">int</span> j) { stok += j; <span class="fn">print</span>(<span class="str">"✅ +$j $satuan. Total: $stok"</span>); }
+    <span class="kw">void</span> <span class="fn">tambahStok</span>(<span class="type">int</span> j) { stok += j; <span class="fn">print</span>(<span class="str">"+$j $satuan. Total: $stok"</span>); }
 
     <span class="kw">void</span> <span class="fn">kurangiStok</span>(<span class="type">int</span> j) {
-        <span class="kw">if</span> (stok >= j) { stok -= j; <span class="fn">print</span>(<span class="str">"✅ -$j $satuan. Total: $stok"</span>); }
-        <span class="kw">else</span> <span class="fn">print</span>(<span class="str">"❌ Stok tidak cukup! Tersisa: $stok $satuan"</span>);
+        <span class="kw">if</span> (stok >= j) { stok -= j; <span class="fn">print</span>(<span class="str">"-$j $satuan. Total: $stok"</span>); }
+        <span class="kw">else</span> <span class="fn">print</span>(<span class="str">"Stok tidak cukup! Tersisa: $stok $satuan"</span>);
     }
 }
 
-<span class="kw">class</span> <span class="cls">Pelanggan</span> <span class="kw">extends</span> <span class="cls">EntitasGudang</span> {
+<span class="kw">class</span> <span class="cls">Pelanggan</span> <span class="kw">extends</span> <span class="cls">Entitas</span> {
     <span class="type">String</span> alamat, telepon, email;
     <span class="cls">Pelanggan</span>(<span class="type">String</span> kode, <span class="type">String</span> nama, <span class="kw">this</span>.alamat, <span class="kw">this</span>.telepon, <span class="kw">this</span>.email) : <span class="kw">super</span>(kode, nama);
     <span class="ovr">@override</span> <span class="kw">void</span> <span class="fn">tampilkanInfo</span>() {
-        <span class="fn">print</span>(<span class="str">"👤 $kode | $nama | $alamat | $telepon"</span>);
+        <span class="fn">print</span>(<span class="str">"$kode | $nama | $alamat | $telepon"</span>);
     }
 }
 
@@ -1141,13 +1142,13 @@
 
     <span class="kw">void</span> <span class="fn">masuk</span>(<span class="type">String</span> k, <span class="type">int</span> j) {
         <span class="kw">var</span> b = <span class="fn">cari</span>(k);
-        <span class="kw">if</span> (b == <span class="kw">null</span>) { <span class="fn">print</span>(<span class="str">"❌ Tidak ditemukan!"</span>); <span class="kw">return</span>; }
+        <span class="kw">if</span> (b == <span class="kw">null</span>) { <span class="fn">print</span>(<span class="str">"Tidak ditemukan!"</span>); <span class="kw">return</span>; }
         b.<span class="fn">tambahStok</span>(j);
     }
 
     <span class="kw">void</span> <span class="fn">keluar</span>(<span class="type">String</span> k, <span class="type">int</span> j) {
         <span class="kw">var</span> b = <span class="fn">cari</span>(k);
-        <span class="kw">if</span> (b == <span class="kw">null</span>) { <span class="fn">print</span>(<span class="str">"❌ Tidak ditemukan!"</span>); <span class="kw">return</span>; }
+        <span class="kw">if</span> (b == <span class="kw">null</span>) { <span class="fn">print</span>(<span class="str">"Tidak ditemukan!"</span>); <span class="kw">return</span>; }
         b.<span class="fn">kurangiStok</span>(j);
     }
 
@@ -1155,20 +1156,20 @@
         <span class="kw">var</span> b = <span class="fn">cari</span>(k);
         <span class="kw">var</span> p;
         <span class="kw">for</span> (<span class="kw">var</span> pg <span class="kw">in</span> pelanggan) <span class="kw">if</span> (pg.kode == id) p = pg;
-        <span class="kw">if</span> (b == <span class="kw">null</span> || p == <span class="kw">null</span>) { <span class="fn">print</span>(<span class="str">"❌ Data tidak ditemukan!"</span>); <span class="kw">return</span>; }
-        <span class="kw">if</span> (b.stok &lt; j) { <span class="fn">print</span>(<span class="str">"❌ Stok tidak cukup!"</span>); <span class="kw">return</span>; }
+        <span class="kw">if</span> (b == <span class="kw">null</span> || p == <span class="kw">null</span>) { <span class="fn">print</span>(<span class="str">"Data tidak ditemukan!"</span>); <span class="kw">return</span>; }
+        <span class="kw">if</span> (b.stok &lt; j) { <span class="fn">print</span>(<span class="str">"Stok tidak cukup!"</span>); <span class="kw">return</span>; }
         b.stok -= j;
-        <span class="fn">print</span>(<span class="str">"✅ ${p.nama} beli ${b.nama} $j ${b.satuan}"</span>);
+        <span class="fn">print</span>(<span class="str">"${p.nama} beli ${b.nama} $j ${b.satuan}"</span>);
     }
 
     <span class="kw">void</span> <span class="fn">tampilBarang</span>() {
-        <span class="fn">print</span>(<span class="str">"\n📦 DAFTAR BARANG"</span>);
+        <span class="fn">print</span>(<span class="str">"\nDAFTAR BARANG"</span>);
         <span class="kw">for</span> (<span class="kw">var</span> b <span class="kw">in</span> barang) b.<span class="fn">tampilkanInfo</span>();
         <span class="fn">print</span>(<span class="str">"Total: ${barang.length}\n"</span>);
     }
 
     <span class="kw">void</span> <span class="fn">tampilPelanggan</span>() {
-        <span class="fn">print</span>(<span class="str">"\n👤 DAFTAR PELANGGAN"</span>);
+        <span class="fn">print</span>(<span class="str">"\nDAFTAR PELANGGAN"</span>);
         <span class="kw">for</span> (<span class="kw">var</span> p <span class="kw">in</span> pelanggan) p.<span class="fn">tampilkanInfo</span>();
         <span class="fn">print</span>(<span class="str">"Total: ${pelanggan.length}\n"</span>);
     }
@@ -1196,7 +1197,7 @@
         <span class="fn">tambahPelanggan</span>(<span class="cls">Pelanggan</span>(<span class="str">"PLG009"</span>,<span class="str">"Irfan Maulana"</span>,<span class="str">"Jl. Veteran 9"</span>,<span class="str">"081234567898"</span>,<span class="str">"irfan@yahoo.com"</span>));
         <span class="fn">tambahPelanggan</span>(<span class="cls">Pelanggan</span>(<span class="str">"PLG010"</span>,<span class="str">"Juwita Sari"</span>,<span class="str">"Jl. Kartini 4"</span>,<span class="str">"081234567899"</span>,<span class="str">"juwita@gmail.com"</span>));
 
-        <span class="fn">print</span>(<span class="str">"✅ Data siap! ${barang.length} barang, ${pelanggan.length} pelanggan\n"</span>);
+        <span class="fn">print</span>(<span class="str">"Data siap! ${barang.length} barang, ${pelanggan.length} pelanggan\n"</span>);
     }
 
     <span class="kw">void</span> <span class="fn">menu</span>() {
@@ -1259,15 +1260,15 @@
                 <span class="kw">case</span> <span class="str">'6'</span>: <span class="fn">laporanStok</span>(); <span class="kw">break</span>;
                 <span class="kw">case</span> <span class="str">'0'</span>:
                     run = <span class="kw">false</span>;
-                    <span class="fn">print</span>(<span class="str">'👋 Selesai!'</span>);
+                    <span class="fn">print</span>(<span class="str">'Selesai!'</span>);
                     <span class="kw">break</span>;
-                <span class="kw">default</span>: <span class="fn">print</span>(<span class="str">'❌ Salah!'</span>);
+                <span class="kw">default</span>: <span class="fn">print</span>(<span class="str">'Salah!'</span>);
             }
         }
     }
 
     <span class="kw">void</span> <span class="fn">laporanStok</span>() {
-        <span class="fn">print</span>(<span class="str">'\n📦 STOK'</span>);
+        <span class="fn">print</span>(<span class="str">'\nSTOK'</span>);
         <span class="type">double</span> total = <span class="num">0</span>;
         <span class="kw">for</span> (<span class="kw">var</span> b <span class="kw">in</span> barang) {
             <span class="type">double</span> nilai = b.stok * b.hargaBeli;
@@ -1283,11 +1284,12 @@
     g.<span class="fn">init</span>();
     g.<span class="fn">menu</span>();
 }</pre>
-            </div>
+    </div>
+</div>
 
             <!-- Tombol DartPad -->
             <div class="dartpad-row">
-                <button class="btn" onclick="runDart('d1','https://dartpad.dev/embed-inline.html?id=0df1cf550e767c6ec62f4559942f1354&split=60&run=true')">▶ Tampilkan DartPad</button>
+                <button class="btn" onclick="runDart('d1','https://dartpad.dev/embed-inline.html?id=4682286f58d7a7be2bf1ab96c4806e5d&split=60&run=true')">▶ Tampilkan DartPad</button>
             </div>
 
             <iframe id="d1" width="100%" height="600" style="border:1px solid #ccc; border-radius:8px; display:none;"></iframe>
@@ -1618,4 +1620,4 @@ function runDart(id, url) {
 </script>
                         
     </body>
-    </html>
+                                                                                                                   </html>
