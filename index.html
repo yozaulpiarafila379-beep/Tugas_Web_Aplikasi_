@@ -975,13 +975,14 @@ RETURN true</pre>
             <div class="code-block" style="display:block; max-height:600px; background:#0a0a1a; border-left-color:#38bdf8;">
                 <span class="label">📌 Kode Lengkap</span>
                 <pre style="color:#cbd5e1; font-family:'Courier New',monospace; font-size:0.75em; white-space:pre-wrap; word-break:break-word;">// ==========================================
+// ==========================================
 // Nama  : Yoza Ulpia Rafila dan Rifqi Prayoga
 // NIM   : 251410004 dan 251410005
 // Kelas : SI2A
 // Topik : Sistem Pendataan Barang di Gudang (OOP)
 // ==========================================
 
-import 'dart:io';
+// TIDAK ADA import 'dart:io' — kompatibel dengan DartPad
 
 abstract class EntitasGudang {
     String kode, nama;
@@ -1079,9 +1080,9 @@ class StokBarang {
 }
 
 class Gudang {
-    List&lt;Barang&gt; daftarBarang = [];
-    List&lt;Transaksi&gt; riwayatTransaksi = [];
-    Map&lt;String, StokBarang&gt; stokBarang = {};
+    List<Barang> daftarBarang = [];
+    List<Transaksi> riwayatTransaksi = [];
+    Map<String, StokBarang> stokBarang = {};
 
     void tambahBarang(Barang b) {
         if (cariBarang(b.kode) != null) {
@@ -1165,44 +1166,13 @@ class Gudang {
         print(">>> SIMULASI SELESAI <<<\n");
         tampilkanSemuaBarang();
     }
-
-    void menu() {
-        bool run = true;
-        while (run) {
-            print('\n===== MENU =====');
-            print('1. Tampilkan Semua Barang');
-            print('2. Tambah Stok');
-            print('3. Kurangi Stok');
-            print('4. Simulasi Transaksi');
-            print('0. Keluar');
-            stdout.write('Pilih: ');
-            String? input = stdin.readLineSync();
-            if (input == null) break;
-            switch (input.trim()) {
-                case '1': tampilkanSemuaBarang(); break;
-                case '2':
-                    stdout.write('Kode: '); String k = stdin.readLineSync() ?? '';
-                    stdout.write('Jumlah: '); int j = int.tryParse(stdin.readLineSync() ?? '0') ?? 0;
-                    tambahStok(k, j); break;
-                case '3':
-                    stdout.write('Kode: '); String k = stdin.readLineSync() ?? '';
-                    stdout.write('Jumlah: '); int j = int.tryParse(stdin.readLineSync() ?? '0') ?? 0;
-                    kurangiStok(k, j); break;
-                case '4': simulasiTransaksi(); break;
-                case '0': run = false; print('👋 Selesai!'); break;
-                default: print('❌ Pilihan tidak valid!');
-            }
-        }
-    }
 }
 
 void main() {
     var gudang = Gudang();
     gudang.init();
-    gudang.menu();
-}</pre>
-            </div>
-        </div>
+    gudang.simulasiTransaksi(); // Langsung jalankan simulasi tanpa input pengguna
+}
 
         <!-- Tombol DartPad -->
         <div class="dartpad-row">
